@@ -185,9 +185,8 @@ plt.grid(True)
 
 - Saxe, A. M., McClelland, J. L., & Ganguli, S. (2014). Exact solutions to the nonlinear dynamics of learning in deep linear neural networks. *ICLR 2014*.
 - Arora, S., Cohen, N., Hu, W., & Luo, Y. (2019). Implicit regularization in deep matrix factorization. *NeurIPS 2019*.
-- Bah, B., Rauhut, H., Schnass, K., & Teschke, G. (2022). Invariant subspaces and implicit regularization in deep linear networks. *JMLR*, 23(1).
+- Kawaguchi, K. (2016). Deep learning without poor local minima. *NeurIPS 2016*.
 - Cohen, N., Sharir, O., & Shashua, A. (2016). On the expressive power of deep learning: A tensor analysis. *COLT 2016*.
-- Arora, S., Cohen, N., & Hazan, E. (2018). On the optimization of deep networks: Implicit acceleration by gradient descent. *NeurIPS 2018*.
 
 ---
 
@@ -259,9 +258,9 @@ The technique works by formulating the convergence bound as a polynomial inequal
 
 ### 2.3 Fundamental Limits of Variable-Step GD
 
-Lee et al. characterized the fundamental limits of what variable step size GD can achieve:
+A classic result from approximation theory gives the fundamental limit of what variable step size GD can achieve: the optimal step size sequence corresponds to a Chebyshev polynomial that minimizes the worst-case error, and this rate is optimal among all deterministic first-order methods:
 
-!!! success "Theorem 2.3 (Fundamental Limit of Variable-Step GD — Lee et al.)"
+!!! success "Theorem 2.3 (Fundamental Limit of Variable-Step GD)"
     For any deterministic step size sequence $\{\eta_k\}$, the worst-case convergence of gradient descent on the class of $L$-smooth $\mu$-strongly convex functions is lower bounded by:
 
     $$
@@ -338,7 +337,6 @@ plt.grid(True)
 - Taylor, A., Hendrickx, J. M., & Glineur, F. (2017). Performance estimation toolbox (PESTO): Automated worst-case analysis of first-order optimization methods. *IEEE CDC 2017*.
 - Lessard, L., Recht, B., & Packard, A. (2016). Analysis and design of optimization algorithms via integral quadratic constraints. *SIAM Journal on Optimization*, 26(1), 57–95.
 - Hu, B., & Lessard, L. (2017). Dissipativity theory for accelerating gradient methods. *IEEE CDC 2017*.
-- Lee, Y.-T., Srinivas, V., & the JHU Optimization Group. (2021). Optimization with first-order methods: Beyond gradient descent. *JHU Technical Report*.
 - Parrilo, P. A. (2003). Semidefinite programming relaxations for semialgebraic problems. *Mathematical Programming*, 96(2), 293–320.
 - Polyak, B. T. (1964). Some methods of speeding up the convergence of iteration methods. *USSR Computational Mathematics and Mathematical Physics*, 4(5), 1–17.
 - Polyak, B. T. (1987). *Introduction to Optimization*. Optimization Software, Inc.
@@ -438,9 +436,8 @@ plt.tight_layout()
 - Chizat, L., & Bach, F. (2020). Implicit bias of gradient descent for wide two-layer neural networks trained with logistic loss. *COLT 2020*.
 - Ji, Z., & Telgarsky, M. (2020). Directional convergence and alignment in deep learning. *NeurIPS 2020*.
 - Lyu, K., & Li, J. (2020). Gradient descent maximizes the margin of homogeneous neural networks. *ICLR 2020*.
-- Vardi, G., Shamir, O., & Srebro, N. (2022). On the implicit bias of gradient descent for training infinitely deep neural nets. *JMLR*, 23(1).
+- Gunasekar, S., Lee, J., Soudry, D., & Srebro, N. (2018). Characterizing implicit bias in terms of optimization geometry. *ICML 2018*.
 - Soudry, D., Hoffer, E., Nacson, M. S., Gunasekar, S., & Srebro, N. (2018). The implicit bias of gradient descent on separable data. *JMLR*, 19(1).
-- Woodworth, B., Gunasekar, S., Lee, J. D., Moroshko, E., Savarese, P., Golan, I., Soudry, D., & Srebro, N. (2020). Kernel and rich regimes in overparametrized models. *COLT 2020*.
 
 ---
 
@@ -537,11 +534,10 @@ plt.tight_layout()
 
 **References:**
 
-- Williams, F., Trager, M., Panozzo, D., Zorin, D., & Bruna, J. (2019). On the collapse of deep neural networks training. *arXiv:1902.06519*.
-- Xie, Y., Ma, C., & Hofmann, T. (2020). Neural networks as kernel learners: The wide and deep limits. *NeurIPS 2020*.
 - Telgarsky, M. (2016). Benefits of depth in neural networks. *COLT 2016*.
 - Safran, I., & Shamir, O. (2018). Spurious local minima are common in two-layer ReLU neural networks. *ICML 2018*.
 - Du, S. S., Zhai, X., Poczos, B., & Singh, A. (2019). Gradient descent provably optimizes over-parameterized neural networks. *ICLR 2019*.
+- Chizat, L., & Bach, F. (2018). On the global convergence of gradient descent for over-parameterized models using optimal transport. *NeurIPS 2018*.
 
 ---
 
