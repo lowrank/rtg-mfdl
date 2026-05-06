@@ -32,6 +32,7 @@ The 1-WL test is a heuristic for graph isomorphism.
 $$
 c_i^{(t)} = \text{HASH}\left( c_i^{(t-1)}, \{ c_j^{(t-1)} : j \in \mathcal{N}(i) \} \right)
 $$
+
    where $\{ \dots \}$ denotes the multiset of neighbor colors.
 3. Terminate when the partition of nodes into color classes stabilizes.
 
