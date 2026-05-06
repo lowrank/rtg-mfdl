@@ -262,6 +262,12 @@ A recent breakthrough by Altschuler & Parrilo (2023) proves that variable step s
 !!! info "Key distinction from momentum"
     This is **pure gradient descent** — no momentum term, no gradient history. The acceleration comes entirely from a fractal, recursively-defined step size sequence chosen *before* the algorithm runs. The Silver Stepsize Schedule is provably optimal among all deterministic step size sequences for a class of problems, settling a long-standing open question about the power of stepsize hedging.
 
+#### Follow-up: Part II and Random Stepsizes
+
+The same authors extended the Silver schedule to smooth non-strongly convex optimization in **Part II** [Altschuler & Parrilo, 2024], providing a concise self-contained proof that the schedule achieves $O(\varepsilon^{-\log_\rho 2})$ for $L$-smooth convex functions (arXiv:2309.16530, *Mathematical Programming* 2024).
+
+A striking further development is **random stepsizes**: using inverse stepsizes drawn i.i.d. from the **Arcsine distribution** achieves **full acceleration** $O(\kappa^{1/2})$ for separable convex optimization — matching Nesterov's rate — without momentum [Altschuler & Parrilo, 2024, arXiv:2412.05790]. Unlike the Silver schedule's deterministic fractal, this randomized approach exploits a conceptual connection to potential theory: the optimal distribution of stepsizes mirrors the equilibrium distribution of charged particles minimizing logarithmic potential energy, and the Arcsine distribution's "equalization property" makes GD converge at exactly the same rate for all functions in the class.
+
 ### 2.3 Fundamental Limits of Variable-Step GD
 
 A classic result from approximation theory gives the fundamental limit of what variable step size GD can achieve: the optimal step size sequence corresponds to a Chebyshev polynomial that minimizes the worst-case error, and this rate is optimal among all deterministic first-order methods:
@@ -330,11 +336,11 @@ plt.grid(True)
 
 ### 2.5 Open Questions
 
-!!! question "Open Problem 2.1 — Adaptive Chebyshev for Deep Learning"
-    Can Chebyshev-optimized step size schedules be applied to stochastic mini-batch settings? The challenge is that the condition number $\kappa$ must be estimated online. Is there an adaptive variant that matches the accelerated rate without knowledge of $L$ and $\mu$?
+!!! question "Open Problem 2.1 — Silver Schedule for Non-Separable Non-Quadratic"
+    The Arcsine random stepsize schedule achieves full acceleration only for **separable** convex functions. Does there exist a stepsize schedule (deterministic or randomized) that achieves $O(\kappa^{1/2})$ without momentum for *all* convex functions? The Silver schedule gives partial acceleration $\kappa^{\log_\rho 2} \approx \kappa^{0.7864}$ — can this exponent be improved to $0.5$?
 
-!!! question "Open Problem 2.2 — Beyond Quadratic"
-    The Chebyshev schedule is optimal for quadratic objectives. For general neural network loss landscapes (which are non-quadratic and non-convex), do variable step size schedules provably outperform fixed step sizes? Can we derive algorithms that interpolate between Chebyshev acceleration and Adam-style adaptive methods?
+!!! question "Open Problem 2.2 — Stochastic and Non-Convex Settings"
+    Can stepsize hedging be extended to stochastic mini-batch settings or non-convex landscapes? The Silver schedule relies on worst-case analysis over quadratics — for neural network loss landscapes, can we prove that variable step size schedules outperform fixed step sizes?
 
 **References:**
 
@@ -351,6 +357,8 @@ plt.grid(True)
 - Nesterov, Y. (2004). *Introductory Lectures on Convex Optimization*. Springer.
 - Golub, G. H., & Van Loan, C. F. (2013). *Matrix Computations* (4th ed.). Johns Hopkins University Press. [See Chapter 10 on Chebyshev acceleration for linear systems.]
 - Altschuler, J. M., & Parrilo, P. A. (2023). Acceleration by stepsize hedging I: Multi-step descent and the silver stepsize schedule. *Journal of the ACM*, 72(2), 1–38. arXiv:2309.07879.
+- Altschuler, J. M., & Parrilo, P. A. (2024). Acceleration by stepsize hedging II: Silver stepsize schedule for smooth convex optimization. *Mathematical Programming*, 2024. arXiv:2309.16530.
+- Altschuler, J. M., & Parrilo, P. A. (2024). Acceleration by random stepsizes: Hedging, equalization, and the arcsine stepsize schedule. arXiv:2412.05790.
 
 ---
 
@@ -556,8 +564,8 @@ plt.tight_layout()
 | 1.2 | $2 \times 2$ depth-4 periodic orbits and chaos | Ch. 1 Optimization | Very Hard |
 | 1.3 | $2 \times 2$ complex entries at depth $L \ge 3$ | Ch. 1 Optimization | Very Hard |
 | 1.4 | $2 \times 2$ general entries, large depth scaling | Ch. 1 Optimization | Hard |
-| 2.1 | Adaptive Chebyshev for stochastic settings | Ch. 1 Optimization | Hard |
-| 2.2 | Variable step size beyond quadratic losses | Ch. 1 Optimization | Hard |
+| 2.1 | Silver schedule for non-separable non-quadratic | Ch. 1 Optimization | Very Hard |
+| 2.2 | Stepsize hedging for stochastic/non-convex | Ch. 1 Optimization | Hard |
 | 3.1 | Finite-width implicit bias in ReLU nets | Ch. 3 Learning Theory | Very Hard |
 | 3.2 | Deep mean-field limit | Ch. 3 Learning Theory | Very Hard |
 | 4.1 | Bias cluster count in 1D | Ch. 2 Approximation | Moderate |
