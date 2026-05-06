@@ -234,7 +234,7 @@ Zhang and Jiang (arXiv:2410.12395, Fudan, 2024) proposed a unified **concatenati
     Altschuler & Parrilo conjecture that the Silver ratio $\rho = 1+\sqrt{2}$ gives the optimal acceleration achievable by gradient descent **without momentum**, i.e., by step size variation alone. This would mean the exponent $\log_\rho 2 \approx 0.7864$ is the best possible for any deterministic step size schedule. Can this conjecture be proven? Or can a counterexample with a better exponent be found?
 
 !!! question "Open Problem 2.2 — Stochastic and Non-Convex Settings"
-    Can stepsize hedging be extended to stochastic mini-batch settings or non-convex landscapes? The Silver schedule relies on worst-case analysis over quadratics — for neural network loss landscapes, can we prove that variable step size schedules outperform fixed step sizes?
+    Can stepsize hedging be extended to stochastic mini-batch settings or non-convex landscapes? The Silver schedule's analysis covers all smooth convex functions — for neural network loss landscapes, can we prove that variable step size schedules outperform fixed step sizes?
 
 **References:**
 
