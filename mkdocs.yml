@@ -1,28 +1,35 @@
 site_name: Mathematical Foundations of Deep Learning
 site_description: A 100-hour intensive undergraduate/graduate textbook on the mathematical soul of AI.
-site_author: Gemini CLI Agent
+
+copyright: Copyright &copy; 2025
 
 theme:
   name: material
   palette:
     - scheme: default
       primary: indigo
-      accent: indigo
+      accent: deep purple
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
       primary: indigo
-      accent: indigo
+      accent: deep purple
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
   features:
+    - navigation.instant
+    - navigation.instant.prefetch
     - navigation.sections
-    - navigation.expand
+    - navigation.path
     - navigation.top
+    - navigation.footer
     - toc.follow
+    - search.suggest
+    - search.highlight
     - content.code.copy
+    - content.code.annotate
   font:
     text: Gentium Book Plus
     code: Roboto Mono
@@ -32,23 +39,40 @@ extra_css:
 
 markdown_extensions:
   - admonition
+  - footnotes
+  - tables
+  - attr_list
+  - md_in_html
+  - def_list
+  - toc:
+      permalink: true
+      toc_depth: 3
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.highlight:
       anchor_linenums: true
+      use_pygments: true
+      auto_title: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.caret
+  - pymdownx.tilde
+  - pymdownx.mark
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.smartsymbols
 
 extra_javascript:
   - javascripts/mathjax.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 plugins:
-  - search
+  - search:
+      lang: en
 
 nav:
   - Home: index.md
