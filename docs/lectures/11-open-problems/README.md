@@ -303,7 +303,55 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
     
     When two biases $b_j$ and $b_k$ are close, their gradients become correlated. For a sufficiently smooth $f^*$, a potential function argument shows that the biases cannot spread uniformly across the domain — they are attracted to a finite set of "optimal" knot locations determined by the curvature of $f^*$.
 
-### 4.3 Open Questions
+### 4.3 Empirical Demonstration
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def train_and_track_biases(m=100, steps=3000, lr=0.005):
+    np.random.seed(0)
+    x = np.linspace(-3, 3, 500)
+    f_star = np.sin(x) + 0.5 * np.sin(3 * x)
+
+    a = np.random.randn(m) * 0.5
+    b = np.random.uniform(-1, 1, m)
+    w = np.ones(m)
+
+    bias_log = [b.copy()]
+    for t in range(steps):
+        z = w * x[:, None] + b[None, :]
+        h = np.maximum(0, z)
+        f = h @ a
+        residual = f - f_star
+        a -= lr * h.T @ residual / len(x)
+        b -= lr * (a[None, :] * (z > 0)).T @ residual / len(x)
+        if t % 300 == 0:
+            bias_log.append(b.copy())
+
+    return b, bias_log, f, f_star, x
+
+b, hist, f, f_star, x = train_and_track_biases()
+
+plt.figure(figsize=(12, 4))
+plt.subplot(121)
+for i, bh in enumerate(hist):
+    plt.scatter(np.full(len(bh), i * 300), bh, s=4, alpha=0.5, color='C0')
+plt.xlabel('Iteration')
+plt.ylabel('Bias value $b_j$')
+plt.title('Bias trajectories during training')
+
+plt.subplot(122)
+plt.plot(x, f_star, 'k--', linewidth=2, label='Target $f^*$')
+plt.plot(x, f, 'r-', label='Network fit')
+plt.scatter(b, np.zeros_like(b), s=8, color='C0', alpha=0.6, zorder=3)
+plt.xlabel('$x$')
+plt.legend()
+plt.title('Final network and bias locations')
+plt.tight_layout()
+```
+
+### 4.4 Open Questions
 
 !!! question "Open Problem 4.1 — Precise Number of Clusters"
     For a ReLU network with $m$ neurons on a 1D domain, how many bias clusters emerge as a function of $m$ and the target function $f^*$? Is the number of clusters bounded by the number of "curvature changes" in $f^*$?
@@ -314,9 +362,5 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
 !!! question "Open Problem 4.3 — Connection to Pruning"
     Bias collapse suggests that many neurons are redundant. Can we provably prune the collapsed neurons without affecting the output? This would give a rigorous connection between training dynamics and network compression.
 
-**References:**
 
-None.
-
----
 
