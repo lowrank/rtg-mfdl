@@ -25,3 +25,4 @@ Information-theoretic quantities—Entropy, Mutual Information, and Kullback-Lei
 - **Belghazi, M. I., et al. (2018)**: [Mutual Information Neural Estimation](https://arxiv.org/abs/1801.04062) - *The MINE algorithm.*
 - **Alemi, A. A., et al. (2017)**: [Deep Variational Information Bottleneck](https://arxiv.org/abs/1612.00410) - *Application of IB to VAEs.*
 - **Amari, S. (2016)**: [Information Geometry and Its Applications](https://link.springer.com/book/10.1007/978-4-431-55978-8) - *Foundational text on the geometry of probability manifolds.*
+

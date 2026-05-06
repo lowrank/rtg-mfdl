@@ -133,3 +133,4 @@ Since $\nabla_{\hat{y}} f = (\hat{y} - y)$, the result follows.
 1. **The Edge of Stability (EoS)**: Why do neural networks often train in a regime where the sharpness (max eigenvalue of Hessian) is slightly larger than $2/\eta$, contradicting classical stability theory?
 2. **Implicit Bias of Adaptive Methods**: While GD on separable data leads to the max-margin solution, what is the specific geometric bias of Adam or Lion? Does it favor $L_\infty$ margins?
 3. **Flatness and Generalization**: Is the "flatness" of a minimum a causal driver of generalization, or simply a correlated artifact of normalization and architecture?
+

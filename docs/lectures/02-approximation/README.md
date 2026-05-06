@@ -28,3 +28,4 @@ Approximation theory answers the fundamental question of existence: *Which funct
 - **Cybenko, G. (1989)**: [Approximation by Superpositions of a Sigmoidal Function](https://link.springer.com/article/10.1007/BF02551274) - *The seminal paper on universal approximation.*
 - **Barron, A. R. (1993)**: [Universal approximation bounds for superpositions of a sigmoidal function](https://ieeexplore.ieee.org/document/256545) - *Bridging the gap between neural networks and the curse of dimensionality.*
 - **Telgarsky, M. (2016)**: [Benefits of depth in neural networks](https://arxiv.org/abs/1602.04485) - *A modern proof of depth separation using simple geometric constructions.*
+

@@ -77,7 +77,7 @@ This completes the proof. $\blacksquare$
     
     $$
     - \frac{1}{n} \log p(X_1, \dots, X_n) \to h(X) \quad \text{in probability.}
-    $$
+$$
 
 **Proof:**
 By the definition of the joint density of i.i.d. variables:
@@ -376,3 +376,4 @@ print(f"EPI Holds: {NZ_est >= (NX + NY)}")
 ```
     
 *Word Count Estimate: ~2100 words. Comprehensive and exhaustively proved.*
+

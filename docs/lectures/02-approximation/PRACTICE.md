@@ -73,3 +73,4 @@ Using the analytical formula for the ReLU NTK $\kappa(t) = \frac{1}{\pi} (t (\pi
 
 - **Hint 1.3:** The Fourier transform of $\cos(kx)$ is a sum of two Dirac deltas at $\pm k$. The integral becomes $|k| + |-k| = 2|k|$. The Barron norm grows linearly with frequency.
 - **Solution 1.4:** $\operatorname{cpw} \le (m_1+1)(m_2+1) \dots = 3 \cdot 3 = 9$. However, since the input is 1D, the bound is tighter. Composition yields $2^L$ for specific "sawtooth" weights.
+

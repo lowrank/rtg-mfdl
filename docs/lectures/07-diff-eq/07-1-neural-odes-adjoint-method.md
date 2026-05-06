@@ -343,3 +343,4 @@ print("Gradients populated for Neural ODE layers.")
 ```
 
 By substituting `odeint_adjoint` for `odeint`, the backward pass automatically handles the augmented state vector integration, shielding the deep learning researcher from manually constructing the backward solver while providing identical mathematical exactness.
+

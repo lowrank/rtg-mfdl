@@ -74,3 +74,4 @@ where $\cos \phi = x \cdot z / (\|x\| \|z\|)$.
 - Use the `nlp-getting-started` Kaggle competition for automated evaluation.
 - Since the dataset is small (~7,600 samples), the $N \times N$ kernel matrix (~60MB) will easily fit in memory.
 - Use `jax` or `neural-tangents` library if you want to compute the empirical NTK efficiently.
+

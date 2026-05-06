@@ -89,3 +89,4 @@ Run three training loops:
 
 - **Damping Schedule**: Implement a Levenberg-Marquardt schedule for $\lambda$. Increase $\lambda$ if the loss increases; decrease it if the loss decreases.
 - **K-FAC**: Implement a Kronecker-factored version of the second-order update to handle wider layers more efficiently.
+

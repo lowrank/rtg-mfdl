@@ -31,7 +31,10 @@ A Gaussian Process is a generalization of the multivariate Gaussian distribution
     This function dictates the shape, smoothness, and properties of the functions. If $x$ and $x'$ are "close" according to the kernel, then $f(x)$ and $f(x')$ will be highly correlated.
 
     We denote this as:
-    $$f(x) \sim \mathcal{GP}(m(x), k(x, x'))$$
+
+    $$
+    f(x) \sim \mathcal{GP}(m(x), k(x, x'))
+    $$
 
 ### 2.2 Positive Semi-Definiteness and Validity of Kernels
 
@@ -587,3 +590,4 @@ However, the NNGP describes the distribution of functions at **initialization** 
 Does SGD on an infinite-width network behave like GP regression? The answer is yes, but governed by a different kernel: the **Neural Tangent Kernel (NTK)**. Discovered by Jacot et al. in 2018, the NTK proves that in the infinite-width limit, the weights of the network move infinitesimally during training, yet the function output changes significantly. The training dynamics follow a linear differential equation governed entirely by the fixed NTK. 
 
 Together, the NNGP (describing the prior) and the NTK (describing the SGD dynamics) provide a complete, rigorous mathematical theory of deep learning in the infinite-width regime, closing the historical divide between deep neural networks and classical kernel machines.
+

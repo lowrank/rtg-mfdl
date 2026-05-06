@@ -253,3 +253,4 @@ Topological Data Analysis provides a robust framework for extracting global stru
 3. Chazal, F., et al. (2016). The Structure and Stability of Persistence Modules. Springer.
 4. Ghrist, R. (2008). Barcodes: The persistent topology of data. Bulletin of the American Mathematical Society.
 5. Hensel, F., et al. (2021). A Survey of Topological Machine Learning. Frontiers in Artificial Intelligence.
+

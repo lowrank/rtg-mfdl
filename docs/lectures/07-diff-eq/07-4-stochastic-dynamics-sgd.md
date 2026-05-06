@@ -231,3 +231,4 @@ for b in betas:
     theoretical = (np.pi / np.sqrt(2)) * np.exp(b * 1.0)
     print(f"Beta={b}: Avg Simulated Time = {avg_escape:.2f}, Theoretical = {theoretical:.2f}")
 ```
+

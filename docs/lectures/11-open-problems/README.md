@@ -364,3 +364,4 @@ plt.tight_layout()
 
 !!! question "Open Problem 4.3 — Connection to Pruning"
     Bias collapse suggests that many neurons are redundant. Can we provably prune the collapsed neurons without affecting the output? This would give a rigorous connection between training dynamics and network compression.
+

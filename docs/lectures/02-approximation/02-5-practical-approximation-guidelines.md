@@ -146,3 +146,4 @@ plt.show()
 
 ## 7. Conclusion
 Practical approximation is about managing resources. By understanding the memorization limits, the redundancy of parameters (sparsity), and the predictable yields of scaling, we can move from "trial and error" to "principled engineering" in deep learning.
+

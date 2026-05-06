@@ -28,3 +28,4 @@ The fundamental mystery of machine learning is not why models learn, but why the
 - **Anthony, M., & Bartlett, P. L. (1999)**: *Neural Network Learning: Theoretical Foundations* - *The classic textbook on the VC-dimension of neural architectures.*
 - **Shalev-Shwartz, S., & Ben-David, S. (2014)**: [Understanding Machine Learning: From Theory to Algorithms](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/) - *A rigorous and accessible introduction to the core theorems.*
 - **Hardt, M., Recht, B., & Singer, Y. (2016)**: [Train Faster, Generalize Better: Stability of Stochastic Gradient Descent](https://arxiv.org/abs/1509.01240) - *Linking optimization dynamics directly to generalization guarantees.*
+

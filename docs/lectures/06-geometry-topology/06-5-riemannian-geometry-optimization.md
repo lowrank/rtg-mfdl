@@ -229,3 +229,4 @@ Future frontiers include **Riemannian Adam**, optimization on **Infinite-Dimensi
 3. Jost, J. (2017). Riemannian Geometry and Geometric Analysis. Springer.
 4. Ganea, O., et al. (2018). Hyperbolic Neural Networks. NeurIPS.
 5. Bronstein, M. M., et al. (2021). Geometric Deep Learning.
+

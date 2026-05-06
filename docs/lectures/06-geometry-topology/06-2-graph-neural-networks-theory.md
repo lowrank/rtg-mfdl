@@ -28,8 +28,11 @@ The fundamental question of GNN theory is: "Which graphs can a GNN distinguish?"
 The 1-WL test is a heuristic for graph isomorphism.
 1. Initialize color $c_i^{(0)} = 1$ for all nodes (or use node labels).
 2. At step $t$, refine colors:
-   $$c_i^{(t)} = \text{HASH}\left( c_i^{(t-1)}, \{ \!\! \{ c_j^{(t-1)} : j \in \mathcal{N}(i) \} \!\! \} \right)$$
-   where $\{ \!\! \{ \dots \} \!\! \}$ denotes a multiset.
+
+$$
+c_i^{(t)} = \text{HASH}\left( c_i^{(t-1)}, \{ c_j^{(t-1)} : j \in \mathcal{N}(i) \} \right)
+$$
+   where $\{ \dots \}$ denotes the multiset of neighbor colors.
 3. Terminate when the partition of nodes into color classes stabilizes.
 
 If the sorted multiset of colors for graph $G_1$ differs from $G_2$, they are definitely non-isomorphic. If they are the same, they *might* be isomorphic.
@@ -52,17 +55,17 @@ Standard initialization is $c_v^{(0)} = \text{label}(v)$ and $h_v^{(0)} = \mathb
 **Inductive Step:**
 Assume the hypothesis holds for $t-1$. Suppose $c_u^{(t)} = c_v^{(t)}$. In the 1-WL algorithm, the hash function is injective. Thus, $c_u^{(t)} = c_v^{(t)}$ implies:
 1. $c_u^{(t-1)} = c_v^{(t-1)}$
-2. $\{ \!\! \{ c_i^{(t-1)} : i \in \mathcal{N}(u) \} \!\! \} = \{ \!\! \{ c_j^{(t-1)} : j \in \mathcal{N}(v) \} \!\! \}$
+2. $\{ c_i^{(t-1)} : i \in \mathcal{N}(u) \} = \{ c_j^{(t-1)} : j \in \mathcal{N}(v) \}$
 
 By the inductive hypothesis:
 1. $h_u^{(t-1)} = h_v^{(t-1)}$
 2. The multiset of embeddings of neighbors must also be identical:
 
-   $$
-   \{ \!\! \{ h_i^{(t-1)} : i \in \mathcal{N}(u) \} \!\! \} = \{ \!\! \{ h_j^{(t-1)} : j \in \mathcal{N}(v) \} \!\! \}
-   $$
+$$
+\{ h_i^{(t-1)} : i \in \mathcal{N}(u) \} = \{ h_j^{(t-1)} : j \in \mathcal{N}(v) \}
+$$
 
-The MPNN update is $h_u^{(t)} = \text{UP}^{(t)}(h_u^{(t-1)}, \text{AGG}^{(t)}(\{ \!\! \{ h_i^{(t-1)} : i \in \mathcal{N}(u) \} \!\! \}))$. Since both inputs to the deterministic functions $\text{UP}$ and $\text{AGG}$ are identical for $u$ and $v$, it must be that $h_u^{(t)} = h_v^{(t)}$.
+The MPNN update is $h_u^{(t)} = \text{UP}^{(t)}(h_u^{(t-1)}, \text{AGG}^{(t)}(\{ h_i^{(t-1)} : i \in \mathcal{N}(u) \}))$. Since both inputs to the deterministic functions $\text{UP}$ and $\text{AGG}$ are identical for $u$ and $v$, it must be that $h_u^{(t)} = h_v^{(t)}$.
 
 Thus, if 1-WL cannot distinguish two graphs (mapping them to the same multiset of colors), no MPNN can distinguish them either. $\blacksquare$
 
@@ -78,7 +81,7 @@ While MPNNs are *bounded* by 1-WL, can we reach that bound? **GIN** achieves thi
 
 ### 2.4 Higher-Order $k$-WL Hierarchy
 
-Since 1-WL fails on simple cases (like 3-regular graphs of different sizes), we use $k$-WL.
+Since 1-WL fails on simple cases (like 3-regular graphs of different sizes), higher-order variants of the WL algorithm examine tuples of nodes:
 - **2-WL**: Operates on pairs of nodes $(i, j)$.
 - **k-WL**: Operates on $k$-tuples of nodes $(v_1, \dots, v_k)$.
 
@@ -268,3 +271,4 @@ Graph Neural Networks combine structural topology with node features through a p
 3. Defferrard, M., et al. (2016). Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering. NeurIPS.
 4. Bronstein, M. M., et al. (2021). Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges.
 5. Shuman, D. I., et al. (2013). The Emerging Field of Signal Processing on Graphs. IEEE Signal Processing Magazine.
+

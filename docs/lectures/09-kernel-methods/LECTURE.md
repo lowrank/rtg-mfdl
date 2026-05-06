@@ -65,3 +65,4 @@ This module is structured into five high-density, rigorously proved lectures.
 - **The Kernel Trick is a Projection**: It's not a superficial replacement of dot products. It establishes a closed subspace in an RKHS where the orthogonal components strictly do not impact empirical risk, dropping infinite search spaces to span of data.
 - **Regularization is Frequency Filtering**: Choosing an RBF kernel means applying an infinite-order differential penalty, implicitly filtering out any non-smooth components based on the spectral decay derived from Bochner's / Mercer's theorems.
 - **Kernels as Feature Extractors for Probability**: We bypass estimating high-dimensional densities $p(x)$ entirely by comparing their linear projections $\mu_P$ inside an RKHS, enabling robust topological statistics.
+

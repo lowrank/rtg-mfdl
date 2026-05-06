@@ -188,3 +188,4 @@ plt.legend(); plt.grid(True)
 ```
 
 Stability theory proves that generalization is not a static property of the model's architecture, but a dynamic property of how the optimizer traverses the landscape.
+

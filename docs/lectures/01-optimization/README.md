@@ -28,3 +28,4 @@ This module provides a rigorous exploration of the mathematical foundations of o
 - **Bottou, L., Curtis, F. E., & Nocedal, J. (2018)**: [Optimization methods for large-scale machine learning](https://arxiv.org/abs/1606.04838) - *The definitive survey on the transition from batch to stochastic optimization.*
 - **Reddi, S. J., Kale, S., & Kumar, S. (2018)**: [On the Convergence of Adam and Beyond](https://openreview.net/forum?id=ryQu7f-RZ) - *A critical look at the convergence issues of popular adaptive methods.*
 - **Cohen, J. M., et al. (2021)**: [Gradient Descent on Neural Networks Typically Occurs at the Edge of Stability](https://arxiv.org/abs/2103.00065) - *An exploration of non-classical dynamics in neural optimization.*
+

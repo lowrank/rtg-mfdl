@@ -21,3 +21,4 @@ This module explores the theoretical foundations of the Transformer architecture
 *   **Scaling Laws**: Kaplan et al. (2020), *Scaling Laws for Neural Language Models*.
 *   **Transformer Circuits**: Elhage et al. (2021), *A Mathematical Framework for Transformer Circuits*.
 *   **ICL Theory**: Von Oswald et al. (2023), *Transformers learn in-context by gradient descent*.
+

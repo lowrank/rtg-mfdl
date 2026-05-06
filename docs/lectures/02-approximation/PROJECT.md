@@ -61,3 +61,4 @@ Your final report should include:
 2. **Proofs:** A short write-up (PDF) explaining why the deep network was expected to outperform the shallow one for Part 1.
 3. **Visualizations:** High-quality plots for all three parts.
 4. **Discussion:** Reflect on the trade-off between representational power (approximation) and optimization (how hard it was to train).
+

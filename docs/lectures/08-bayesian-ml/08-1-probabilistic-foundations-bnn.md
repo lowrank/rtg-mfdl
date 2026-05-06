@@ -495,3 +495,4 @@ output = layer(x)
 ```
 
 This variational approach is a cornerstone of modern probabilistic deep learning, circumventing the intractable integrals highlighted in the logistic regression example. In subsequent lectures, we will systematically dissect advanced inference techniques (MCMC and Variational Inference) to scale these foundational principles to profound depths.
+

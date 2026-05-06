@@ -63,3 +63,4 @@ This module provides a rigorous, high-density exploration of Bayesian methods in
 
 ## Theoretical Synergy
 This module connects the "top-down" approach of Bayesian priors with the "bottom-up" approach of distribution-free guarantees. Students will move from "learning weights" to "estimating densities" and finally "guaranteeing intervals," providing a complete toolkit for high-stakes AI engineering.
+

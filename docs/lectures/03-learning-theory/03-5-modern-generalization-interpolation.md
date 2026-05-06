@@ -133,3 +133,4 @@ for a in alphas:
 ```
 
 Modern learning theory proves that in high dimensions, the "law of parsimony" is superseded by the "law of stability". Fitting the data perfectly is not a crime, provided you do it as smoothly as possible.
+

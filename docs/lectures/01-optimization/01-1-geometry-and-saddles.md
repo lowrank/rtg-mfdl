@@ -562,3 +562,4 @@ simulate_bbp_transition()
 ```
     
 This completes our deep, rigorous exploration of the geometry of high-dimensional loss landscapes. You now possess the mathematical machinery—from Morse Theory to Random Matrices—required to analyze the complex critical points encountered in modern machine learning.
+

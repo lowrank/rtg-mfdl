@@ -103,3 +103,4 @@ Create a 50-layer "pure" attention model (no residuals, no MLPs) with random wei
 
 ### Hint 2.3
 Use `torch.linalg.svdvals` to compute singular values efficiently. You should see the distribution of singular values becoming increasingly "peaky" at the first value as depth increases.
+

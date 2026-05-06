@@ -68,3 +68,4 @@ This curriculum provides an exhaustive, 10-hour deep-dive into the information-t
 
 ---
 *Reference: Cover, T. M., & Thomas, J. A. (2006). Elements of Information Theory. Wiley-Interscience.*
+

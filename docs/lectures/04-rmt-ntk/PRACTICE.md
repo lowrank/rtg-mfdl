@@ -77,3 +77,4 @@ The paths are $(i, j, i, j, i)$, $(i, j, j, i, i)$, etc. There are $2n^2$ such p
 
 ### Solution 2.2
 Real weights often show "Heavy Tails" or "Power Laws," deviating from RMT. This indicates that the matrices are not truly random but have learned specific structures (low-rank components).
+

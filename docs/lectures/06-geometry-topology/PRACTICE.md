@@ -78,3 +78,4 @@ In PyTorch, you can check this with `torch.allclose(out_perm, perm_out, atol=1e-
 
 ### Hint 2.1
 The $H_1$ feature (the loop) should have a birth near $\epsilon \approx 0$ (once edges form) and a death near $\epsilon \approx R$ (where $R$ is the radius, as the circle fills in).
+

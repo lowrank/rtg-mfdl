@@ -66,3 +66,4 @@ To fully master this module, you must:
 3. **Analyze it:** Use the Scaling Law formula to predict the error of a model $10\times$ larger than your current one.
 
 This is the most mathematically dense chapter of the textbook. Take your time with the proofs in [02-1](./02-1-universal-approximation.md) and [02-2](./02-2-depth-efficiency-separation.md) before moving to the modern KAN architectures in [02-4](./02-4-kan-and-symbolic-theory.md).
+

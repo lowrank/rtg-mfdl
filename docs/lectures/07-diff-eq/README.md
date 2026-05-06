@@ -20,3 +20,4 @@ This module bridges the gap between classical numerical analysis and modern deep
 - **Ho, J., et al. (2020)**: [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239) - Foundations of modern generative diffusion.
 - **Raissi, M., et al. (2019)**: [Physics-informed neural networks](https://maziarraissi.github.io/PINNs/) - Solving PDEs using neural networks.
 - **Karniadakis, G. E., et al. (2021)**: [Physics-informed machine learning](https://www.nature.com/articles/s42254-021-00314-5) - A comprehensive review.
+

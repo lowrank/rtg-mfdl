@@ -324,3 +324,4 @@ plt.show()
 ```
 
 This clearly illustrates that a function in the RKHS is a smooth superposition of localized kernel evaluations anchored at the support points.
+

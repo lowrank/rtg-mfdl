@@ -217,3 +217,4 @@ error = np.linalg.norm(K_exact - K_approx, ord='fro') / np.linalg.norm(K_exact, 
 print(f"Relative Frobenius norm error with 100 landmarks (out of {n_samples}): {error*100:.2f}%")
 ```
 This Nyström approximation is heavily used in large-scale kernel methods, relying directly on the existence of Mercer's eigendecomposition.
+

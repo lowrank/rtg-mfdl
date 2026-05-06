@@ -176,3 +176,4 @@ x_proj = torch.cat([torch.sin(x @ B), torch.cos(x @ B)], dim=-1)
 
 ## 7. Conclusion
 Harmonic analysis transforms our understanding of neural networks from "black box" function fitters to structured "low-pass" filters. Barron's theorem gives us hope for high-dimensional learning, while Spectral Bias and Scattering Transforms give us the tools to understand the dynamics and stability of our models.
+

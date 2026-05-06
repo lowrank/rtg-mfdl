@@ -290,3 +290,4 @@ output = layer(x_input)
 print("FNO Input Shape:", x_input.shape)
 print("FNO Output Shape:", output.shape)
 ```
+

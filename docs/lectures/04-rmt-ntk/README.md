@@ -25,3 +25,4 @@ Weight matrices, Jacobians, and feature covariance matrices in deep neural netwo
 - **Jacot, A., et al. (2018)**: [Neural Tangent Kernel](https://arxiv.org/abs/1806.07572) - *The paper that launched the NTK field.*
 - **Yang, G. (2022)**: [Tensor Programs V: Tuning Large Neural Networks at Scale](https://arxiv.org/abs/2203.03466) - *Introduction to the $\mu$P framework used for GPT-4.*
 - **Belkin, M., et al. (2019)**: [Reconciling Deep Learning with Classical Overfitting](https://arxiv.org/abs/1812.11118) - *Explains the Double Descent phenomenon.*
+

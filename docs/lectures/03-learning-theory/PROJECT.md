@@ -79,3 +79,4 @@ $$
 - A Jupyter notebook demonstrating the bound calculations.
 - A plot of the "Double Descent" curve for this specific dataset.
 - A short discussion on whether the theoretical bounds (Rademacher/PAC-Bayes) correctly predicted the relative performance of different architectures.
+

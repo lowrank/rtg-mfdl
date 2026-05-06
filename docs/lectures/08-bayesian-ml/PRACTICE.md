@@ -79,3 +79,4 @@
 - **1.2**: If the mapping is not volume-preserving, the Metropolis-Hastings ratio would require a complex Jacobian determinant term, which is computationally expensive to calculate for every step. Symplecticity ensures the determinant is 1.
 - **1.5**: $\hat{q} = S_{(\lceil (n+1)(1-\alpha) \rceil)} = S_{(\lceil 100 \times 0.9 \rceil)} = S_{(90)}$. Pick the $90^{th}$ largest score.
 - **1.7**: No, a homeomorphism must preserve dimensionality. Manifold flows typically use a padding or an encoder-decoder structure to change dims.
+

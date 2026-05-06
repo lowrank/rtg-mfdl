@@ -89,3 +89,4 @@ Identify the "Fourier Circuit" in a Transformer trained on modular addition $(a 
 - SVD/PCA plots of embeddings.
 - Training curves showing the "Grokking" gap.
 3.  **Write-up**: A 2-page report connecting your empirical findings to the theorems discussed in `LECTURE.md` (e.g., Rank Collapse, NW-Kernel connection).
+

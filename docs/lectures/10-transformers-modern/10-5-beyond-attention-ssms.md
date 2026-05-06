@@ -46,9 +46,9 @@ For an SSM to remember long-range dependencies, the matrix $A$ must be carefully
 2.  **Differentiating the State:**
     Using the Leibniz Integral Rule:
     
-    $$
+$$
     \frac{d}{dt} h_n(t) = x(t) P_n(1) + \int_0^t x(s) \frac{\partial}{\partial t} P_n(s/t) ds
-    $$
+$$
 
     Since $P_n(1) = 1$, the first term is $x(t)$.
     The second term involves the derivative of the shifted polynomial. Using the property $x P'_n(x) = n P_n(x) + \sum_{k < n} (2k+1) P_k(x)$ (for odd/even cases), we can express the integral back in terms of the coefficients $h_k(t)$.
@@ -68,15 +68,15 @@ The main drawback of RNNs is their sequential nature. However, a linear recurren
     Define a tuple $\mathcal{T}_k = (A_k, b_k)$ where $b_k = B_k x_k$. The state update is $h_k = A_k h_{k-1} + b_k$.
     Define a binary operator $\otimes$:
     
-    $$
+$$
     (A_j, b_j) \otimes (A_i, b_i) = (A_j A_i, A_j b_i + b_j)
-    $$
+$$
 
 2.  **Checking Associativity:**
     
-    $$
+$$
     [\mathcal{T}_k \otimes \mathcal{T}_j] \otimes \mathcal{T}_i = (A_k A_j, A_k b_j + b_k) \otimes (A_i, b_i) = (A_k A_j A_i, A_k A_j b_i + A_k b_j + b_k)
-    $$
+$$
 
     $$
     \mathcal{T}_k \otimes [\mathcal{T}_j \otimes \mathcal{T}_i] = \mathcal{T}_k \otimes (A_j A_i, A_j b_i + b_j) = (A_k A_j A_i, A_k (A_j b_i + b_j) + b_k)
@@ -194,3 +194,4 @@ def associative_scan(A, b):
 ```
 
 By moving beyond the quadratic attention bottleneck, SSMs provide a path toward truly infinite-context models that can process entire books or video streams as a single, continuous signal.
+

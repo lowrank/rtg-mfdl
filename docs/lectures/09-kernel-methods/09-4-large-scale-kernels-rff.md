@@ -261,3 +261,4 @@ print(f"\n--- RFF Linear SVM (Trained on full 16,000 points, D=500) ---")
 print(f"Time: {time_rff:.4f}s | Accuracy: {acc_rff*100:.2f}%")
 ```
 RFF allows the linear model to leverage the full dataset rapidly, often surpassing the accuracy of the exact but subsampled kernel model within a fraction of the time.
+

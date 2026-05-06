@@ -333,3 +333,4 @@ print("K-FAC step completed successfully.")
 ```
     
 This concludes our deep dive into adaptive and second-order methods. You have seen how information geometry provides a fundamental perspective on optimization, how K-FAC makes this tractable for deep networks, and how modern optimizers like Lion continue to evolve the state-of-the-art.
+

@@ -391,3 +391,4 @@ plt.show()
 ```
     
 This concludes our exploration of stochastic algorithms. You have seen how to analyze the convergence of SGD from a martingale perspective, how variance reduction bridges the gap to linear convergence, and how SGLD allows for rigorous Bayesian inference in high dimensions.
+

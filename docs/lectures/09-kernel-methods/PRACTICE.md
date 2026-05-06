@@ -84,3 +84,4 @@
 - **1.2.3**: By Cauchy-Schwarz: $|f(x)| = |\langle f, k_x \rangle| \le \|f\| \|k_x\| = \|f\| \sqrt{k(x, x)}$.
 - **1.5.1**: For the linear kernel, $\mu_P = \int x dP(x) = \mathbb{E}_P[x]$. Any two distributions with the same mean (but different variances) will have the same embedding. Thus, it is not injective.
 - **1.6**: $p(\omega) = \frac{1}{\pi} \frac{\lambda}{\lambda^2 + \omega^2}$ (Cauchy/Lorentzian distribution).
+

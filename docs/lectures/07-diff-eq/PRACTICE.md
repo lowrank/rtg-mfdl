@@ -84,3 +84,4 @@ $$
 
 - **1.2**: $\frac{\partial (\Theta h)}{\partial h} = \Theta$. Thus $\dot{a} = -a^\top \Theta \implies \dot{a} = -\Theta^\top a$ (for column vector $a$).
 - **1.7**: For $\dot{q}=p, \dot{p}=-q$, Forward Euler gives $q_{n+1} = q_n + \Delta t p_n$ and $p_{n+1} = p_n - \Delta t q_n$. Then $q_{n+1}^2 + p_{n+1}^2 = (q_n + \Delta t p_n)^2 + (p_n - \Delta t q_n)^2 = (1 + \Delta t^2)(q_n^2 + p_n^2) > q_n^2 + p_n^2$. The energy grows exponentially.
+

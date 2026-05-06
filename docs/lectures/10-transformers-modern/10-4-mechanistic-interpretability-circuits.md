@@ -161,3 +161,4 @@ criterion = nn.CrossEntropyLoss()
 ```
 
 Mechanistic interpretability provides the "proof of work" for our understanding, moving beyond qualitative descriptions to a quantitative theory of how Transformers think.
+

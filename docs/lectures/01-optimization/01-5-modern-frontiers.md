@@ -279,3 +279,4 @@ run_comparison()
 ```
     
 This concludes our journey through the modern frontiers of optimization. You now understand how the Edge of Stability regulates training, how the implicit bias of algorithms helps generalize in overparameterized regimes, and how SAM explicitly targets flat, robust minima. These are the tools of the modern deep learning practitioner.
+

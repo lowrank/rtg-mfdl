@@ -264,3 +264,4 @@ dynamics = model.get_dynamics(z_sample)
 print("State z:", z_sample[0])
 print("HNN Predicted Dynamics dz/dt:", dynamics[0])
 ```
+

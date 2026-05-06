@@ -76,3 +76,4 @@ Shuffling words increases the entropy (specifically the conditional entropy $h(x
 
 ### Solution 2.3
 In ReLU networks, explicit compression (lowering $I(X; T)$) is often not observed because the mapping remains injective. Compression usually only appears if you use saturating activations (Tanh/Sigmoid) or explicit noise.
+

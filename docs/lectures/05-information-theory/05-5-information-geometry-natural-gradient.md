@@ -235,3 +235,4 @@ print(f"Final NGD: mu={theta_ngd[0]:.2f}, var={theta_ngd[1]:.2f}")
 ```
 
 *Word Count Estimate: ~2200 words. Comprehensive and exhaustively proved.*
+

@@ -57,3 +57,4 @@ Why deep learning works in the overparameterized regime.
 ---
 **Prerequisites**: Graduate-level Multivariable Calculus, Spectral Theory (Linear Algebra), and Stochastic Processes.
 **Target Outcome**: Ability to derive convergence rates for new optimizers and diagnose landscape-level training failures using second-order statistics.
+

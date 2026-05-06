@@ -367,3 +367,4 @@ simulate_convergence_rates()
 ```
     
 This conclude our rigorous study of convergence rates. You have seen how Nesterov acceleration achieves the theoretical limit of first-order optimization and how specific geometric properties like the PL inequality can guarantee global convergence even in non-convex settings.
+

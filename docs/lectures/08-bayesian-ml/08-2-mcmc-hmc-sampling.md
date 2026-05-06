@@ -247,3 +247,4 @@ print(f"R-hat: {rhat.w.values}") # Should be near 1.0
 ## 8. Summary and Outlook
 
 MCMC is a deep and rigorous field. While Hamiltonian methods have allowed us to scale these ideas to neural networks, the fundamental principles of Markov chains—irreducibility, aperiodicity, and detailed balance—remain our guiding stars. As we move towards larger models and more complex data, the ability to accurately sample from the posterior will remain a critical bottleneck and a rich area for innovation.
+

@@ -198,3 +198,4 @@ print(f"Coverage: {coverage:.3f} (target: {0.90})")
 ## 7. Conclusion
 
 Calibration and Conformal Prediction are essential for building trustworthy AI. Calibration ensures that our "probabilities" are grounded in reality, while Conformal Prediction provides the rigorous "safety net" needed for high-stakes decision-making. By combining Bayesian inference with these verification techniques, we can build models that are both powerful and responsible.
+

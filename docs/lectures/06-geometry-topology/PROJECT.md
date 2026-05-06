@@ -58,3 +58,4 @@ Apply Geometric Deep Learning and Topological Data Analysis to solve complex str
 - **GUDHI**: An excellent library for advanced topology (Alpha Complexes, Landscapes).
 - **PyTorch Geometric (PyG)**: The industry standard for implementing GNNs.
 - **E3NN**: A specialized library for Euclidean Equivariant Neural Networks using spherical harmonics.
+

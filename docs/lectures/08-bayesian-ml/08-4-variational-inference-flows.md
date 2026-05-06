@@ -331,3 +331,4 @@ The space of probability distributions is not Euclidean; it is a Riemannian mani
 ## 9. Conclusion: The Future of Optimization-Based Inference
 
 Variational Inference has fundamentally changed Bayesian machine learning by making it compatible with the high-performance optimization tools of deep learning. While it lacks the asymptotic guarantees of MCMC, its ability to scale to billions of parameters via SVI and to capture complex geometries via Normalizing Flows makes it the pragmatic choice for most real-world AI systems. As we continue to integrate more expressive flows and more accurate gradient estimators, the gap between "exact" sampling and "approximate" optimization continues to close.
+

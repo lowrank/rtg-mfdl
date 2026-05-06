@@ -243,3 +243,4 @@ plt.legend()
 plt.show()
 ```
 *Observation:* The witness function is positive where $\mathbb{P}$ (blue) has more mass, and negative where $\mathbb{Q}$ (orange) has more mass. It cleanly separates the discrepancy between the two geometries, acting as the optimal discriminator in the RKHS.
+

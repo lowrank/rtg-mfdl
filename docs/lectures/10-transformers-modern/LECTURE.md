@@ -60,3 +60,4 @@ By the end of this 10-hour intensive, students will be able to:
 3.  **Reverse-engineer** small Transformers to identify algorithmic circuits like induction heads.
 4.  **Implement** parallel associative scans for linear-time sequence modeling.
 5.  **Mathematically audit** new architectures for potential rank collapse or memory bottlenecks.
+

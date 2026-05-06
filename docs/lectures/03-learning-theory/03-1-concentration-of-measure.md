@@ -291,9 +291,9 @@ The Matrix Bernstein inequality bounds the spectral norm of a sum of independent
     
     Define the variance parameter $\sigma^2$ as the spectral norm of the sum of the expected squared matrices:
     
-    $$
+$$
     \sigma^2 = \left\|\sum_{i=1}^n \mathbb{E}[X_i^2] \right\|_{\text{op}} = \lambda_{\max}\left( \sum_{i=1}^n \mathbb{E}[X_i^2] \right)
-    $$
+$$
 
     Then, for all $t \geq 0$:
     
@@ -597,3 +597,4 @@ print(f"Theoretical W2 distance: {theoretical_w2.item():.4f}")
 ```
     
 These techniques heavily underscore the transition in modern learning theory from classical scalar bounds to rich, geometric, and matrix-valued analytical frameworks.
+

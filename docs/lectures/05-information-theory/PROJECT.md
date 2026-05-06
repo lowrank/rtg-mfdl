@@ -53,3 +53,4 @@ Kaggle: **Dogs vs. Cats** or **Fashion-MNIST**
 - For Dogs vs. Cats, resize images to $64 \times 64$ to speed up VAE training.
 - Use `torchvision` transformations for data augmentation.
 - Implement the "reparameterization trick" carefully to ensure gradients flow correctly through the sampler.
+

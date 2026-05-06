@@ -81,3 +81,4 @@ Your final report should include:
 2. **Efficiency**: A plot of Loss vs. Iterations.
 3. **Physics Consistency**: A plot showing the "Residual Field" — where in the domain the physics equations are most violated.
 4. **Generalization**: How well the model performs on time steps outside the training range (extrapolation).
+

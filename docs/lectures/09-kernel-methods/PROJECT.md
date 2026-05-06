@@ -75,3 +75,4 @@ In your report, address the following:
 
 - Use `sklearn.kernel_approximation` for optimized implementations, but try to write your own RFF sampler first to understand the math.
 - For Nyström, the landmark points can be chosen via K-means for better coverage of the data manifold.
+

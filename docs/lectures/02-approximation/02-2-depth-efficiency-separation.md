@@ -238,3 +238,4 @@ plt.legend(); plt.grid(True)
 
 ## 8. Conclusion
 Depth separation theorems prove that the architecture of a neural network is not just a detail—it is a fundamental constraint on its representational efficiency. By leveraging hierarchy and composition, deep networks can compute functions that are topologically impossible for shallow networks of the same size.
+

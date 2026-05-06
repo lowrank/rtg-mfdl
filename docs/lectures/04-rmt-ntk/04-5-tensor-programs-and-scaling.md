@@ -100,3 +100,4 @@ def test_feature_learning(width, param_type='mup'):
 print(f"NTK Feature Shift (n=10k): {test_feature_learning(10000, 'ntk'):.4f}")
 print(f"muP Feature Shift (n=10k): {test_feature_learning(10000, 'mup'):.4f}")
 ```
+

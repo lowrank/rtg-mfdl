@@ -154,3 +154,4 @@ def forward(self, x):
 
 ## 8. Conclusion
 KANs offer a mathematically elegant and highly interpretable alternative to MLPs. By leveraging the Kolmogorov-Arnold theorem and the power of splines, they allow for "surgical" precision and the direct discovery of physical laws from data.
+

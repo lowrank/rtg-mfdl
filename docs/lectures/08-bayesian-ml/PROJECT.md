@@ -74,3 +74,4 @@ Create a classification system that outputs a *set* of labels, guaranteed to con
 
 - **HMC**: Start with a small network. Sampling from a deep ResNet with HMC is extremely difficult.
 - **Conformal**: Ensure your calibration set is truly representative of your test set (exchangeability).
+

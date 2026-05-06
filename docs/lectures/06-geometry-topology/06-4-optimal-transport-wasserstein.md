@@ -260,3 +260,4 @@ As a tool, OT allows neural networks to "feel" the metric structure of their dat
 3. Peyré, G., & Cuturi, M. (2019). Computational Optimal Transport. Foundations and Trends in Machine Learning.
 4. Santambrogio, F. (2015). Optimal Transport for Applied Mathematicians. Birkhäuser.
 5. Arjovsky, M., et al. (2017). Wasserstein Generative Adversarial Networks. ICML.
+

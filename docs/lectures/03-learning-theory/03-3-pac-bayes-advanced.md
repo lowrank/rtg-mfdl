@@ -232,3 +232,4 @@ print(f"Flat Bound: {get_pac_bound(0.02, 0.1):.4f}")
 ```
 
 PAC-Bayes theory represents the definitive synthesis of information theory, Bayesian inference, and frequentist concentration, providing the most accurate language we have for the generalization of modern AI systems.
+

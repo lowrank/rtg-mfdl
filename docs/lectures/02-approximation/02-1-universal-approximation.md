@@ -412,3 +412,4 @@ plt.legend(); plt.grid(True); plt.show()
 
 ## 8. Conclusion
 The Universal Approximation Theorem guarantees the existence of a neural network solution for any continuous function. Through Cybenko's measure-theoretic proof and Leshno's algebraic derivation, we have established the ironclad foundations of neural expressivity. While width is theoretically sufficient, the transition to deep networks is motivated by efficiency—a topic explored in the next chapter.
+

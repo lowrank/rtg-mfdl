@@ -77,3 +77,4 @@ This course transitions from the geometry of high-dimensional spaces to the spec
 2.  **Architectural Design:** Use NTK and TP theory to initialize and scale stable, high-performance architectures.
 3.  **Compute Efficiency:** Calculate the optimal compute-parameters-data balance for any given budget.
 4.  **SOTA Research:** Transition directly into reading and contributing to the latest papers on LLM geometry and scaling.
+

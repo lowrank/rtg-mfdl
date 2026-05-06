@@ -369,3 +369,4 @@ This leads to models that are more parameter-efficient, generalize better to uns
 2. Weiler, M., & Cesa, G. (2019). General E(2)-Equivariant Steerable CNNs. NeurIPS.
 3. Thomas, N., et al. (2018). Tensor Field Networks: Rotation- and Translation-Equivariant Neural Networks for 3D Point Clouds.
 4. Serre, J. P. (1977). Linear Representations of Finite Groups. Springer-Verlag.
+

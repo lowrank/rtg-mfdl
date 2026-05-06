@@ -128,3 +128,4 @@ Apply the contraction lemma and the linear class complexity result.
 1. **Implicit Regularization in Transformers**: Can we find a complexity measure that explains why Transformers generalize despite having billions of parameters and being trained to zero loss?
 2. **Generalization of SAM**: Does Sharpness-Aware Minimization lead to a lower Rademacher complexity, or is its benefit purely explained by PAC-Bayes bounds?
 3. **Out-of-Distribution (OOD)**: Can SLT be extended to the setting where the test distribution is unknown but related to the training distribution via a "latent symmetry"?
+
