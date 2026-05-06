@@ -22,6 +22,7 @@ Implement a **Latent ODE** to handle irregularly sampled data, commonly found in
 3. **ODE Evolution**:
    - Define a Neural Network $f_\phi(z, t)$ as the vector field.
    - Use `torchdiffeq.odeint` to compute $z(t_i)$ for all observation times.
+
 4. **Decoder**: Map each $z(t_i)$ to the observation space (e.g., linear layer).
 5. **Loss Function**: $\mathcal{L} = \sum_i \| \hat{x}_i - x_i \|^2 + \text{KL}(q(z_0|x) \| p(z_0))$.
 

@@ -11,6 +11,7 @@ A graph is represented as $G = (V, E)$, where $V$ is a set of $n$ nodes and $E \
 Let $\mathbf{X} \in \mathbb{R}^{n \times d}$ be the matrix of node features and $\mathbf{A} \in \{0, 1\}^{n \times n}$ be the adjacency matrix. A permutation $\pi \in S_n$ acts on the graph by reordering the nodes. This is represented by a permutation matrix $\mathbf{P} \in \{0, 1\}^{n \times n}$.
 
 The transformed features and adjacency matrix are:
+
 - $\mathbf{X}' = \mathbf{P} \mathbf{X}$
 - $\mathbf{A}' = \mathbf{P} \mathbf{A} \mathbf{P}^T$
 
@@ -26,6 +27,7 @@ The fundamental question of GNN theory is: "Which graphs can a GNN distinguish?"
 ### 2.1 The 1-WL Algorithm (Color Refinement)
 
 The 1-WL test is a heuristic for graph isomorphism.
+
 1. Initialize color $c_i^{(0)} = 1$ for all nodes (or use node labels).
 2. At step $t$, refine colors:
 
@@ -34,6 +36,7 @@ c_i^{(t)} = \text{HASH}\left( c_i^{(t-1)}, \{ c_j^{(t-1)} : j \in \mathcal{N}(i)
 $$
 
    where $\{ \dots \}$ denotes the multiset of neighbor colors.
+
 3. Terminate when the partition of nodes into color classes stabilizes.
 
 If the sorted multiset of colors for graph $G_1$ differs from $G_2$, they are definitely non-isomorphic. If they are the same, they *might* be isomorphic.
@@ -55,10 +58,12 @@ Standard initialization is $c_v^{(0)} = \text{label}(v)$ and $h_v^{(0)} = \mathb
 
 **Inductive Step:**
 Assume the hypothesis holds for $t-1$. Suppose $c_u^{(t)} = c_v^{(t)}$. In the 1-WL algorithm, the hash function is injective. Thus, $c_u^{(t)} = c_v^{(t)}$ implies:
+
 1. $c_u^{(t-1)} = c_v^{(t-1)}$
 2. $\{ c_i^{(t-1)} : i \in \mathcal{N}(u) \} = \{ c_j^{(t-1)} : j \in \mathcal{N}(v) \}$
 
 By the inductive hypothesis:
+
 1. $h_u^{(t-1)} = h_v^{(t-1)}$
 2. The multiset of embeddings of neighbors must also be identical:
 
@@ -83,6 +88,7 @@ While MPNNs are *bounded* by 1-WL, can we reach that bound? **GIN** achieves thi
 ### 2.4 Higher-Order $k$-WL Hierarchy
 
 Since 1-WL fails on simple cases (like 3-regular graphs of different sizes), higher-order variants of the WL algorithm examine tuples of nodes:
+
 - **2-WL**: Operates on pairs of nodes $(i, j)$.
 - **k-WL**: Operates on $k$-tuples of nodes $(v_1, \dots, v_k)$.
 
@@ -95,10 +101,12 @@ Spectral GNNs define convolutions in the "frequency domain" of the graph.
 ### 3.1 The Graph Laplacian
 
 Let $\mathbf{D}$ be the degree matrix ($D_{ii} = \sum_j A_{ij}$).
+
 - **Combinatorial Laplacian:** $\mathbf{L} = \mathbf{D} - \mathbf{A}$
 - **Normalized Laplacian:** $\tilde{\mathbf{L}} = \mathbf{I} - \mathbf{D}^{-1/2} \mathbf{A} \mathbf{D}^{-1/2}$
 
 **Properties of $\tilde{\mathbf{L}}$:**
+
 1. It is symmetric and positive semi-definite.
 2. Its eigenvalues lie in $[0, 2]$.
 3. The smallest eigenvalue is 0, with the constant vector $\mathbf{D}^{1/2} \mathbf{1}$ as an eigenvector.
@@ -143,9 +151,11 @@ This allows computing $\mathbf{L}^k \mathbf{x}$ in $O(k|E|)$ time.
 
 ### Example 1: Failure of 1-WL on the Hexagon vs. Two Triangles
 Consider:
+
 1. $G_1$: A cycle of 6 nodes.
 2. $G_2$: Two disjoint cycles of 3 nodes.
 Both graphs are 2-regular. In 1-WL, every node initializes with the same color $1$. 
+
 - In $G_1$, each node has 2 neighbors of color 1.
 - In $G_2$, each node has 2 neighbors of color 1.
 Thus, at step 1, 1-WL assigns the same new color to all nodes in both graphs. The partition never refines further. 1-WL fails to distinguish them despite $G_2$ being disconnected and $G_1$ being connected.
@@ -163,12 +173,14 @@ $$
 
 Eigenvalues: $0, 1, 3$.
 Eigenvectors:
+
 - $\lambda=0: \mathbf{u}_0 = \frac{1}{\sqrt{3}}(1, 1, 1)^T$ (DC component)
 - $\lambda=1: \mathbf{u}_1 = \frac{1}{\sqrt{2}}(1, 0, -1)^T$
 - $\lambda=3: \mathbf{u}_2 = \frac{1}{\sqrt{6}}(1, -2, 1)^T$ (High frequency)
 
 ### Example 3: GCN as a First-Order Spectral Filter
 Hammond et al. (2011) showed $g_\theta(\mathbf{L}) \mathbf{x} \approx \theta_0 \mathbf{x} + \theta_1 \mathbf{L} \mathbf{x}$. Kipf & Welling (2017) simplified this further:
+
 1. Approximate $\lambda_{max} \approx 2$.
 2. Set $\theta = \theta_0 = -\theta_1$.
 3. Result: $\mathbf{y} = \theta (\mathbf{I} + \mathbf{D}^{-1/2} \mathbf{A} \mathbf{D}^{-1/2}) \mathbf{x}$.
@@ -254,6 +266,7 @@ Recent research has shown that while MPNNs are bounded by 1-WL, they often fall 
 - **MAX Aggregator**: Fails to distinguish multisets with the same unique elements (e.g., $\{1, 2\}$ and $\{1, 2, 2\}$).
 
 To surpass 1-WL, we must move beyond local message passing. Techniques include:
+
 1. **Subgraph GNNs**: Aggregating over subgraphs of each node.
 2. **Graph Rewiring**: Adding virtual edges (e.g., via heat kernels or diffusion).
 3. **Positional Encodings**: Adding Laplacian eigenvectors as features to break node symmetries.
@@ -261,6 +274,7 @@ To surpass 1-WL, we must move beyond local message passing. Techniques include:
 ## 7. Summary
 
 Graph Neural Networks combine structural topology with node features through a process that can be understood both as **message passing** (spatial) and **filtering** (spectral).
+
 1. **Spatial View**: GNNs refine node embeddings by aggregating neighbor information, a process limited by the 1-WL isomorphism test.
 2. **Spectral View**: GNNs apply localized polynomial filters to the graph signal, approximating the Graph Fourier Transform without explicit eigendecomposition.
 3. **Universal Design**: To achieve maximum expressivity, one must use injective aggregators (GIN) or higher-order structural motifs ($k$-WL).

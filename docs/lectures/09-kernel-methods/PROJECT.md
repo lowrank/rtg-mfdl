@@ -30,6 +30,7 @@ The goal of this project is to implement and benchmark large-scale kernel approx
 1. Implement an RBF feature extractor:
    - Sample $\omega \sim \mathcal{N}(0, 2\gamma I)$.
    - $\phi(x) = \sqrt{\frac{2}{m}} \cos(\omega^\top x + b)$.
+
 2. Train a **Linear SGD Classifier** on the features $\phi(x)$ for $m \in \{100, 500, 1000, 5000\}$.
 3. Benchmark the training time and accuracy on the *full* dataset.
 

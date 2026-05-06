@@ -16,6 +16,7 @@ To reason about MCMC on continuous state spaces (like $\mathbb{R}^D$), we must u
 
 For any state $x \in \mathcal{X}$ and any measurable set $A \in \mathcal{B}$, $K(x, A)$ is the probability that the next state $X_{t+1}$ lies in $A$, given that $X_t = x$. 
 A kernel must satisfy two conditions:
+
 1. For every $x \in \mathcal{X}$, the mapping $A \mapsto K(x, A)$ is a probability measure on $(\mathcal{X}, \mathcal{B})$.
 2. For every $A \in \mathcal{B}$, the mapping $x \mapsto K(x, A)$ is a measurable function.
 
@@ -100,6 +101,7 @@ The Metropolis-Hastings (MH) algorithm (Metropolis et al., 1953; Hastings, 1970)
 ### 3.1 The Algorithmic Loop
 
 Given target $\pi(x)$ and proposal $q(x' \mid x)$:
+
 1. **Propose:** Sample $x^* \sim q(x^* \mid x_t)$.
 2. **Calculate Ratio:** 
 
@@ -145,6 +147,7 @@ $\frac{dp}{dt} = -\frac{\partial H}{\partial w} = \nabla \log \pi(w)$
 ### 4.2 Numerical Integration: The Leapfrog Integrator
 
 We cannot solve the ODEs exactly, so we discretize them using the Leapfrog integrator. For step size $\epsilon$:
+
 1. $p_{t+\epsilon/2} = p_t + \frac{\epsilon}{2} \nabla \log \pi(w_t)$
 2. $w_{t+\epsilon} = w_t + \epsilon M^{-1} p_{t+\epsilon/2}$
 3. $p_{t+\epsilon} = p_{t+\epsilon/2} + \frac{\epsilon}{2} \nabla \log \pi(w_{t+\epsilon})$
@@ -188,6 +191,7 @@ The expressions are identical. Thus Gibbs satisfies detailed balance. $\blacksqu
 **Problem:** $U(w) = \frac{1}{2} w^2$. Perform one leapfrog step with $\epsilon=0.1$ starting at $(w, p) = (1, 0)$.
 
 **Solution:**
+
 1. $p_{1/2} = 0 + \frac{0.1}{2} (-w) = -0.05 \cdot 1 = -0.05$.
 2. $w_{1} = 1 + 0.1 \cdot (-0.05) = 1 - 0.005 = 0.995$.
 3. $p_{1} = -0.05 + \frac{0.1}{2} (-0.995) = -0.05 - 0.04975 = -0.09975$.

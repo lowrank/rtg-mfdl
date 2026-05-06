@@ -136,6 +136,7 @@ p(\omega) = \mathcal{N}\left(0, \frac{1}{\sigma^2} I_d\right)
 $$
 
 To construct RFF for the Gaussian kernel:
+
 1. Draw $\omega_1, \dots, \omega_D \sim \mathcal{N}(0, \frac{1}{\sigma^2} I_d)$.
 2. For any $x$, compute $\cos(\omega_i^T x)$ and $\sin(\omega_i^T x)$.
 

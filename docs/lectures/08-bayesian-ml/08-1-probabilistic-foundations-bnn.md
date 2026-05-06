@@ -43,6 +43,7 @@ The proof proceeds by deriving the product rule and the sum rule directly from t
 *Part 1: The Product Rule*
 
 Consider the plausibility of the conjunction $A \land B$ given $X$, denoted $(A, B \mid X)$. We seek a function $F$ that relates this joint plausibility to the conditional plausibilities. By consistency, the plausibility of $A \land B$ can only depend on:
+
 1. The plausibility of $A$ given $X$, $(A \mid X)$.
 2. The plausibility of $B$ given $A$ and $X$, $(B \mid A, X)$.
 
@@ -210,6 +211,7 @@ P(\mathbf{w} \mid \mathcal{D}) = \frac{P(\mathcal{D} \mid \mathbf{w}) P(\mathbf{
 $$
 
 Here:
+
 - $P(\mathbf{w})$ is the **prior**: Our beliefs about the weights before seeing data. Often chosen to be an isotropic Gaussian $P(\mathbf{w}) = \mathcal{N}(\mathbf{0}, \alpha^{-1} \mathbf{I})$.
 - $P(\mathcal{D} \mid \mathbf{w})$ is the **likelihood**: The probability of the data given the weights.
 - $P(\mathbf{w} \mid \mathcal{D})$ is the **posterior**: Our updated belief about the weights.
@@ -345,6 +347,7 @@ $$
 The integral in the denominator cannot be evaluated analytically. The product of a Gaussian and a sequence of sigmoids is not a recognized distribution family. 
 
 To proceed, we must use approximate inference techniques. The two dominant paradigms are:
+
 1. **Markov Chain Monte Carlo (MCMC):** Draw samples asymptotically from the exact posterior (explored in lecture 08-2).
 2. **Variational Inference (VI):** Propose a parameterized family of tractable distributions $q(\mathbf{w} \mid \phi)$ and optimize $\phi$ to minimize the Kullback-Leibler (KL) divergence to the true posterior (explored in lecture 08-4).
 

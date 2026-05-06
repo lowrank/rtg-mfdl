@@ -5,6 +5,7 @@ One of the most remarkable properties of large language models is In-Context Lea
 ## 1. The ICL-as-GD Hypothesis
 
 The "In-Context Learning as Gradient Descent" hypothesis posits that the forward pass of a Transformer on a prompt containing $k$ examples $\{(x_i, y_i)\}_{i=1}^k$ and a query $x_{query}$ is mathematically equivalent to:
+
 1.  Initializating a model $f(x; \theta_0)$.
 2.  Performing one or more steps of Gradient Descent on the prompt examples to obtain $\theta_{ICL}$.
 3.  Predicting $y_{query} = f(x_{query}; \theta_{ICL})$.

@@ -153,11 +153,13 @@ This ensures the weight decay affects all parameters equally, rather than being 
     
 Lion is a modern optimizer discovered via symbolic program search. It is simpler and often more memory-efficient than Adam.
 **The Algorithm (Lion)**:
+
 1. $c_t = \text{sign}(\beta_1 m_{t-1} + (1 - \beta_1) g_t)$
 2. $w_t = w_t - \eta_t (c_t + \lambda w_{t-1})$
 3. $m_t = \beta_2 m_{t-1} + (1 - \beta_2) g_t$
     
 **Key Differences**:
+
 - **Sign Update**: Lion only uses the direction (sign) of the momentum, not the magnitude. This is a form of $L_\infty$ normalization.
 - **Momentum update**: The momentum $m_t$ used for the update (step 1) is different from the one stored for the next iteration (step 3).
 - **Efficiency**: Lion only stores $m_t$, whereas Adam stores both $m_t$ and $v_t$.

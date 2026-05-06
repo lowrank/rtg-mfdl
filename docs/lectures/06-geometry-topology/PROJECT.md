@@ -8,6 +8,7 @@ Apply Geometric Deep Learning and Topological Data Analysis to solve complex str
 - **Option A (Geometry)**: **QM9** or **Kaggle: Molecular Property Prediction**.
   - [QM9 Link](https://paperswithcode.com/dataset/qm9)
   - [Kaggle Link](https://www.kaggle.com/c/champs-scalar-coupling)
+
 - **Option B (Topology)**: **ModelNet10** (Point clouds of 3D objects).
   - [ModelNet Link](https://modelnet.cs.princeton.edu/)
 

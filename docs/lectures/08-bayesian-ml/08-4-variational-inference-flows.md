@@ -188,6 +188,7 @@ $$
 ### 5.2 Desiderata for Flows in VI
 
 To use flows in the ELBO objective, we need:
+
 1. **Efficient Inversion:** (Optional for VI, but necessary for generative modeling).
 2. **Efficient Jacobian Determinant:** Computing the determinant of a $D \times D$ matrix is $O(D^3)$, which is impossible for neural networks. We need architectures where the Jacobian is triangular (so the determinant is the product of the diagonal).
 

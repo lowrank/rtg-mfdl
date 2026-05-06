@@ -37,6 +37,7 @@ In 1993, Andrew Barron proved that for functions with "simple" Fourier transform
     $$
 
 **Rigorous Proof of Theorem 2.2.1:**
+
 1. **Fourier Representation:** Express $f(x)$ using the inverse Fourier transform. By shifting $f$ such that $f(0)=0$:
 
 $$
@@ -78,6 +79,7 @@ $$
     $$
 
 **Proof Insight:**
+
 1. High frequencies (large $k$) have very small eigenvalues $\lambda_k$.
 2. The exponential term $e^{-\eta \lambda_k t}$ stays close to 1 for high frequencies.
 3. Consequently, the network fits the low-frequency components of the data almost immediately, while high-frequency noise is ignored or learned extremely slowly. This acts as an "implicit regularization." $\blacksquare$

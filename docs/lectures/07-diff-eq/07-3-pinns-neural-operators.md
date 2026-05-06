@@ -167,6 +167,7 @@ Because this is formulated as a continuous integral evaluated globally via Fouri
 ### 5.1 Example: 1D Burgers' Equation PINN Loss
 Equation: $\frac{\partial u}{\partial t} + u \frac{\partial u}{\partial x} - \nu \frac{\partial^2 u}{\partial x^2} = 0$.
 Given a point $(x, t)$ and network $u_\theta(x, t)$.
+
 1. We compute $u_t = \frac{\partial u_\theta}{\partial t}$ and $u_x = \frac{\partial u_\theta}{\partial x}$, $u_{xx} = \frac{\partial^2 u_\theta}{\partial x^2}$ using auto-diff.
 2. The PDE residual is $f = u_t + u_\theta u_x - \nu u_{xx}$.
 3. Loss is $L = \frac{1}{N} \sum f_i^2 + \lambda \sum (u_\theta(x_{ic}, 0) - u_{true})^2$.

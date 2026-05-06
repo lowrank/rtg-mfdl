@@ -11,6 +11,7 @@ Before defining an RKHS, we must review the concept of a Hilbert space.
 A **Hilbert Space** $\mathcal{H}$ is a real or complex inner product space that is also a complete metric space with respect to the distance function induced by the inner product. 
 
 Let's break this down:
+
 1. **Vector Space**: A space where addition and scalar multiplication are defined.
 2. **Inner Product**: A function $\langle \cdot, \cdot \rangle_\mathcal{H} : \mathcal{H} \times \mathcal{H} \to \mathbb{R}$ that is symmetric, linear in its first argument, and positive definite.
 3. **Norm**: The inner product induces a norm $\|f\|_\mathcal{H} = \sqrt{\langle f, f \rangle_\mathcal{H}}$.
@@ -77,6 +78,7 @@ The Cauchy-Schwarz inequality holds in any inner product space, and it has profo
     $$
 
 **Proof:**
+
 1. Let $f, g \in \mathcal{H}$. If $g = 0$, both sides are 0, and the inequality holds trivially.
 2. Assume $g \neq 0$. For any scalar $\lambda \in \mathbb{R}$, consider the squared norm of $f - \lambda g$:
 
@@ -159,6 +161,7 @@ $$
 Because it evaluates directly to linear combinations of the functions $f$ and $g$ evaluated at specific points, the inner product does not depend on the specific choice of coefficients $\alpha, \beta$ but only on the functions themselves. Thus, it is well-defined.
 
 **Step 3: Proving it is a valid inner product.**
+
 - **Symmetry**: $k(x_i, y_j) = k(y_j, x_i) \implies \langle f, g \rangle_{\mathcal{H}_0} = \langle g, f \rangle_{\mathcal{H}_0}$.
 - **Linearity**: Follows directly from the sum definition.
 - **Positive Semi-Definiteness**: $\langle f, f \rangle_{\mathcal{H}_0} = \sum_{i,j} \alpha_i \alpha_j k(x_i, x_j) \geq 0$ because $k$ is PSD.

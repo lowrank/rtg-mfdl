@@ -231,6 +231,7 @@ Consider $f(z, t, \theta) = \theta z$, with $z(0) = z_0 = 1$ and target time $t_
 3. **Adjoint Method:**
    Terminal condition: $a(1) = \frac{\partial L}{\partial z(1)} = z(1) = e^\theta$.
    Adjoint ODE: $\frac{da}{dt} = -a(t) \theta \implies a(t) = a(1) e^{-\theta(t-1)} = e^\theta e^{-\theta(t-1)} = e^{\theta(2-t)}$.
+
 4. **Parameter Gradient Integration:**
    
    $$

@@ -29,6 +29,7 @@ To compare shallow and deep networks, we need a rigorous metric for "complexity.
     A neural network with a single hidden layer of $m$ ReLU neurons computes a CPW function with at most $m+1$ linear segments.
 
 **Rigorous Proof:**
+
 1. A single neuron $\sigma(wx + b)$ has a single "kink" at $x = -b/w$. To the left of this point, the function is constant (0); to the right, it is a line ($wx+b$).
 2. A shallow network is a linear combination of $m$ such functions: $N(x) = \sum_{j=1}^m v_j \sigma(w_j x + b_j) + c$.
 3. The points of non-differentiability of $N(x)$ are restricted to the set of $m$ kink points.
@@ -46,6 +47,7 @@ The fundamental operation of a deep network is function composition: $f(g(x))$.
     If $f$ and $g$ are CPW functions with $S_f$ and $S_g$ segments respectively, then the composition $h = f \circ g$ has at most $S_f \cdot S_g$ segments.
 
 **Rigorous Proof:**
+
 1. Let the segments of $g$ be $J_1, \dots, J_{S_g}$. On each $J_k$, $g(x)$ is linear.
 2. The image $g(J_k)$ is an interval in the domain of $f$.
 3. As $x$ traverses $J_k$, $g(x)$ can sweep across all $S_f$ segments of $f$.
@@ -94,6 +96,7 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
     $f_L(x)$ has exactly $2^L$ linear segments.
 
 **Rigorous Proof by Induction:**
+
 - **Base Case ($L=1$):** $f_1 = g$ has 2 segments.
 - **Inductive Step:** Assume $f_{L-1}$ has $2^{L-1}$ segments, each mapping a sub-interval $[a, b]$ bijectively to $[0, 1]$.
 - Applying $g$ to the output of $f_{L-1}$ splits each of these $2^{L-1}$ intervals into 2 new segments (one where $g$ goes up, one where $g$ goes down).
@@ -111,6 +114,7 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
     $$
 
 **Rigorous Proof Sketch:**
+
 1. $f_L$ has $2^L$ "teeth."
 2. $S(x)$ has at most $2^{L-2}+1$ segments.
 3. On most intervals where $f_L$ oscillates, $S(x)$ is purely linear and cannot track the oscillation.

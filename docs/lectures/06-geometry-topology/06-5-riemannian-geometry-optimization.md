@@ -121,6 +121,7 @@ Summing over $T$ iterations and telescoping the $d^2$ terms yields the $O(1/T)$ 
 ### 5.1 The Stiefel Manifold $St(n, p)$
 
 The space of $n \times p$ matrices with orthonormal columns: $X^T X = I_p$.
+
 - **Tangent Space:** $T_X St = \{ \Delta : \Delta^T X + X^T \Delta = 0 \}$.
 - **Projection:** $\text{Proj}_X(Z) = Z - X \text{sym}(X^T Z)$, where $\text{sym}(A) = \frac{1}{2}(A + A^T)$.
 - **Applications:** Orthogonal RNNs, PCA.
@@ -128,6 +129,7 @@ The space of $n \times p$ matrices with orthonormal columns: $X^T X = I_p$.
 ### 5.2 The SPD Manifold $\mathcal{P}_n$
 
 The space of $n \times n$ symmetric positive-definite matrices.
+
 - **Metric:** The Affine-Invariant metric $g_X(U, V) = \text{Tr}(X^{-1} U X^{-1} V)$.
 - **Geodesic:** $X(t) = X^{1/2} \exp(t X^{-1/2} V X^{-1/2}) X^{1/2}$.
 - **Applications:** Covariance tracking, Diffusion Tensor Imaging (DTI).
@@ -137,6 +139,7 @@ The space of $n \times n$ symmetric positive-definite matrices.
 ### Example 1: Christoffel Symbols of the 2-Sphere
 Using spherical coordinates $(\theta, \phi)$, the metric is $G = \begin{pmatrix} 1 & 0 \\ 0 & \sin^2 \theta \end{pmatrix}$.
 The non-zero Christoffel symbols are:
+
 - $\Gamma_{\phi \phi}^\theta = -\sin \theta \cos \theta$
 - $\Gamma_{\theta \phi}^\phi = \Gamma_{\phi \theta}^\phi = \cot \theta$
 This shows that moving along a line of constant latitude ($\phi$) requires a "centripetal force" (acceleration in $\theta$) to stay on the manifold.
@@ -216,6 +219,7 @@ def hyperbolic_exp_map(x, v):
 ## 8. Summary and Future Directions
 
 Riemannian geometry transforms constrained optimization into unconstrained optimization on a curved space.
+
 1. **Metrics** define the local geometry.
 2. **Retractions** provide efficient update steps.
 3. **Curvature** affects the convergence rate and the existence of local minima.

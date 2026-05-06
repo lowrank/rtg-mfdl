@@ -120,6 +120,7 @@ where $K_{ij} = \exp(-C_{ij}/\epsilon)$ is the Gibbs kernel and $a, b$ are scali
 ### 4.2 The Sinkhorn Scaling Algorithm
 
 The marginal constraints $\pi \mathbf{1} = \mu$ and $\pi^T \mathbf{1} = \nu$ lead to the iterations:
+
 1.  $a \leftarrow \mu / (K b)$
 2.  $b \leftarrow \nu / (K^T a)$
 This converges linearly to the optimal vectors $a, b$. In practice, this is highly parallelizable on GPUs.
@@ -151,6 +152,7 @@ If the covariances commute, this simplifies to $\|m_1 - m_2\|^2 + \|\Sigma_1^{1/
 Let $\mu = [0.5, 0.5]$, $\nu = [0.1, 0.9]$, $C = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$, $\epsilon = 1$.
 Then $K = \begin{pmatrix} 1 & e^{-1} \\ e^{-1} & 1 \end{pmatrix} \approx \begin{pmatrix} 1 & 0.37 \\ 0.37 & 1 \end{pmatrix}$.
 Iterate $a, b$:
+
 - Start $b = [1, 1]$.
 - $a = \mu / (Kb) = [0.5/1.37, 0.5/1.37] \approx [0.36, 0.36]$.
 - $b = \nu / (K^T a) = [0.1/(0.36*1.37), 0.9/(0.36*1.37)]$.
@@ -246,6 +248,7 @@ def wgan_gp_loss(discriminator, real_data, fake_data, lambda_gp=10.0):
 ## 8. Summary and Conclusion
 
 Optimal Transport bridges the gap between probability theory and geometry.
+
 1. **Monge-Kantorovich** defines the ground problem of mass movement.
 2. **Brenier's Theorem** reveals that optimal transport maps are gradients of convex functions, linking OT to potential theory.
 3. **Sinkhorn's Algorithm** makes OT computationally feasible for high-dimensional data.

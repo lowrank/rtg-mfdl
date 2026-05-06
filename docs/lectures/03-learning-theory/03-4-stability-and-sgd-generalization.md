@@ -55,6 +55,7 @@ $$
 
 By $\beta$-uniform stability, the term inside the summation is $\le \beta$ for every $i$. The expectation is thus bounded by $\beta$.
 To prove the high-probability bound, we utilize McDiarmid's Inequality. Define the function $\Phi(S) = R(A(S)) - \hat{R}(A(S))$. We must bound the change in $\Phi(S)$ when one sample $z_j$ is replaced by $z_j'$.
+
 - The true risk $R(A(S))$ changes by at most $\beta$ (by stability).
 - The empirical risk $\hat{R}(A(S))$ contains $n$ terms. $n-1$ terms change by at most $\beta/n$ (by stability), and one term (the $j$-th) changes by at most $M/n$.
 - Total change: $\beta + \frac{n-1}{n}\beta + \frac{M}{n} \approx 2\beta + M/n$.
@@ -84,6 +85,7 @@ A mapping $G: \mathbb{R}^d \to \mathbb{R}^d$ is non-expansive if $\|G(w) - G(w')
 **Rigorous Proof:**
 Consider two datasets $S$ and $S'$ differing at index $i$. Let $w_t$ and $w_t'$ be the SGD iterates on $S$ and $S'$. Define the expected distance $\Delta_t = \mathbb{E}\|w_t - w_t'\|$.
 At each step, SGD selects a random index $j \in \{1, \dots, n\}$.
+
 - **With probability $1-1/n$**, $j \neq i$. Both models use the same gradient. By non-expansiveness, $\|w_{t+1} - w_{t+1}'\| \le \|w_t - w_t'\|$.
 - **With probability $1/n$**, $j = i$. The models use different gradients. By Lipschitzness and triangle inequality:
   $\|w_{t+1} - w_{t+1}'\| \le \|w_t - w_t'\| + \alpha_t \|\nabla \ell(w_t, z_i) - \nabla \ell(w_t', z_i')\| \le \|w_t - w_t'\| + 2 \alpha_t L$.

@@ -168,6 +168,7 @@ where $\phi \in \mathbb{R}$ is an arbitrary scalar shift.
    - If $w^T x + \theta > 0$, the argument $\to \infty$, so $h_\lambda(x) \to 1$.
    - If $w^T x + \theta < 0$, the argument $\to -\infty$, so $h_\lambda(x) \to 0$.
    - If $w^T x + \theta = 0$, the argument remains $\phi$, so $h_\lambda(x) \to \sigma(\phi)$.
+
 4. Let $H^+ = \{x \in \mathbb{R}^n : w^T x + \theta > 0\}$ (the open half-space), and let $\Pi = \{x \in \mathbb{R}^n : w^T x + \theta = 0\}$ (the hyperplane boundary). 
 5. Because $\sigma$ is bounded, the functions $h_\lambda(x)$ are uniformly bounded by some constant $M$. Since $\mu$ is a finite measure, the constant function $M$ is integrable. By the Lebesgue Dominated Convergence Theorem, we can pass the limit inside the integral:
 
@@ -295,6 +296,7 @@ $PL(x) = 0 + 0.5(x - 0) + (1.5 - 0.5)\sigma(x - 0.5)$
 $PL(x) = 0.5x + \sigma(x - 0.5)$
 
 **Verification:**
+
 - $x=0: PL(0) = 0.5(0) + 0 = 0 = 0^2$.
 - $x=0.5: PL(0.5) = 0.5(0.5) + 0 = 0.25 = 0.5^2$.
 - $x=1: PL(1) = 0.5(1) + 0.5 = 1 = 1^2$.

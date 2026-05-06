@@ -419,6 +419,7 @@ The aspect ratio is $c = N / M = 40,000 / 10,000 = 4.0$.
 According to the BBP phase transition theorem, the critical threshold is $\theta_c = \sqrt{c} = \sqrt{4.0} = 2.0$.
     
 *Step 2: Evaluate scenarios.*
+
 - If the signal strength is $\theta = 1.5$ (which is less than 2.0), the signal is completely buried inside the Marchenko-Pastur bulk. PCA will completely fail to identify the structural feature $v$; the top principal component will just be random noise.
 - If the signal strength is $\theta = 3.0$ (which is greater than 2.0), the largest eigenvalue will detach from the bulk. 
 Let us calculate its exact position:

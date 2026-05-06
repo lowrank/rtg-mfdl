@@ -176,6 +176,7 @@ $$
 $$
 
 Subject to:
+
 1. $0 \leq \lambda_i \leq C$ for all $i$
 2. $\sum_{i=1}^n \lambda_i y_i = 0$
 

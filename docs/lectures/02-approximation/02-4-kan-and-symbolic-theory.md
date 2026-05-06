@@ -88,6 +88,7 @@ $$
 KANs are uniquely suited for **Symbolic Regression**.
 
 **Algorithm 5.1 (Symbolic Discovery):**
+
 1. **Train:** Fit the KAN using splines.
 2. **Visualize:** Plot the learned edge functions $\phi(x)$.
 3. **Hypothesize:** Compare $\phi(x)$ to a library $\{\sin, \exp, \ln, x^2, \dots\}$.

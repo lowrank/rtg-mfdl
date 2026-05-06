@@ -22,6 +22,7 @@ Before a network can generalize, it must have the capacity to interpolate (memor
     A neural network with $W$ parameters can memorize $N$ arbitrary data points if $W \ge N$.
 
 **Rigorous Proof for 2-Layer ReLU Networks:**
+
 1. Consider $N$ points $\{x_i\}$ and labels $\{y_i\}$.
 2. A 2-layer network computes $f(x) = \sum_{j=1}^m a_j \sigma(w_j^T x + b_j)$.
 3. This is a system of $N$ equations with $m(d+2)$ unknowns.
@@ -42,6 +43,7 @@ Deep networks are notoriously overparameterized. The **Lottery Ticket Hypothesis
     For any sufficiently overparameterized network $N$, there exists a sparse sub-network $n \subset N$ that approximates any target function $f$ as well as $N$ can, without any weight training (only by pruning).
 
 **Proof Insight:**
+
 1. If we have $10^9$ random weights, the probability that some subset of them, when combined, approximates the optimal weights for a smaller network is very high.
 2. Pruning acts as a "search" over the space of random sub-architectures. $\blacksquare$
 

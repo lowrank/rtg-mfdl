@@ -40,6 +40,7 @@ where $\cos \phi = x \cdot z / (\|x\| \|z\|)$.
 2.  **Parameterization**: Use **NTK Parameterization**:
     - Initialize $W^{(1)} \sim \mathcal{N}(0, 1)$, $b^{(1)} = 0$, $W^{(2)} \sim \mathcal{N}(0, 1)$.
     - Forward pass: $h = \sigma(\frac{1}{\sqrt{d}} W^{(1)} x)$, $y = \frac{1}{\sqrt{m}} W^{(2)} h$.
+
 3.  **Experiments**: Train models with widths $m \in \{16, 64, 256, 1024, 4096\}$.
 4.  **Kernel Tracking**: At each epoch, compute the empirical NTK:
 

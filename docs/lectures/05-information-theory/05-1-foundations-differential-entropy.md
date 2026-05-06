@@ -83,6 +83,7 @@ $$
 By the definition of the joint density of i.i.d. variables:
 
 $$
+
 - \frac{1}{n} \log p(X_1, \dots, X_n) = - \frac{1}{n} \log \prod_{i=1}^n p(X_i) = - \frac{1}{n} \sum_{i=1}^n \log p(X_i)
 $$
 
@@ -210,12 +211,14 @@ This completes the proof. $\blacksquare$
 Using the relative entropy (Kullback-Leibler divergence) $D(p || \phi_K) \ge 0$:
     
 $$
+
 - \int p(x) \log \phi_K(x) dx \ge - \int p(x) \log p(x) dx = h(X)
 $$
 
 Evaluate the left side:
     
 $$
+
 - \int p(x) \log \phi_K(x) dx = - \int p(x) \left[ -\frac{1}{2} \log((2\pi)^d |K|) - \frac{1}{2} x^T K^{-1} x \right] dx
 $$
 

@@ -17,6 +17,7 @@ At the absolute heart of every PAC-Bayes result lies a single, profound inequali
 ### 2.1 Definitions and Geometric Intuition
 
 Let $\mathcal{H}$ be a measurable space of hypotheses.
+
 - **Prior $P$:** A probability distribution over $\mathcal{H}$ that must be chosen *independently* of the training data $S$. It represents our initial belief or inductive bias.
 - **Posterior $Q$:** A probability distribution over $\mathcal{H}$ that is typically chosen *after* observing the training data $S$. In practice, $Q$ is usually a distribution concentrated around hypotheses that minimize the empirical risk.
 - **KL Divergence:** $D_{KL}(Q || P) = \int_{\mathcal{H}} \log\left(\frac{dQ}{dP}(h)\right) dQ(h)$ measures the "information cost" of moving from the prior to the posterior.
@@ -174,6 +175,7 @@ The McAllester bound scales as $O(1/\sqrt{n})$, which is the standard "slow rate
 Modern deep learning research has observed that networks located in "flat" regions of the loss landscape generalize significantly better than those in "sharp" regions. PAC-Bayes provides the primary theoretical justification for this phenomenon.
 
 Consider $Q = \mathcal{N}(w, \sigma^2 I)$, a Gaussian centered at learned weights $w$.
+
 1.  **Complexity:** $D_{KL}(Q || P)$ scales as $\log(1/\sigma^2)$. A large $\sigma^2$ (flatness) minimizes the complexity term.
 2.  **Performance:** $\hat{R}(Q) = \mathbb{E}_{\epsilon \sim \mathcal{N}(0, \sigma^2 I)} [\hat{R}(w + \epsilon)]$. If the minimum is flat, we can pick a large $\sigma^2$ without increasing the empirical risk.
 

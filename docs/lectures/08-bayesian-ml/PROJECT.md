@@ -21,6 +21,7 @@ Build a robust regression model with rigorous uncertainty bounds using **Hamilto
 2. **Hamiltonian Monte Carlo**:
    - Use `Pyro` or `Hamiltorch` (PyTorch) to implement the HMC sampler.
    - Run the chain for at least 1000 samples after burn-in.
+
 3. **Diagnostics**: Plot the trace of the weights and check the R-hat ($\hat{R}$) statistic to ensure convergence.
 4. **Prediction**:
    - For a test input $x^*$, compute the predictive distribution $p(y^*|x^*, D) \approx \frac{1}{M} \sum_m p(y^*|x^*, w^{(m)})$.
@@ -49,6 +50,7 @@ Create a classification system that outputs a *set* of labels, guaranteed to con
 2. **Data Splitting**: Split the training data into a training set ($80\%$) and a calibration set ($20\%$).
 3. **Non-conformity Scores**:
    - For the calibration set, compute $S_i = 1 - \hat{f}(x_i)_{y_i}$, where $\hat{f}(x_i)_{y_i}$ is the predicted probability of the *true* class.
+
 4. **Threshold Calculation**: Calculate $\hat{q}$, the $(1-\alpha)$ quantile of $S_i$ (e.g., $\alpha=0.01$ for $99\%$ coverage).
 5. **Set Generation**: For a new $x$, include all classes $y$ such that $1 - \hat{f}(x)_y \le \hat{q}$.
 
@@ -68,6 +70,7 @@ Create a classification system that outputs a *set* of labels, guaranteed to con
 3. **Comparison**: Contrast Option A (Bayesian) and Option B (Conformal). 
    - Which one is more computationally expensive? 
    - Which one makes more assumptions about the data?
+
 4. **Kaggle Link**: [Uncertainty Estimation Datasets](https://www.kaggle.com/search?q=uncertainty).
 
 ### Tips

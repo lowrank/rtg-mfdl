@@ -25,6 +25,7 @@ A probabilistic model provides a distribution $\hat{P}$ for a target $Y$ given i
 
 In practice, we cannot measure calibration at every point $p$. We use binning. Divide $[0, 1]$ into $M$ bins $B_1, \dots, B_M$.
 For each bin $B_m$:
+
 - **Accuracy:** $\text{acc}(B_m) = \frac{1}{|B_m|} \sum_{i \in B_m} \mathbf{1}(y_i = \hat{y}_i)$
 - **Confidence:** $\text{conf}(B_m) = \frac{1}{|B_m|} \sum_{i \in B_m} \hat{p}_i$
 
@@ -83,6 +84,7 @@ CP requires that the data sequence $(X_1, Y_1), \dots, (X_n, Y_n), (X_{n+1}, Y_{
 3. **Score:** Define a non-conformity score $s(x, y)$. 
    - For regression: $s(x, y) = |y - \hat{f}(x)|$.
    - For classification: $s(x, y) = 1 - \hat{P}(y \mid x)$.
+
 4. **Quantile:** Compute $E_i = s(x_i, y_i)$ for all $i \in \mathcal{D}_{\text{cal}}$. Find the quantile $\hat{q}$:
 
 $$

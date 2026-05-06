@@ -78,6 +78,7 @@ This head attends to token $j$ if the first two dimensions of token $i$ match th
 
 In a sequence `The cat sat on the mat. The cat...`, an induction head at the second `cat` should attend to `sat`.
 Why?
+
 1.  First layer moves `cat` to the position of `sat`.
 2.  Second layer at second `cat` looks for the first layer's `cat`.
 3.  Matches with the `cat` stored at the `sat` position.

@@ -48,6 +48,7 @@ Every $(k-2)$-face $[v_0, \dots, \hat{v}_j, \dots, \hat{v}_i, \dots, v_k]$ appea
 ### 1.3 Homology Groups
 
 The fact that $\partial_{k-1} \partial_k = 0$ implies that the image of $\partial_{k+1}$ is a subspace of the kernel of $\partial_k$.
+
 - **$k$-Cycles:** $Z_k = \ker \partial_k$ (chains with no boundary).
 - **$k$-Boundaries:** $B_k = \text{im} \partial_{k+1}$ (chains that are the boundary of a $(k+1)$-chain).
 
@@ -74,6 +75,7 @@ $$
 As we move through the sequence, new simplices are added. We track when homology classes (holes) are created ("born") and when they become boundaries of higher-dimensional simplices ("die").
 
 Common filtrations:
+
 - **Vietoris-Rips Complex $VR(r)$**: Includes a $k$-simplex if all its vertices are within distance $r$ of each other.
 - **Čech Complex $C(r)$**: Includes a $k$-simplex if the $k+1$ balls of radius $r/2$ centered at the vertices have a non-empty common intersection.
 
@@ -105,6 +107,7 @@ where $\gamma$ is a bijection that can match points in $D_i$ to the diagonal $\D
 
 **Rigorous Proof:**
 The proof involves **Interleaving Distance**.
+
 1. Let $F_t = f^{-1}((-\infty, t])$ and $G_t = g^{-1}((-\infty, t])$ be the sublevel sets.
 2. If $\|f - g\|_\infty \leq \epsilon$, then for any $x \in F_t$, $f(x) \leq t$. Since $|f(x) - g(x)| \leq \epsilon$, we have $g(x) \leq f(x) + \epsilon \leq t + \epsilon$.
 3. Thus, $F_t \subseteq G_{t+\epsilon}$ and similarly $G_t \subseteq F_{t+\epsilon}$.
@@ -136,6 +139,7 @@ This encourages the model to have "prominent" topological features or to suppres
 
 ### Example 1: Homology of the Torus $T^2$
 A torus can be constructed by gluing the opposite edges of a square.
+
 - **$\beta_0$**: 1 (one connected component).
 - **$\beta_1$**: 2 (one loop around the "tube," one loop around the "donut hole").
 - **$\beta_2$**: 1 (the enclosed 2D volume).
@@ -143,6 +147,7 @@ A torus can be constructed by gluing the opposite edges of a square.
 ### Example 2: Computing Bottleneck Distance
 Diagram $A = \{(1, 2), (5, 8)\}$, Diagram $B = \{(1.2, 1.9), (5, 9)\}$.
 Possible matches:
+
 1. $(1, 2) \leftrightarrow (1.2, 1.9)$ [cost $\max(0.2, 0.1) = 0.2$], $(5, 8) \leftrightarrow (5, 9)$ [cost $\max(0, 1) = 1$]. Max cost = 1.0.
 2. $(1, 2) \leftrightarrow \Delta$ [cost $(2-1)/2 = 0.5$], $(5, 8) \leftrightarrow \Delta$ [cost $(8-5)/2 = 1.5$], etc.
 The minimal max cost (Bottleneck distance) is 1.0.
@@ -241,6 +246,7 @@ Why do simplicial complexes like Čech complexes work?
 ## 8. Summary
 
 Topological Data Analysis provides a robust framework for extracting global structure from local samples.
+
 1. **Homology** counts holes across dimensions.
 2. **Persistence** tracks these holes across scales, providing a "fingerprint" of the data.
 3. **Stability** ensures that this fingerprint is resistant to noise and deformations.

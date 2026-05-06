@@ -40,6 +40,7 @@ The landmark work of Bartlett et al. (2020) characterized exactly when a minimum
 
 **Rigorous Proof Insight:**
 The risk decomposes into Bias and Variance.
+
 - **Bias:** In high dimensions, the component of $w^*$ that falls into the null space of $X$ determines the bias. If the signal is concentrated in the top $k$ eigenvalues and $n > k$, the bias remains small.
 - **Variance:** The variance is the term that typically explodes in the classical regime. Here, it is given by $\sigma^2 \text{tr}((X X^T)^{-1} X \Sigma X^T (X X^T)^{-1})$.
   Using concentration of random matrices, one shows that if the "tail" of the spectrum ($\sum_{i > k} \lambda_i$) is large enough, the eigenvalues of $X X^T$ become "well-behaved" in the tail subspace.
@@ -50,6 +51,7 @@ The risk decomposes into Bias and Variance.
 ## 4. The Geometry of the "Blessing of Dimensionality"
 
 In classical theory, dimensionality is a "curse" because it increases variance ($d/n$). In benign overfitting, dimensionality is a **blessing**.
+
 - **Classical Variance:** $\sigma^2 d/n$.
 - **Benign Variance:** $\sigma^2 n/R$.
 
@@ -61,6 +63,7 @@ If $R$ (the effective dimensionality of the noise subspace) is much larger than 
 
 As $n, d \to \infty$ with $d/n \to \gamma$, the test risk of the min-norm interpolator converges to a limit that depends only on the signal-to-noise ratio and the tail of the spectrum.
 If the spectrum decays like $i^{-\alpha}$:
+
 - If $\alpha > 1$, the risk diverges as $d \to \infty$ (Harmful Overfitting).
 - If $\alpha = 1$, the risk stays finite and can even decrease (Benign Overfitting).
 

@@ -163,6 +163,7 @@ $$
 Here, $\phi(\cdot)$ is a non-linear activation function (e.g., tanh, sigmoid, ReLU). The scaling factor $1/\sqrt{H}$ is crucial; it is known as "NTK parameterization" and ensures the variance of the output remains finite as $H \to \infty$.
 
 We assign independent Gaussian priors to all parameters:
+
 1. **Input weights:** $\mathbf{w}_j \sim \mathcal{N}(\mathbf{0}, \frac{\sigma_w^2}{d} \mathbf{I})$
 2. **Hidden biases:** $b_j \sim \mathcal{N}(0, \sigma_b^2)$
 3. **Output weights:** $v_j \sim \mathcal{N}(0, \sigma_v^2)$

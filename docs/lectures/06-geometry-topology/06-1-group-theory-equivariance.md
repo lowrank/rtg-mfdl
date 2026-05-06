@@ -74,6 +74,7 @@ The strategy is to take an arbitrary projection onto $W$ and "average" it over t
     $$
 
     Thus $\pi$ is a projection onto $W$.
+
 5.  **Verify Equivariance:** For any $h \in G$:
 
     $$
@@ -87,6 +88,7 @@ The strategy is to take an arbitrary projection onto $W$ and "average" it over t
     $$
 
     Thus $\rho(h) \pi = \pi \rho(h)$.
+
 6.  **Construct the complement:** Let $U = \ker(\pi)$. Since $\pi$ is a projection, $V = \text{im}(\pi) \oplus \ker(\pi) = W \oplus U$. We check if $U$ is $G$-invariant. Let $u \in U$. Then $\pi(u) = 0$. For any $g \in G$:
 
     $$
@@ -357,6 +359,7 @@ where $g$ is an element of the **Structure Group** (often $SO(2)$ for surfaces).
 ## 8. Summary and Conclusion
 
 Equivariance provides a mathematically rigorous way to bake inductive biases into neural networks. By utilizing the tools of representation theory:
+
 1. We decompose signals into **irreps** (like Fourier components).
 2. We solve the **Equivariant Kernel Constraint** to find the valid space of weights.
 3. We ensure that the network's internal representations transform predictably under the group action.
