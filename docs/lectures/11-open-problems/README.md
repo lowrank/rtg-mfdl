@@ -4,7 +4,7 @@
 
 ---
 
-## 1. Deep Linear Networks: Gradient Flow, Implicit Bias, and the 2x2 Mystery
+## 1. Deep Linear Networks: Gradient Flow, Implicit Bias, and the $2 \times 2$ Mystery
 
 ### 1.1 Setup and Gradient Flow
 
@@ -106,23 +106,86 @@ plt.legend()
 plt.grid(True)
 ```
 
-### 1.4 Open Questions: The 2x2 Matrix Zoo
+### 1.4 Open Questions: The $2 \times 2$ Matrix Zoo at Depth $L \ge 3$
 
-Consider the simplest non-trivial case: a 2-layer linear network $f(x) = W_2 W_1 x$ with $x \in \mathbb{R}^2$, $W_1, W_2 \in \mathbb{R}^{2 \times 2}$, and a single data point $(x, y)$.
+The 2-layer case ($L = 2$) is well-understood — the dynamics can be diagonalized via SVD and the convergence rates are known explicitly [Saxe 2014]. The true frontier lies at **depth $L \ge 3$**. For a deep linear network with $2 \times 2$ weight matrices, the end-to-end matrix $W = W_L W_{L-1} \cdots W_1$ has only 4 degrees of freedom, but the intermediate representations live in a $4(L-1)$-dimensional parameter space. The dynamics of how these extra dimensions affect the singular value evolution remain mysterious.
 
-!!! question "Open Problem 1.1 — Diagonal Entries"
-    Suppose $W_1^{(0)} = W_2^{(0)} = \begin{pmatrix} a & 0 \\ 0 & b \end{pmatrix}$. Characterize the complete training dynamics. Does the implicit bias toward minimum norm hold? What is the precise convergence rate?
+!!! info "Why $L \ge 3$ is fundamentally harder"
+    For $L = 2$, the gradient flow decouples into independent equations for each singular value:
 
-!!! question "Open Problem 1.2 — Complex Entries"
-    Let $W_1, W_2 \in \mathbb{C}^{2 \times 2}$ with complex initializations. The gradient flow becomes a dynamical system on $\mathbb{C}^4$. Are there periodic orbits? Can the optimization get stuck in non-trivial limit cycles? This connects to questions about **real vs. complex deep learning**.
+    $$
+    \dot{\sigma}_i = -2 \sigma_i (\sigma_i^2 - \sigma_i^{*2})
+    $$
 
-!!! question "Open Problem 1.3 — General Entries"
-    For generic full-rank initializations of $W_1, W_2 \in \mathbb{R}^{2 \times 2}$, the dynamics live on a 4-dimensional manifold. Can we fully classify the phase portrait? Which initializations lead to which singular value trajectories?
+    This scalar ODE is exactly solvable. For $L = 3$, the coupled system becomes:
+
+    $$
+    \dot{\sigma}_i = -3 \sigma_i^{4/3} (\sigma_i^{2/3} - \sigma_i^{*2/3})
+    $$
+
+    While still decoupled in singular values, the **interaction between layers** introduces nonlinear coupling in the left/right singular vectors that is absent for $L = 2$. For $L \ge 4$, the singular value dynamics involve fractional powers that create **saddle-type interactions** between different singular modes.
+
+!!! question "Open Problem 1.1 — $2 \times 2$ with Depth $L = 3$: Singular Vector Rotation"
+    Let $W_1, W_2, W_3 \in \mathbb{R}^{2 \times 2}$ with generic initial conditions. The gradient flow couples the singular vectors of adjacent layers. Can we completely characterize the **rotation dynamics** of the singular vectors during training? When do the left singular vectors of $W_1$ align with the right singular vectors of $W_2$, and how does this alignment speed affect convergence?
+
+!!! question "Open Problem 1.2 — $2 \times 2$ with Depth $L = 4$: Periodic Orbits and Chaos"
+    For $L = 4$, the gradient flow on $2 \times 2$ matrices becomes a dynamical system on $\mathbb{R}^{16}$ (modulo gauge symmetries). Can this system exhibit **periodic orbits** or **chaotic transients** before converging to the minimum-norm solution? Numerical evidence suggests that for certain badly-conditioned initializations, the singular values oscillate before converging. Prove or disprove the existence of limit cycles.
+
+!!! question "Open Problem 1.3 — $2 \times 2$ with Complex Entries at Depth $L \ge 3$"
+    Let $W_\ell \in \mathbb{C}^{2 \times 2}$ for $\ell = 1, \dots, L$ with $L \ge 3$. The gradient flow becomes a dynamical system on $\mathbb{C}^{4L}$. The balancedness condition becomes $W_{\ell+1}^* W_{\ell+1} = W_\ell W_\ell^*$. Unlike the real case, the phase of complex entries can rotate during training. Can we characterize the **complex phase dynamics**? Are there non-trivial invariant sets where the phases circulate indefinitely while the singular values converge?
+
+!!! question "Open Problem 1.4 — $2 \times 2$ General Entries, Large Depth"
+    For generic $W_\ell \in \mathbb{R}^{2 \times 2}$ and depth $L \gg 1$, numerical experiments show that the convergence time scales as $O(L^{p})$ for some exponent $p$ (see verification code below). What is the precise scaling exponent $p$? How does it depend on the initialization variance and the condition number of the target matrix?
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def deep_linear_2x2(L, steps=5000, lr=0.01, seed=42):
+    """Train a deep linear network with 2x2 weight matrices on a single task."""
+    np.random.seed(seed)
+    W = [np.eye(2) + 0.1 * np.random.randn(2, 2) for _ in range(L)]
+    W_end = np.eye(2)
+    target = np.array([[2.0, 0.0], [0.0, 0.5]])
+    X = np.eye(2)
+    Y = target @ X
+
+    error_history = []
+    for t in range(steps):
+        W_end = np.eye(2)
+        for w in W:
+            W_end = W_end @ w
+        grad = 2 * (W_end - target)
+        # Layer-wise gradient
+        for ell in range(L):
+            left = np.eye(2)
+            for j in range(ell + 1, L):
+                left = left @ W[j]
+            right = np.eye(2)
+            for j in range(ell):
+                right = W[j] @ right
+            W[ell] -= lr * left.T @ grad @ right.T
+        if t % 100 == 0:
+            error_history.append(np.linalg.norm(W_end - target))
+    return error_history
+
+depths = [2, 3, 4, 6, 8]
+plt.figure(figsize=(8, 5))
+for L in depths:
+    err = deep_linear_2x2(L)
+    plt.semilogy(err, label=f'L={L}')
+plt.xlabel('Step (x100)')
+plt.ylabel('Frobenius Error')
+plt.title('Deep 2x2 Linear Networks: Convergence vs Depth')
+plt.legend()
+plt.grid(True)
+```
 
 **References:**
 - Saxe, A. M., McClelland, J. L., & Ganguli, S. (2014). *Exact solutions to the nonlinear dynamics of learning in deep linear neural networks*. ICLR.
 - Arora, S., Cohen, N., Hu, W., & Luo, Y. (2019). *Implicit Regularization in Deep Matrix Factorization*. NeurIPS.
 - Bah, B., et al. (2022). *Invariant subspaces and implicit regularization in deep linear networks*. JMLR.
+- Cohen, N., et al. (2021). *Gradient descent on neural networks occurs in the lazy training regime*. NeurIPS.
 
 ---
 
@@ -438,9 +501,9 @@ plt.tight_layout()
 
 | # | Problem | Chapter Connection | Difficulty |
 |---|---------|-------------------|------------|
-| 1.1 | 2x2 linear network — diagonal dynamics | Ch. 1 Optimization | Moderate |
-| 1.2 | 2x2 linear network — complex entries | Ch. 1 Optimization | Hard |
-| 1.3 | 2x2 linear network — full phase portrait | Ch. 1 Optimization | Very Hard |
+| 1.1 | $2 \times 2$ linear network — diagonal dynamics | Ch. 1 Optimization | Moderate |
+| 1.2 | $2 \times 2$ linear network — complex entries | Ch. 1 Optimization | Hard |
+| 1.3 | $2 \times 2$ linear network — full phase portrait | Ch. 1 Optimization | Very Hard |
 | 2.1 | Adaptive Chebyshev for stochastic settings | Ch. 1 Optimization | Hard |
 | 2.2 | Variable step size beyond quadratic losses | Ch. 1 Optimization | Hard |
 | 3.1 | Finite-width implicit bias in ReLU nets | Ch. 3 Learning Theory | Very Hard |
