@@ -1,0 +1,151 @@
+site_name: Mathematical Foundations of Deep Learning
+site_description: A 100-hour intensive undergraduate/graduate textbook on the mathematical soul of AI.
+site_author: Gemini CLI Agent
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - toc.follow
+    - content.code.copy
+  font:
+    text: Gentium Book Plus
+    code: Roboto Mono
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - 01 Optimization Theory:
+      - Introduction: lectures/01-optimization/README.md
+      - Lecture Roadmap: lectures/01-optimization/LECTURE.md
+      - "1.1 Geometry & Saddles": lectures/01-optimization/01-1-geometry-and-saddles.md
+      - "1.2 Convergence Theory": lectures/01-optimization/01-2-convergence-theory.md
+      - "1.3 Stochastic Algorithms": lectures/01-optimization/01-3-stochastic-algorithms.md
+      - "1.4 Adaptive & Second-Order": lectures/01-optimization/01-4-adaptive-and-second-order.md
+      - "1.5 Modern Frontiers": lectures/01-optimization/01-5-modern-frontiers.md
+      - Practice Set: lectures/01-optimization/PRACTICE.md
+      - Project Guide: lectures/01-optimization/PROJECT.md
+  - 02 Approximation Theory:
+      - Introduction: lectures/02-approximation/README.md
+      - Lecture Roadmap: lectures/02-approximation/LECTURE.md
+      - "2.1 Universal Approximation": lectures/02-approximation/02-1-universal-approximation.md
+      - "2.2 Depth Efficiency": lectures/02-approximation/02-2-depth-efficiency-separation.md
+      - "2.3 Harmonic Perspectives": lectures/02-approximation/02-3-harmonic-perspectives.md
+      - "2.4 KAN & Symbolic Theory": lectures/02-approximation/02-4-kan-and-symbolic-theory.md
+      - "2.5 Practical Guidelines": lectures/02-approximation/02-5-practical-approximation-guidelines.md
+      - Practice Set: lectures/02-approximation/PRACTICE.md
+      - Project Guide: lectures/02-approximation/PROJECT.md
+  - 03 Statistical Learning:
+      - Introduction: lectures/03-learning-theory/README.md
+      - Lecture Roadmap: lectures/03-learning-theory/LECTURE.md
+      - "3.1 Concentration of Measure": lectures/03-learning-theory/03-1-concentration-of-measure.md
+      - "3.2 Complexity & VC Theory": lectures/03-learning-theory/03-2-complexity-and-vc-theory.md
+      - "3.3 PAC-Bayes Advanced": lectures/03-learning-theory/03-3-pac-bayes-advanced.md
+      - "3.4 Stability & SGD": lectures/03-learning-theory/03-4-stability-and-sgd-generalization.md
+      - "3.5 Modern Generalization": lectures/03-learning-theory/03-5-modern-generalization-interpolation.md
+      - Practice Set: lectures/03-learning-theory/PRACTICE.md
+      - Project Guide: lectures/03-learning-theory/PROJECT.md
+  - 04 RMT & NTK:
+      - Introduction: lectures/04-rmt-ntk/README.md
+      - Lecture Roadmap: lectures/04-rmt-ntk/LECTURE.md
+      - "4.1 High-Dim Geometry": lectures/04-rmt-ntk/04-1-high-dimensional-geometry-probability.md
+      - "4.2 Spectral Laws": lectures/04-rmt-ntk/04-2-spectral-laws-of-rmt.md
+      - "4.3 Free Probability": lectures/04-rmt-ntk/04-3-free-probability-theory.md
+      - "4.4 Neural Tangent Kernel": lectures/04-rmt-ntk/04-4-neural-tangent-kernel.md
+      - "4.5 Tensor Programs & Scaling": lectures/04-rmt-ntk/04-5-tensor-programs-and-scaling.md
+      - Practice Set: lectures/04-rmt-ntk/PRACTICE.md
+      - Project Guide: lectures/04-rmt-ntk/PROJECT.md
+  - 05 Information Theory:
+      - Introduction: lectures/05-information-theory/README.md
+      - Lecture Roadmap: lectures/05-information-theory/LECTURE.md
+      - "5.1 Foundations of Entropy": lectures/05-information-theory/05-1-foundations-differential-entropy.md
+      - "5.2 Bottleneck Controversy": lectures/05-information-theory/05-2-information-bottleneck-controversy.md
+      - "5.3 Rate-Distortion & VAEs": lectures/05-information-theory/05-3-rate-distortion-theory-vaes.md
+      - "5.4 Variational MI Estimation": lectures/05-information-theory/05-4-variational-mi-estimation.md
+      - "5.5 Information Geometry": lectures/05-information-theory/05-5-information-geometry-natural-gradient.md
+      - Practice Set: lectures/05-information-theory/PRACTICE.md
+      - Project Guide: lectures/05-information-theory/PROJECT.md
+  - 06 Geometry & Topology:
+      - Introduction: lectures/06-geometry-topology/README.md
+      - Lecture Roadmap: lectures/06-geometry-topology/LECTURE.md
+      - "6.1 Group Theory & Equivariance": lectures/06-geometry-topology/06-1-group-theory-equivariance.md
+      - "6.2 GNN Theory": lectures/06-geometry-topology/06-2-graph-neural-networks-theory.md
+      - "6.3 Persistent Homology & TDA": lectures/06-geometry-topology/06-3-persistent-homology-tda.md
+      - "6.4 Optimal Transport": lectures/06-geometry-topology/06-4-optimal-transport-wasserstein.md
+      - "6.5 Riemannian Geometry": lectures/06-geometry-topology/06-5-riemannian-geometry-optimization.md
+      - Practice Set: lectures/06-geometry-topology/PRACTICE.md
+      - Project Guide: lectures/06-geometry-topology/PROJECT.md
+  - 07 Differential Equations:
+      - Introduction: lectures/07-diff-eq/README.md
+      - Lecture Roadmap: lectures/07-diff-eq/LECTURE.md
+      - "7.1 Neural ODEs & Adjoint": lectures/07-diff-eq/07-1-neural-odes-adjoint-method.md
+      - "7.2 Diffusion SDEs & Score": lectures/07-diff-eq/07-2-diffusion-sdes-score-matching.md
+      - "7.3 PINNs & Operators": lectures/07-diff-eq/07-3-pinns-neural-operators.md
+      - "7.4 Stochastic Dynamics of SGD": lectures/07-diff-eq/07-4-stochastic-dynamics-sgd.md
+      - "7.5 Symplectic Integrators": lectures/07-diff-eq/07-5-symplectic-integrators-hamiltonian.md
+      - Practice Set: lectures/07-diff-eq/PRACTICE.md
+      - Project Guide: lectures/07-diff-eq/PROJECT.md
+  - 08 Bayesian ML:
+      - Introduction: lectures/08-bayesian-ml/README.md
+      - Lecture Roadmap: lectures/08-bayesian-ml/LECTURE.md
+      - "8.1 Foundations & BNNs": lectures/08-bayesian-ml/08-1-probabilistic-foundations-bnn.md
+      - "8.2 MCMC & HMC": lectures/08-bayesian-ml/08-2-mcmc-hmc-sampling.md
+      - "8.3 GP-NNGP Correspondence": lectures/08-bayesian-ml/08-3-gp-nngp-correspondence.md
+      - "8.4 Variational Inference & Flows": lectures/08-bayesian-ml/08-4-variational-inference-flows.md
+      - "8.5 Conformal Prediction": lectures/08-bayesian-ml/08-5-conformal-prediction-calibration.md
+      - Practice Set: lectures/08-bayesian-ml/PRACTICE.md
+      - Project Guide: lectures/08-bayesian-ml/PROJECT.md
+  - 09 Kernel Methods:
+      - Introduction: lectures/09-kernel-methods/README.md
+      - Lecture Roadmap: lectures/09-kernel-methods/LECTURE.md
+      - "9.1 RKHS Foundations": lectures/09-kernel-methods/09-1-rkhs-foundations.md
+      - "9.2 Representer Theorem": lectures/09-kernel-methods/09-2-representer-theorem-optimization.md
+      - "9.3 Mercer Theory & Spectral": lectures/09-kernel-methods/09-3-mercer-theory-spectral.md
+      - "9.4 Large-Scale Kernels (RFF)": lectures/09-kernel-methods/09-4-large-scale-kernels-rff.md
+      - "9.5 Mean Embeddings & MMD": lectures/09-kernel-methods/09-5-kernel-mean-embeddings-mmd.md
+      - Practice Set: lectures/09-kernel-methods/PRACTICE.md
+      - Project Guide: lectures/09-kernel-methods/PROJECT.md
+  - 10 Transformers:
+      - Introduction: lectures/10-transformers-modern/README.md
+      - Lecture Roadmap: lectures/10-transformers-modern/LECTURE.md
+      - "10.1 Attention Mathematics": lectures/10-transformers-modern/10-1-attention-mathematics.md
+      - "10.2 Meta-Optimizers": lectures/10-transformers-modern/10-2-transformers-as-meta-optimizers.md
+      - "10.3 Scaling Laws": lectures/10-transformers-modern/10-3-scaling-laws-chinchilla.md
+      - "10.4 Mechanistic Interpretability": lectures/10-transformers-modern/10-4-mechanistic-interpretability-circuits.md
+      - "10.5 Beyond Attention (SSMs)": lectures/10-transformers-modern/10-5-beyond-attention-ssms.md
+      - Practice Set: lectures/10-transformers-modern/PRACTICE.md
+      - Project Guide: lectures/10-transformers-modern/PROJECT.md

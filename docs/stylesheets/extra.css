@@ -1,0 +1,36 @@
+:root {
+  --md-text-font: "Gentium Book Plus";
+  --md-code-font: "Roboto Mono";
+  --md-typeset-font-size: 1.05rem;
+}
+
+/* Ensure global typography consistency */
+body {
+  font-size: var(--md-typeset-font-size);
+}
+
+/* Admonitions (Theorems/Definitions) must match the main text exactly */
+.md-typeset .admonition,
+.md-typeset details {
+  font-size: 1em; /* Relative to the typeset base */
+}
+
+/* Force all child elements in callouts to match the base font size */
+.md-typeset .admonition > *,
+.md-typeset details > *,
+.md-typeset .admonition p,
+.md-typeset details p {
+  font-size: 1em !important;
+}
+
+/* Ensure italic text uses the italic font face of Gentium Book Plus */
+em, i, .italic, .md-typeset em {
+  font-family: "Gentium Book Plus", serif;
+  font-style: italic;
+}
+
+/* Header Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Lora", serif !important;
+  font-weight: 700;
+}
