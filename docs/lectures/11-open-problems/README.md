@@ -309,45 +309,54 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
 import numpy as np
 import matplotlib.pyplot as plt
 
-def train_and_track_biases(m=100, steps=3000, lr=0.005):
+def train_and_track_biases(m=100, steps=50000, lr=0.01):
     np.random.seed(0)
     x = np.linspace(-3, 3, 500)
-    f_star = np.sin(x) + 0.5 * np.sin(3 * x)
+    f_star = np.sin(2 * x) + 0.7 * np.sin(5 * x) + 0.3 * np.sin(11 * x)
 
     a = np.random.randn(m) * 0.5
     b = np.random.uniform(-1, 1, m)
     w = np.ones(m)
 
     bias_log = [b.copy()]
+    loss_log = []
     for t in range(steps):
         z = w * x[:, None] + b[None, :]
         h = np.maximum(0, z)
         f = h @ a
         residual = f - f_star
+        loss = np.mean(residual ** 2)
         a -= lr * h.T @ residual / len(x)
         b -= lr * (a[None, :] * (z > 0)).T @ residual / len(x)
-        if t % 300 == 0:
+        if t % 2000 == 0:
             bias_log.append(b.copy())
+            loss_log.append(loss)
 
-    return b, bias_log, f, f_star, x
+    return b, bias_log, f, f_star, x, loss_log
 
-b, hist, f, f_star, x = train_and_track_biases()
+b, hist, f, f_star, x, loss_log = train_and_track_biases()
 
-plt.figure(figsize=(12, 4))
-plt.subplot(121)
+plt.figure(figsize=(14, 4))
+plt.subplot(131)
 for i, bh in enumerate(hist):
-    plt.scatter(np.full(len(bh), i * 300), bh, s=4, alpha=0.5, color='C0')
+    plt.scatter(np.full(len(bh), i * 2000), bh, s=4, alpha=0.3, color='C0')
 plt.xlabel('Iteration')
 plt.ylabel('Bias value $b_j$')
-plt.title('Bias trajectories during training')
+plt.title('Bias trajectories')
 
-plt.subplot(122)
-plt.plot(x, f_star, 'k--', linewidth=2, label='Target $f^*$')
-plt.plot(x, f, 'r-', label='Network fit')
-plt.scatter(b, np.zeros_like(b), s=8, color='C0', alpha=0.6, zorder=3)
+plt.subplot(132)
+plt.plot(x, f_star, 'k--', linewidth=2, label='Target')
+plt.plot(x, f, 'r-', linewidth=1.5, label='Network')
+plt.scatter(b, np.full_like(b, -1.5), s=10, color='C0', alpha=0.6, zorder=3)
 plt.xlabel('$x$')
 plt.legend()
-plt.title('Final network and bias locations')
+plt.title('Final fit and bias locations')
+
+plt.subplot(133)
+plt.semilogy(loss_log)
+plt.xlabel('Iteration (x2000)')
+plt.ylabel('MSE Loss')
+plt.title('Loss curve')
 plt.tight_layout()
 ```
 
