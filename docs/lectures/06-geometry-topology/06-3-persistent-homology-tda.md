@@ -21,9 +21,7 @@ Let $K$ be a simplicial complex. The **$k$-th Chain Group** $C_k(K)$ is the vect
 
 The **Boundary Operator** $\partial_k: C_k \to C_{k-1}$ is a linear map that maps a simplex to the sum of its faces. For a $k$-simplex $[v_0, \dots, v_k]$:
 
-$$
-\partial_k([v_0, \dots, v_k]) = \sum_{i=0}^k (-1)^i [v_0, \dots, \hat{v}_i, \dots, v_k]
-$$
+$$ \partial_k([v_0, \dots, v_k]) = \sum_{i=0}^k (-1)^i [v_0, \dots, \hat{v}_i, \dots, v_k] $$
 
 where $\hat{v}_i$ denotes that the $i$-th vertex is omitted. Over $\mathbb{Z}_2$, the $(-1)^i$ terms are all $1$.
 
@@ -32,17 +30,9 @@ where $\hat{v}_i$ denotes that the $i$-th vertex is omitted. Over $\mathbb{Z}_2$
 
 **Proof:**
 Consider a $k$-simplex $\sigma = [v_0, \dots, v_k]$.
-
-$$
-\partial_k \sigma = \sum_{i} (-1)^i [v_0, \dots, \hat{v}_i, \dots, v_k]
-$$
-
+$$ \partial_k \sigma = \sum_{i} (-1)^i [v_0, \dots, \hat{v}_i, \dots, v_k] $$
 Applying $\partial_{k-1}$:
-
-$$
-\partial_{k-1} (\partial_k \sigma) = \sum_{i} (-1)^i \left( \sum_{j < i} (-1)^j [v_0, \dots, \hat{v}_j, \dots, \hat{v}_i, \dots, v_k] + \sum_{j > i} (-1)^{j-1} [v_0, \dots, \hat{v}_i, \dots, \hat{v}_j, \dots, v_k] \right)
-$$
-
+$$ \partial_{k-1} (\partial_k \sigma) = \sum_{i} (-1)^i \left( \sum_{j < i} (-1)^j [v_0, \dots, \hat{v}_j, \dots, \hat{v}_i, \dots, v_k] + \sum_{j > i} (-1)^{j-1} [v_0, \dots, \hat{v}_i, \dots, \hat{v}_j, \dots, v_k] \right) $$
 Every $(k-2)$-face $[v_0, \dots, \hat{v}_j, \dots, \hat{v}_i, \dots, v_k]$ appears twice in the double sum: once when $i$ is removed first and once when $j$ is removed first. Their coefficients will be $(-1)^i (-1)^j$ and $(-1)^j (-1)^{i-1}$. These cancel out exactly because $(-1)^{i+j} + (-1)^{i+j-1} = 0$. $\blacksquare$
 
 ### 1.3 Homology Groups
@@ -52,11 +42,7 @@ The fact that $\partial_{k-1} \partial_k = 0$ implies that the image of $\partia
 - **$k$-Boundaries:** $B_k = \text{im} \partial_{k+1}$ (chains that are the boundary of a $(k+1)$-chain).
 
 The **$k$-th Homology Group** is defined as the quotient:
-
-$$
-H_k(K) = Z_k / B_k
-$$
-
+$$ H_k(K) = Z_k / B_k $$
 The dimension $\beta_k = \dim H_k$ is the **$k$-th Betti number**, representing the number of $k$-dimensional "holes."
 
 ## 2. Persistent Homology and Filtrations
@@ -66,11 +52,7 @@ Static homology requires a fixed complex. For data, we don't know the "right" sc
 ### 2.1 Filtrations
 
 A **filtration** of a simplicial complex $K$ is a nested sequence of subcomplexes:
-
-$$
-\emptyset = K_0 \subseteq K_1 \subseteq K_2 \subseteq \dots \subseteq K_m = K
-$$
-
+$$ \emptyset = K_0 \subseteq K_1 \subseteq K_2 \subseteq \dots \subseteq K_m = K $$
 As we move through the sequence, new simplices are added. We track when homology classes (holes) are created ("born") and when they become boundaries of higher-dimensional simplices ("die").
 
 Common filtrations:
@@ -89,19 +71,12 @@ A crucial property of TDA is that small perturbations in the data lead to small 
 ### 3.1 Bottleneck Distance
 
 The **Bottleneck Distance** $W_\infty$ between two diagrams $D_1$ and $D_2$ is:
-
-$$
-W_\infty(D_1, D_2) = \inf_{\gamma: D_1 \to D_2} \sup_{x \in D_1} \|x - \gamma(x)\|_\infty
-$$
-
+$$ W_\infty(D_1, D_2) = \inf_{\gamma: D_1 \to D_2} \sup_{x \in D_1} \|x - \gamma(x)\|_\infty $$
 where $\gamma$ is a bijection that can match points in $D_i$ to the diagonal $\Delta = \{(x, x) : x \in \mathbb{R}\}$.
 
 !!! success "Theorem (Stability Theorem)"
     Let $X$ be a triangulable space and $f, g: X \to \mathbb{R}$ be tame continuous functions. Let $D(f)$ and $D(g)$ be the persistence diagrams of the sublevel set filtrations of $f$ and $g$. Then:
-
-    $$
-    W_\infty(D(f), D(g)) \leq \|f - g\|_\infty
-    $$
+    $$ W_\infty(D(f), D(g)) \leq \|f - g\|_\infty $$
 
 **Rigorous Proof:**
 The proof involves **Interleaving Distance**.
@@ -125,11 +100,7 @@ TDA is used in ML to provide structural regularizers or to analyze the training 
 ### 4.2 Topological Loss Functions
 
 We can define a loss term based on persistence:
-
-$$
-\mathcal{L}_{topo} = \sum_{(b, d) \in \text{Diagram}} (d - b)^2
-$$
-
+$$ \mathcal{L}_{topo} = \sum_{(b, d) \in \text{Diagram}} (d - b)^2 $$
 This encourages the model to have "prominent" topological features or to suppress noise.
 
 ## 5. Worked Examples
@@ -253,4 +224,3 @@ Topological Data Analysis provides a robust framework for extracting global stru
 3. Chazal, F., et al. (2016). The Structure and Stability of Persistence Modules. Springer.
 4. Ghrist, R. (2008). Barcodes: The persistent topology of data. Bulletin of the American Mathematical Society.
 5. Hensel, F., et al. (2021). A Survey of Topological Machine Learning. Frontiers in Artificial Intelligence.
-

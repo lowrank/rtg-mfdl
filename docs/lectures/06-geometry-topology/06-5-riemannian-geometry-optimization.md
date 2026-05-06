@@ -13,9 +13,16 @@ At every point $x \in \mathcal{M}$, we define a **tangent space** $T_x \mathcal{
 ### 1.2 The Riemannian Metric
 
 A **Riemannian metric** $g$ is a family of inner products $g_x: T_x \mathcal{M} \times T_x \mathcal{M} \to \mathbb{R}$ that varies smoothly with $x$. In local coordinates, it is represented by a symmetric positive-definite matrix $G(x)$:
-$$ g_x(u, v) = u^T G(x) v $$
+
+$$
+g_x(u, v) = u^T G(x) v
+$$
+
 The metric defines the concept of length, angle, and volume on the manifold. The length of a curve $\gamma: [a, b] \to \mathcal{M}$ is:
-$$ L(\gamma) = \int_a^b \sqrt{g_{\gamma(t)}(\dot{\gamma}(t), \dot{\gamma}(t))} dt $$
+
+$$
+L(\gamma) = \int_a^b \sqrt{g_{\gamma(t)}(\dot{\gamma}(t), \dot{\gamma}(t))} dt
+$$
 
 ## 2. Geodesics and the Exponential Map
 
@@ -24,7 +31,11 @@ $$ L(\gamma) = \int_a^b \sqrt{g_{\gamma(t)}(\dot{\gamma}(t), \dot{\gamma}(t))} d
 ### 2.1 The Geodesic Equation
 
 A curve $\gamma(t)$ is a geodesic if its acceleration vector is purely normal to the manifold. In local coordinates, this is expressed via the **Christoffel symbols** $\Gamma_{ij}^k$:
-$$ \ddot{\gamma}^k + \sum_{i,j} \Gamma_{ij}^k \dot{\gamma}^i \dot{\gamma}^j = 0 $$
+
+$$
+\ddot{\gamma}^k + \sum_{i,j} \Gamma_{ij}^k \dot{\gamma}^i \dot{\gamma}^j = 0
+$$
+
 where $\Gamma_{ij}^k = \frac{1}{2} \sum_l g^{kl} (\partial_j g_{il} + \partial_i g_{jl} - \partial_l g_{ij})$.
 
 ### 2.2 Exponential and Logarithmic Maps
@@ -39,16 +50,30 @@ To minimize a cost function $f: \mathcal{M} \to \mathbb{R}$, we must account for
 ### 3.1 The Riemannian Gradient
 
 The Riemannian gradient $\text{grad} f(x)$ is the unique tangent vector in $T_x \mathcal{M}$ such that:
-$$ g_x(\text{grad} f(x), v) = df(x)[v] \quad \text{for all } v \in T_x \mathcal{M} $$
+
+$$
+g_x(\text{grad} f(x), v) = df(x)[v] \quad \text{for all } v \in T_x \mathcal{M}
+$$
+
 For a manifold embedded in $\mathbb{R}^n$, the Riemannian gradient is often the orthogonal projection of the Euclidean gradient $\nabla f(x)$ onto the tangent space:
-$$ \text{grad} f(x) = \text{Proj}_{T_x \mathcal{M}}(\nabla f(x)) $$
+
+$$
+\text{grad} f(x) = \text{Proj}_{T_x \mathcal{M}}(\nabla f(x))
+$$
 
 ### 3.2 The Update Rule
 
 The RGD update generalizes the Euclidean update $x_{k+1} = x_k - \eta \nabla f(x_k)$:
-$$ x_{k+1} = \exp_{x_k}(- \eta \text{grad} f(x_k)) $$
+
+$$
+x_{k+1} = \exp_{x_k}(- \eta \text{grad} f(x_k))
+$$
+
 In practice, computing the true exponential map (geodesics) can be expensive. We often use a **Retraction** $R_x: T_x \mathcal{M} \to \mathcal{M}$, which is a first-order approximation:
-$$ x_{k+1} = R_{x_k}(- \eta \text{grad} f(x_k)) $$
+
+$$
+x_{k+1} = R_{x_k}(- \eta \text{grad} f(x_k))
+$$
 
 ## 4. Convergence Theory
 
@@ -56,20 +81,37 @@ Analysis of RGD depends on the manifold's curvature and **geodesic convexity**.
 
 !!! info "Definition (Geodesic Convexity)"
     A function $f: \mathcal{M} \to \mathbb{R}$ is geodesically convex if for every geodesic $\gamma(t)$:
-    $$ f(\gamma(t)) \leq (1-t)f(\gamma(0)) + t f(\gamma(1)) $$
+    $$
+    f(\gamma(t)) \leq (1-t)f(\gamma(0)) + t f(\gamma(1))
+    $$
 
 !!! success "Theorem (Convergence of RGD)"
     Let $\mathcal{M}$ have sectional curvature bounded below by $K \leq 0$. Let $f$ be $L$-smooth and geodesically convex. With step size $\eta \leq 1/L$, RGD converges to the global minimum $x^*$ at a rate:
-    $$ f(x_T) - f(x^*) \leq \frac{d^2(x_0, x^*)}{2\eta T} $$
+
+    $$
+    f(x_T) - f(x^*) \leq \frac{d^2(x_0, x^*)}{2\eta T}
+    $$
 
 **Rigorous Proof:**
 We use the **Riemannian Hinge Triangle Inequality**. For a manifold with curvature $K \leq 0$, the distance between $x_{k+1} = \exp_{x_k}(v)$ and $x^*$ satisfies:
-$$ d^2(x_{k+1}, x^*) \leq d^2(x_k, x^*) + \|v\|^2_{x_k} - 2 \langle \log_{x_k}(x^*), v \rangle_{x_k} $$
+
+$$
+d^2(x_{k+1}, x^*) \leq d^2(x_k, x^*) + \|v\|^2_{x_k} - 2 \langle \log_{x_k}(x^*), v \rangle_{x_k}
+$$
+
 Let $v = -\eta \text{grad} f(x_k)$. Then:
-$$ d^2(x_{k+1}, x^*) \leq d^2(x_k, x^*) + \eta^2 \|\text{grad} f(x_k)\|^2 + 2\eta \langle \log_{x_k}(x^*), \text{grad} f(x_k) \rangle $$
+
+$$
+d^2(x_{k+1}, x^*) \leq d^2(x_k, x^*) + \eta^2 \|\text{grad} f(x_k)\|^2 + 2\eta \langle \log_{x_k}(x^*), \text{grad} f(x_k) \rangle
+$$
+
 From geodesic convexity: $f(x^*) \geq f(x_k) + \langle \text{grad} f(x_k), \log_{x_k}(x^*) \rangle$.
 Substituting this in:
-$$ d^2(x_{k+1}, x^*) \leq d^2(x_k, x^*) + \eta^2 \|\text{grad} f(x_k)\|^2 + 2\eta (f(x^*) - f(x_k)) $$
+
+$$
+d^2(x_{k+1}, x^*) \leq d^2(x_k, x^*) + \eta^2 \|\text{grad} f(x_k)\|^2 + 2\eta (f(x^*) - f(x_k))
+$$
+
 By $L$-smoothness, $f(x_{k+1}) \leq f(x_k) - \frac{\eta}{2} \|\text{grad} f(x_k)\|^2$.
 Summing over $T$ iterations and telescoping the $d^2$ terms yields the $O(1/T)$ rate. $\blacksquare$
 

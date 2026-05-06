@@ -11,16 +11,10 @@ Optimal transport asks: "What is the most efficient way to transform one distrib
 Given two probability measures $\mu$ on $\mathcal{X}$ and $\nu$ on $\mathcal{Y}$, and a cost function $c(x, y): \mathcal{X} \times \mathcal{Y} \to \mathbb{R}_{\geq 0}$, Monge's problem seeks a transport map $T: \mathcal{X} \to \mathcal{Y}$ that minimizes the total cost while preserving mass.
 
 Mass preservation is expressed through the **pushforward** operator $T_{\#} \mu = \nu$, defined as:
-
-$$
-\nu(B) = \mu(T^{-1}(B)) \quad \text{for all Borel sets } B \subseteq \mathcal{Y}
-$$
+$$ \nu(B) = \mu(T^{-1}(B)) \quad \text{for all Borel sets } B \subseteq \mathcal{Y} $$
 
 The optimization problem is:
-
-$$
-\min_{T_{\#} \mu = \nu} \int_{\mathcal{X}} c(x, T(x)) d\mu(x)
-$$
+$$ \min_{T_{\#} \mu = \nu} \int_{\mathcal{X}} c(x, T(x)) d\mu(x) $$
 
 **Limitation:** If $\mu$ is a Dirac mass and $\nu$ is a sum of two Dirac masses, no map $T$ can satisfy $T_{\#} \mu = \nu$ because a single point cannot be split.
 
@@ -28,9 +22,7 @@ $$
 
 Kantorovich generalized the problem by searching for a **coupling** (or transport plan) $\pi \in \Pi(\mu, \nu)$, where $\Pi(\mu, \nu)$ is the set of joint probability measures on $\mathcal{X} \times \mathcal{Y}$ whose marginals are $\mu$ and $\nu$.
 
-$$
-\min_{\pi \in \Pi(\mu, \nu)} \int_{\mathcal{X} \times \mathcal{Y}} c(x, y) d\pi(x, y)
-$$
+$$ \min_{\pi \in \Pi(\mu, \nu)} \int_{\mathcal{X} \times \mathcal{Y}} c(x, y) d\pi(x, y) $$
 
 This is a linear program in the space of measures. If $c(x, y) = \|x - y\|^p$, the $p$-th root of the optimal value is the **$p$-Wasserstein distance**, denoted $W_p(\mu, \nu)$.
 
@@ -42,18 +34,11 @@ The Kantorovich problem is a constrained optimization. Its dual provides deep in
 
 !!! success "Theorem (Kantorovich Duality)"
     For any lower semi-continuous cost $c$, the following duality holds:
-
-    $$
-    \min_{\pi \in \Pi(\mu, \nu)} \int c d\pi = \sup_{(\varphi, \psi) \in \Phi_c} \int_{\mathcal{X}} \varphi(x) d\mu(x) + \int_{\mathcal{Y}} \psi(y) d\nu(y)
-    $$
-
+    $$ \min_{\pi \in \Pi(\mu, \nu)} \int c d\pi = \sup_{(\varphi, \psi) \in \Phi_c} \int_{\mathcal{X}} \varphi(x) d\mu(x) + \int_{\mathcal{Y}} \psi(y) d\nu(y) $$
     where $\Phi_c = \{ (\varphi, \psi) \in L_1(d\mu) \times L_1(d\nu) : \varphi(x) + \psi(y) \leq c(x, y) \}$.
 
 For a given $\varphi$, the best $\psi$ is given by the **$c$-transform**:
-
-$$
-\varphi^c(y) = \inf_{x \in \mathcal{X}} \{ c(x, y) - \varphi(x) \}
-$$
+$$ \varphi^c(y) = \inf_{x \in \mathcal{X}} \{ c(x, y) - \varphi(x) \} $$
 
 ## 3. Brenier's Theorem: The Geometry of Quadratic Transport
 
@@ -68,15 +53,8 @@ For the quadratic cost $c(x, y) = \frac{1}{2}\|x - y\|^2$ in $\mathbb{R}^d$, the
 **Rigorous Proof:**
 1.  **Dual Potentials:** From the duality theorem, the optimal potentials $\varphi, \psi$ satisfy $\varphi(x) + \psi(y) \leq \frac{1}{2}\|x-y\|^2$.
 2.  **Rearrangement:** Let $\tilde{\varphi}(x) = \frac{1}{2}\|x\|^2 - \varphi(x)$. Substituting this into the inequality:
-
-    $$
-    (\frac{1}{2}\|x\|^2 - \tilde{\varphi}(x)) + \psi(y) \leq \frac{1}{2}\|x\|^2 + \frac{1}{2}\|y\|^2 - x \cdot y
-    $$
-
-    $$
-    \tilde{\varphi}(x) + (\frac{1}{2}\|y\|^2 - \psi(y)) \geq x \cdot y
-    $$
-
+    $$ (\frac{1}{2}\|x\|^2 - \tilde{\varphi}(x)) + \psi(y) \leq \frac{1}{2}\|x\|^2 + \frac{1}{2}\|y\|^2 - x \cdot y $$
+    $$ \tilde{\varphi}(x) + (\frac{1}{2}\|y\|^2 - \psi(y)) \geq x \cdot y $$
     Let $\tilde{\psi}(y) = \frac{1}{2}\|y\|^2 - \psi(y)$. Then $\tilde{\varphi}(x) + \tilde{\psi}(y) \geq x \cdot y$.
 3.  **Convexity:** At optimality, $\tilde{\psi}$ must be the Legendre-Fenchel conjugate of $\tilde{\varphi}$: $\tilde{\psi}(y) = \tilde{\varphi}^*(y) = \sup_x (x \cdot y - \tilde{\varphi}(x))$.
 4.  **Complementary Slackness:** The optimal plan $\pi$ must be supported on the set where the dual constraint is tight: $\tilde{\varphi}(x) + \tilde{\varphi}^*(y) = x \cdot y$.
@@ -85,11 +63,7 @@ For the quadratic cost $c(x, y) = \frac{1}{2}\|x - y\|^2$ in $\mathbb{R}^d$, the
 ### 3.2 The Monge-Ampère Equation
 
 The condition $T_{\#} \mu = \nu$ can be expressed as a partial differential equation. If $\mu$ has density $f$ and $\nu$ has density $g$, then for a smooth $T = \nabla \varphi$:
-
-$$
-f(x) = g(\nabla \varphi(x)) \det(\nabla^2 \varphi(x))
-$$
-
+$$ f(x) = g(\nabla \varphi(x)) \det(\nabla^2 \varphi(x)) $$
 This is the **elliptic Monge-Ampère equation**, connecting OT to differential geometry.
 
 ## 4. Entropic Regularization and the Sinkhorn Algorithm
@@ -99,17 +73,9 @@ The standard OT problem is a large-scale linear program, which is slow to solve 
 ### 4.1 The Regularized Problem
 
 We add a Kullback-Leibler penalty to the objective:
-
-$$
-\min_{\pi \in \Pi(\mu, \nu)} \int c d\pi + \epsilon KL(\pi \| \mu \otimes \nu)
-$$
-
+$$ \min_{\pi \in \Pi(\mu, \nu)} \int c d\pi + \epsilon KL(\pi \| \mu \otimes \nu) $$
 As $\epsilon \to 0$, we recover the original OT cost. For $\epsilon > 0$, the optimal coupling has the form:
-
-$$
-\pi_{ij} = a_i K_{ij} b_j
-$$
-
+$$ \pi_{ij} = a_i K_{ij} b_j $$
 where $K_{ij} = \exp(-C_{ij}/\epsilon)$ is the Gibbs kernel and $a, b$ are scaling vectors.
 
 ### 4.2 The Sinkhorn Scaling Algorithm
@@ -124,10 +90,7 @@ This converges linearly to the optimal vectors $a, b$. In practice, this is high
 When comparing distributions across different spaces (e.g., aligning a 3D point cloud with a 2D graph), the cost function $c(x, y)$ is not well-defined. GW solves this by comparing intra-space distances.
 
 Given $(\mathcal{X}, d_{\mathcal{X}}, \mu)$ and $(\mathcal{Y}, d_{\mathcal{Y}}, \nu)$, the $L_2$-GW distance is:
-
-$$
-GW^2(\mu, \nu) = \inf_{\pi \in \Pi(\mu, \nu)} \int_{\mathcal{X}^2 \times \mathcal{Y}^2} |d_{\mathcal{X}}(x, x') - d_{\mathcal{Y}}(y, y')|^2 d\pi(x, y) d\pi(x', y')
-$$
+$$ GW^2(\mu, \nu) = \inf_{\pi \in \Pi(\mu, \nu)} \int_{\mathcal{X}^2 \times \mathcal{Y}^2} |d_{\mathcal{X}}(x, x') - d_{\mathcal{Y}}(y, y')|^2 d\pi(x, y) d\pi(x', y') $$
 
 This is a **Quadratic Assignment Problem** (QAP), which is NP-hard in general but can be approximated using entropic regularization and alternating minimization.
 
@@ -135,11 +98,7 @@ This is a **Quadratic Assignment Problem** (QAP), which is NP-hard in general bu
 
 ### Example 1: $W_2$ between Gaussians
 Let $\mu = \mathcal{N}(m_1, \Sigma_1)$ and $\nu = \mathcal{N}(m_2, \Sigma_2)$. The 2-Wasserstein distance is:
-
-$$
-W_2^2(\mu, \nu) = \|m_1 - m_2\|^2 + \text{Tr}(\Sigma_1 + \Sigma_2 - 2(\Sigma_1^{1/2} \Sigma_2 \Sigma_1^{1/2})^{1/2})
-$$
-
+$$ W_2^2(\mu, \nu) = \|m_1 - m_2\|^2 + \text{Tr}(\Sigma_1 + \Sigma_2 - 2(\Sigma_1^{1/2} \Sigma_2 \Sigma_1^{1/2})^{1/2}) $$
 If the covariances commute, this simplifies to $\|m_1 - m_2\|^2 + \|\Sigma_1^{1/2} - \Sigma_2^{1/2}\|_F^2$.
 
 ### Example 2: Sinkhorn on a $2 \times 2$ Matrix
@@ -210,11 +169,7 @@ print("Sinkhorn Transport Plan:\n", P_sinkhorn)
 ### Demo 3: WGAN-GP Loss (Conceptual)
 
 In WGAN, we use the Kantorovich-Rubinstein duality for $W_1$:
-
-$$
-W_1(\mu, \nu) = \sup_{\|f\|_L \leq 1} \mathbb{E}_{x \sim \mu}[f(x)] - \mathbb{E}_{y \sim \nu}[f(y)]
-$$
-
+$$ W_1(\mu, \nu) = \sup_{\|f\|_L \leq 1} \mathbb{E}_{x \sim \mu}[f(x)] - \mathbb{E}_{y \sim \nu}[f(y)] $$
 The 1-Lipschitz constraint is enforced via a **Gradient Penalty**.
 
 ```python
@@ -255,4 +210,3 @@ As a tool, OT allows neural networks to "feel" the metric structure of their dat
 3. Peyré, G., & Cuturi, M. (2019). Computational Optimal Transport. Foundations and Trends in Machine Learning.
 4. Santambrogio, F. (2015). Optimal Transport for Applied Mathematicians. Birkhäuser.
 5. Arjovsky, M., et al. (2017). Wasserstein Generative Adversarial Networks. ICML.
-
