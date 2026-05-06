@@ -221,6 +221,10 @@ plt.close()
 print(f"Mean Squared Error of Kernel Matrix: {np.mean((K_exact - K_approx)**2):.6f}")
 ```
 
+```
+Mean Squared Error of Kernel Matrix: 0.002893
+```
+
 ![Figure](figures/09-4-demo1.png)
 
 ### Demo 2: Speeding up SVM with RFF
@@ -234,6 +238,24 @@ from sklearn.svm import SVC, LinearSVC
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+
+class RFF_Gaussian:
+    def __init__(self, n_features=100, gamma=1.0):
+        self.n_features = n_features
+        self.gamma = gamma
+        self.W = None
+        self.b = None
+
+    def fit(self, X):
+        d = X.shape[1]
+        std_dev = np.sqrt(2 * self.gamma)
+        self.W = np.random.normal(0, std_dev, size=(d, self.n_features))
+        self.b = np.random.uniform(0, 2 * np.pi, size=(self.n_features,))
+        return self
+
+    def transform(self, X):
+        projection = np.dot(X, self.W) + self.b
+        return np.sqrt(2.0 / self.n_features) * np.cos(projection)
 
 # Create large dataset
 X, y = make_classification(n_samples=20000, n_features=20, n_informative=10, random_state=42)
@@ -270,10 +292,10 @@ print(f"Time: {time_rff:.4f}s | Accuracy: {acc_rff*100:.2f}%")
 
 ```
 --- Kernel SVM (Trained on subset 2,000 points) ---
-Time: 0.2406s | Accuracy: 96.17%
+Time: 0.3031s | Accuracy: 96.17%
 
 --- RFF Linear SVM (Trained on full 16,000 points, D=500) ---
-Time: 2.4336s | Accuracy: 87.30%
+Time: 2.7936s | Accuracy: 86.90%
 ```
 
 RFF allows the linear model to leverage the full dataset rapidly, often surpassing the accuracy of the exact but subsampled kernel model within a fraction of the time.

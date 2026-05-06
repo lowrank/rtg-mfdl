@@ -166,6 +166,19 @@ criterion = nn.CrossEntropyLoss()
 # You would see train_loss go to 0 quickly, 
 # then a long plateau where test_loss is high,
 # then test_loss suddenly drops (Grokking).
+
+x = torch.tensor([1, 2, 3])
+y = torch.tensor([4, 5, 6])
+out = model(x, y)
+print(f"Model output shape: {out.shape}")
+print(f"Number of parameters: {sum(p.numel() for p in model.parameters())}")
+print("Grokking demo model is functional.")
+```
+
+```
+Model output shape: torch.Size([3, 97])
+Number of parameters: 35233
+Grokking demo model is functional.
 ```
 
 Mechanistic interpretability provides the "proof of work" for our understanding, moving beyond qualitative descriptions to a quantitative theory of how Transformers think.

@@ -178,6 +178,10 @@ print(f"Fisher Diagonal Shape for Layer 1 Weights: {fisher[0].shape}")
 # Use fisher[i] to scale learning rates in a custom optimizer!
 ```
 
+```
+Fisher Diagonal Shape for Layer 1 Weights: torch.Size([2, 10])
+```
+
 ### Demo 2: Natural Gradient Descent Optimization
 A simple 2D optimization comparing SGD to NGD on a Gaussian log-likelihood surface.
 
@@ -255,6 +259,11 @@ plt.legend()
 plt.tight_layout()
 plt.savefig('figures/05-5-demo2.png', dpi=150, bbox_inches='tight')
 plt.close()
+```
+
+```
+Final SGD: mu=4.91, var=3.90
+Final NGD: mu=4.88, var=4.07
 ```
 
 ![Figure](figures/05-5-demo2.png)

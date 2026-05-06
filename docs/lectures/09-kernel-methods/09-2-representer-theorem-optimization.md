@@ -334,5 +334,11 @@ plt.savefig('figures/09-2-demo2.png', dpi=150, bbox_inches='tight')
 plt.close()
 ```
 
+```
+Total training points: 200
+Number of Support Vectors: 46
+Sparsity: 77.00% of coefficients are strictly zero.
+```
+
 ![Figure](figures/09-2-demo2.png)
 

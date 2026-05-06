@@ -218,6 +218,15 @@ P_sinkhorn = ot.sinkhorn(a, b, M, reg=0.1)
 print("Sinkhorn Transport Plan:\n", P_sinkhorn)
 ```
 
+```
+Exact Transport Plan:
+ [[0.2 0.3]
+ [0.  0.5]]
+Sinkhorn Transport Plan:
+ [[1.99999999e-01 3.00000001e-01]
+ [6.87051203e-10 4.99999999e-01]]
+```
+
 ### Demo 3: WGAN-GP Loss (Conceptual)
 
 In WGAN, we use the Kantorovich-Rubinstein duality for $W_1$:
@@ -258,6 +267,10 @@ real = torch.randn(4, 2)
 fake = torch.randn(4, 2)
 loss = wgan_gp_loss(D, real, fake)
 print(f"WGAN-GP loss: {loss.item():.4f}")
+```
+
+```
+WGAN-GP loss: 8.1849
 ```
 
 ## 8. Summary and Conclusion

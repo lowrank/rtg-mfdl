@@ -218,6 +218,11 @@ plt.close()
 
 ![Figure](figures/10-3-demo1.png)
 
+```
+True alpha: 0.35, Fitted alpha: 0.3524
+Intrinsic Dimension Estimate (2/alpha): 5.68
+```
+
 ### Coding Demo 2: Visualizing the Chinchilla Compute Frontier
 
 This snippet plots the Iso-loss curves and the Compute constraint to show the tangency point (optimality).

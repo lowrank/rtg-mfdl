@@ -179,6 +179,10 @@ def train_nwj(rho, epochs=500, batch_size=512):
 train_nwj(rho=0.8)
 ```
 
+```
+True MI: 0.5108 nats, NWJ Estimated MI: 0.5416 nats
+```
+
 ### Demo 2: InfoNCE Loss Implementation
 A robust implementation of the InfoNCE loss for a batch of embeddings.
 
@@ -225,4 +229,10 @@ loss, mi = infonce_loss(fa, fb)
 print(f"Batch Size: {B}, Max possible bound: {np.log(B):.3f}")
 print(f"InfoNCE Loss: {loss.item():.3f}")
 print(f"MI Lower Bound: {mi:.3f} nats")
+```
+
+```
+Batch Size: 64, Max possible bound: 4.159
+InfoNCE Loss: 0.004
+MI Lower Bound: 4.154 nats
 ```

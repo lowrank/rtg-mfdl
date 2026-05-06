@@ -163,6 +163,20 @@ class MambaLayer(nn.Module):
             output.append(y)
             
         return torch.stack(output, dim=1)
+
+# Minimal test block
+batch, L, d_model, d_state = 2, 8, 16, 4
+mamba = MambaLayer(d_model, d_state)
+x = torch.randn(batch, L, d_model)
+out = mamba(x)
+print(f"Mamba output shape: {out.shape} (expected: [{batch}, {L}, {d_model}])")
+assert out.shape == (batch, L, d_model), f"Shape mismatch: {out.shape}"
+print("Mamba layer forward pass works correctly.")
+```
+
+```
+Mamba output shape: torch.Size([2, 8, 16]) (expected: [2, 8, 16])
+Mamba layer forward pass works correctly.
 ```
 
 ### Coding Demo 2: Associative Scan in Python

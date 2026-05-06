@@ -194,6 +194,13 @@ ortho_X = rgd_stiefel(target)
 print("Orthogonality check (X^T X):\n", ortho_X.t() @ ortho_X)
 ```
 
+```
+Orthogonality check (X^T X):
+ tensor([[1.0000e+00, 2.3290e-08, 3.0748e-08],
+        [2.3290e-08, 1.0000e+00, 2.1967e-07],
+        [3.0748e-08, 2.1967e-07, 1.0000e+00]], grad_fn=<MmBackward0>)
+```
+
 ### Demo 2: Hyperbolic SGD for Hierarchical Embeddings
 
 The Poincaré ball manifold is used to embed trees with low distortion.
@@ -227,6 +234,14 @@ result = hyperbolic_exp_map(x, v)
 norms = torch.norm(result, dim=-1)
 print("Norms of mapped points (should be < 1 for Poincaré ball):", norms)
 print("Hyperbolic exp map result:\n", result)
+```
+
+```
+Norms of mapped points (should be < 1 for Poincaré ball): tensor([0.1158, 0.1298, 0.2848])
+Hyperbolic exp map result:
+ tensor([[-0.0727, -0.0902],
+        [-0.0832,  0.0996],
+        [-0.0288,  0.2834]])
 ```
 
 ## 8. Summary and Future Directions

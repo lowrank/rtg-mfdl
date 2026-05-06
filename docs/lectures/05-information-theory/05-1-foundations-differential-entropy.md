@@ -400,6 +400,6 @@ print(f"EPI Holds: {NZ_est >= (NX + NY)}")
 
 ```
 N(X) + N(Y) = 0.49118
-Estimated N(X+Y) = 0.68622
+Estimated N(X+Y) = 0.70157
 EPI Holds: True
 ```

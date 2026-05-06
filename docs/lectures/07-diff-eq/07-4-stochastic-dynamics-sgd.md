@@ -202,6 +202,11 @@ print(f"Empirical SGD Variance (last 1000 steps): {np.var(x_sgd[1000:]):.5f}")
 print(f"Theoretical SDE Variance: {theoretical_var:.5f}")
 ```
 
+```
+Empirical SGD Variance (last 1000 steps): 0.01702
+Theoretical SDE Variance: 0.01250
+```
+
 ![Figure](figures/07-4-demo1.png)
 
 ### 5.2 Escape Time Simulation for Double-Well Potential
@@ -235,5 +240,11 @@ for b in betas:
     # Theoretical Eyring-Kramers Time: (pi/sqrt(2)) * exp(beta * 1.0)
     theoretical = (np.pi / np.sqrt(2)) * np.exp(b * 1.0)
     print(f"Beta={b}: Avg Simulated Time = {avg_escape:.2f}, Theoretical = {theoretical:.2f}")
+```
+
+```
+Beta=1.0: Avg Simulated Time = 2.61, Theoretical = 6.04
+Beta=2.0: Avg Simulated Time = 14.69, Theoretical = 16.41
+Beta=3.0: Avg Simulated Time = 23.85, Theoretical = 44.62
 ```
 

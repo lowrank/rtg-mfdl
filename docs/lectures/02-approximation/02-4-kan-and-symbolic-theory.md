@@ -190,6 +190,10 @@ plt.savefig('figures/02-4-demo1.png', dpi=150, bbox_inches='tight')
 plt.close()
 ```
 
+```
+Final MSE: 0.048438
+```
+
 ![Figure](figures/02-4-demo1.png)
 
 ### Demo 7.2: Symbolic Regression with pykan

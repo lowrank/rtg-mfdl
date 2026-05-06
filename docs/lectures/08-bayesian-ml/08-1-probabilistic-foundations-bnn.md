@@ -430,6 +430,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import math
 
+torch.manual_seed(42)
+
 class BayesianLinear(nn.Module):
     """
     A single Bayesian Linear layer using Variational Inference 
@@ -506,7 +508,7 @@ print(f"KL Divergence: {layer.kl_divergence().item():.4f}")
 
 ```
 Output shape: torch.Size([32, 5])
-KL Divergence: 218.5908
+KL Divergence: 223.9978
 ```
 
 This variational approach is a cornerstone of modern probabilistic deep learning, circumventing the intractable integrals highlighted in the logistic regression example. In subsequent lectures, we will systematically dissect advanced inference techniques (MCMC and Variational Inference) to scale these foundational principles to profound depths.

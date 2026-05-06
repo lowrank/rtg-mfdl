@@ -220,6 +220,11 @@ plt.savefig('figures/09-5-demo1.png', dpi=150, bbox_inches='tight')
 plt.close()
 ```
 
+```
+Observed MMD^2: 0.07164
+P-value: 0.0000
+```
+
 ![Figure](figures/09-5-demo1.png)
 
 ### Demo 2: Visualizing the Witness Function

@@ -299,6 +299,12 @@ Step 500: loss=25.2246, nll=25.1978, kl=0.0268
 ### 7.2 Coding Demo 2: Normalizing Flow (RealNVP Coupling)
 
 ```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+torch.manual_seed(42)
+
 class CouplingLayer(nn.Module):
     def __init__(self, dim):
         super().__init__()
@@ -322,8 +328,25 @@ class RealNVP(nn.Module):
 
     def log_prob(self, z):
         # Base log prob + log-det-jacobians
-        # ...
         pass
+
+# Test the flow
+dim = 4
+flow = RealNVP(dim)
+z = torch.randn(8, dim)
+y, log_det = flow.c1(z)
+print(f"Input shape: {z.shape}")
+print(f"Output shape after coupling: {y.shape}")
+print(f"Log-determinant per sample: {log_det}")
+print("Normalizing Flow classes defined and executed successfully.")
+```
+
+```
+Input shape: torch.Size([8, 4])
+Output shape after coupling: torch.Size([8, 4])
+Log-determinant per sample: tensor([-0.6633, -0.5960, -0.2907, -0.4122, -0.2653, -0.3093, -0.5160, -0.8484],
+       grad_fn=<SumBackward1>)
+Normalizing Flow classes defined and executed successfully.
 ```
 
 ## 8. Historical Context and Advanced Topics

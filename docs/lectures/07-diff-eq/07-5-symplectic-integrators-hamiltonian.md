@@ -270,3 +270,8 @@ print("State z:", z_sample[0])
 print("HNN Predicted Dynamics dz/dt:", dynamics[0])
 ```
 
+```
+State z: tensor([ 0.5266, -2.9713])
+HNN Predicted Dynamics dz/dt: tensor([0.0039, 0.0075], grad_fn=<SelectBackward0>)
+```
+

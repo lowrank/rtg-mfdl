@@ -282,6 +282,11 @@ plt.close()
 
 ![Figure](figures/10-1-demo1.png)
 
+```
+Final matrix rank: 1
+Final token variance: 1.250725989274914e-35
+```
+
 ### Coding Demo 2: Simulating "Head Movement" via Positional Attention
 
 This code demonstrates how a Transformer layer can move a "state" exactly one step to the right, a crucial mechanism for simulating a Turing Machine head.

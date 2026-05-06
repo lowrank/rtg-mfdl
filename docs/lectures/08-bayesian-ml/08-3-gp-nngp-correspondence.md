@@ -547,6 +547,28 @@ import numpy as np
 import torch
 import torch.nn as nn
 
+torch.manual_seed(42)
+np.random.seed(42)
+
+def compute_relu_nngp_kernel(X1, X2, depth=3, var_w=1.0, var_b=0.0):
+    N1 = X1.shape[0]
+    N2 = X2.shape[0]
+    d = X1.shape[1]
+    K_11 = np.sum(X1 * X1, axis=1) / d + var_b
+    K_22 = np.sum(X2 * X2, axis=1) / d + var_b
+    K_12 = np.dot(X1, X2.T) / d + var_b
+    for l in range(depth):
+        K_11 = np.clip(K_11, 1e-10, None)
+        K_22 = np.clip(K_22, 1e-10, None)
+        norm_matrix = np.sqrt(np.outer(K_11, K_22))
+        cos_theta = np.clip(K_12 / norm_matrix, -1.0, 1.0)
+        theta = np.arccos(cos_theta)
+        J_12 = (np.sin(theta) + (np.pi - theta) * cos_theta) / (2 * np.pi)
+        K_12 = var_b + var_w * norm_matrix * J_12
+        K_11 = var_b + var_w * K_11 / 2.0
+        K_22 = var_b + var_w * K_22 / 2.0
+    return K_12
+
 def empirical_covariance(X, width, num_samples=1000):
     N, d = X.shape
     outputs = np.zeros((num_samples, N))
@@ -580,7 +602,6 @@ print("Analytical Matrix (Depth=1):")
 K_exact = compute_relu_nngp_kernel(X_sample, X_sample, depth=1, var_w=1.0, var_b=0.0)
 print(K_exact)
 
-np.random.seed(42)
 for w in [10, 100, 10000]:
     print(f"\nEmpirical Matrix (Width={w}, 1000 samples):")
     K_emp = empirical_covariance(X_sample, w)
@@ -596,16 +617,16 @@ Analytical Matrix (Depth=1):
  [1.  2. ]]
 
 Empirical Matrix (Width=10, 1000 samples):
-[[0.44464968 0.88929937]
- [0.88929937 1.77859873]]
+[[0.51374438 1.02748875]
+ [1.02748875 2.0549775 ]]
 
 Empirical Matrix (Width=100, 1000 samples):
-[[0.44775889 0.89551778]
- [0.89551778 1.79103556]]
+[[0.50297487 1.00594973]
+ [1.00594973 2.01189945]]
 
 Empirical Matrix (Width=10000, 1000 samples):
-[[0.47661985 0.95323971]
- [0.95323971 1.90647943]]
+[[0.51332177 1.02664354]
+ [1.02664354 2.05328708]]
 ```
 
 ## 8. Philosophical Implications and the NTK

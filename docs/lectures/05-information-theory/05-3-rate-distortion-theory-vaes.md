@@ -217,6 +217,17 @@ plt.savefig('figures/05-3-demo1.png', dpi=150, bbox_inches='tight')
 plt.close()
 ```
 
+```
+Beta | Rate (bits) | Distortion
+-----------------------------------
+0.01 |     0.0000 |     0.2015
+0.03 |     0.0000 |     0.2000
+0.11 |     0.0000 |     0.2000
+0.36 |     0.0000 |     0.2000
+1.17 |     0.0000 |     0.2000
+3.86 |     0.5766 |     0.0207
+```
+
 ![Figure](figures/05-3-demo1.png)
 
 ### Demo 2: Simple VAE Loss showing Rate and Distortion Breakdown
@@ -262,7 +273,7 @@ print(f"Total Beta-VAE Loss:      {total_loss:.4f}")
 ```
 
 ```
-Distortion (Recon Error): 130.8464
-Rate (KL penalty):        7.5700
-Total Beta-VAE Loss:      168.6963
+Distortion (Recon Error): 130.7883
+Rate (KL penalty):        8.2226
+Total Beta-VAE Loss:      171.9014
 ```
