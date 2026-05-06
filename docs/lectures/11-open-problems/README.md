@@ -259,18 +259,75 @@ A recent breakthrough by Altschuler & Parrilo (2023) proves that variable step s
 
     improving on the standard $O(1/\varepsilon)$ rate but not reaching Nesterov's $O(1/\sqrt{\varepsilon})$.
 
-!!! info "Key distinction from momentum"
-    This is **pure gradient descent** — no momentum term, no gradient history. The acceleration comes entirely from a fractal, recursively-defined step size sequence chosen *before* the algorithm runs. The Silver Stepsize Schedule is provably optimal among all deterministic step size sequences for a class of problems, settling a long-standing open question about the power of stepsize hedging.
+!!! info "The Hedging Intuition"
+    The core algorithmic idea is **hedging between individually suboptimal strategies** — short steps and long steps — since bad cases for the former are good cases for the latter, and vice versa. Properly combining these stepsizes yields faster convergence due to the misalignment of worst-case functions. The key challenge is enforcing long-range consistency conditions along the algorithm's trajectory, which is resolved by a technique that recursively glues constraints from different portions of the trajectory.
 
-#### Follow-up: Part II and Random Stepsizes
+!!! info "Two-Phase Convergence"
+    The Silver schedule exhibits a sharp phase transition at $n^* = \Theta(\kappa^{\log_\rho 2})$:
+    
+    * **Acceleration regime** ($n \le n^*$): Super-exponential convergence,
+      $\tau_n = \exp(-\Theta(n \log^2 \rho / \kappa))$
+    * **Saturation regime** ($n > n^*$): Exponential convergence,
+      $\tau_n = \exp(-\Theta(n / n^*))$
+    
+    The acceleration regime lasts only until the normalized stepsizes grow to constant size; after that, the average per-step rate saturates and the method converges like a standard linear-rate method with the improved condition number.
 
-The same authors extended the Silver schedule to smooth non-strongly convex optimization in **Part II** [Altschuler & Parrilo, 2024], providing a concise self-contained proof that the schedule achieves $O(\varepsilon^{-\log_\rho 2})$ for $L$-smooth convex functions (arXiv:2309.16530, *Mathematical Programming* 2024). The Silver schedule has a remarkably simple closed form: the $i$-th stepsize is $1 + \rho^{\,v(i)-1}$ where $v(i)$ is the $2$-adic valuation of $i$ (the exponent of the largest power of $2$ dividing $i$).
+!!! info "Recursive Construction"
+    The Silver stepsizes are built recursively. Let $y_n, z_n$ be normalized stepsizes initialized at $y_1 = z_1 = 1/\kappa$. For doubling $n \to 2n$, they satisfy:
+    
+    $$
+    y_{2n} z_{2n} = z_n^2 \quad\text{and}\quad z_{2n} - y_{2n} = 2(z_n - z_n^2)
+    $$
+    
+    The explicit solution is $z_{2n} = z_n(\xi + \sqrt{1+\xi^2})$ where $\xi = 1 - z_n$. As $z_n \to 0$, the growth factor approaches $1 + \sqrt{2} = \rho$, the silver ratio. The actual stepsizes are obtained via a linear fractional transformation of $y_n, z_n$.
 
-A striking further development is **random stepsizes**: using inverse stepsizes drawn i.i.d. from the **Arcsine distribution** achieves **full acceleration** $O(\kappa^{1/2})$ for **separable** convex optimization — matching Nesterov's rate — without momentum [Altschuler & Parrilo, 2024, arXiv:2412.05790]. This is complementary to the Silver schedule: the random schedule achieves a better rate ($\sqrt{\kappa}$ vs $\kappa^{0.78}$) but only for separable problems, whereas the Silver schedule works for all convex functions. The randomized approach exploits a conceptual connection to potential theory: the optimal distribution of stepsizes mirrors the equilibrium distribution of charged particles minimizing logarithmic potential energy. The Arcsine distribution's "equalization property" makes GD converge at exactly the same rate for all quadratic functions, and martingale arguments extend this to all separable convex functions.
+### 2.4 The Long Steps Approach (Grimmer et al.)
 
-Grimmer, Shu, and Wang (2024, arXiv:2403.14045) further improved on the Silver schedule by constructing stepsize sequences that achieve $O(N^{-1.2716})$ convergence. For the objective gap, this improves on Altschuler & Parrilo by a constant factor; for the squared gradient norm, it improves the exponent from the prior best $O(N^{-1})$ to $O(N^{-1.2716})$. They followed this with a general **composition theory** for stepsize schedules (arXiv:2410.16249), proposing three notions of composable schedules that unify all recent advances, recover the Silver schedule as a special case, and produce schedules that match or beat numerically computed minimax optimal rates.
+Parallel to the Silver schedule, **Benjamin Grimmer (Johns Hopkins)** and collaborators developed a fundamentally different methodology using **computer-assisted proofs**. Rather than constructing a closed-form schedule, they solve semidefinite programs (SDPs) derived from the **Performance Estimation Problem (PEP)** framework to discover optimal step size patterns.
 
-### 2.3 Fundamental Limits of Variable-Step GD
+!!! success "Theorem 2.3 (Grimmer — Long Steps, 2023)"
+    For $L$-smooth convex optimization, gradient descent with a periodic pattern of long steps achieves convergence rate $O(LD^2 / (C \cdot T))$ where $C$ grows with the pattern length:
+    
+    | Length | Max step | Convergence rate |
+    |--------|----------|-----------------|
+    | $t=7$ | $\mathbf{12.0}$ | $\frac{LD^2}{3.20 \times T}$ |
+    | $t=15$ | $\mathbf{29.7}$ | $\frac{LD^2}{3.86 \times T}$ |
+    | $t=31$ | $\mathbf{72.3}$ | $\frac{LD^2}{4.60 \times T}$ |
+    | $t=63$ | $\mathbf{164.0}$ | $\frac{LD^2}{5.23 \times T}$ |
+    | $t=127$ | $\mathbf{370.0}$ | $\frac{LD^2}{5.83 \times T}$ |
+    
+    The stepsizes periodically take extremely long steps (far beyond the $2/L$ stability threshold) that temporarily increase the objective, but analyzed over multiple iterations they yield provably faster convergence.
+
+!!! info "Methodology: Computer-Assisted Proofs"
+    Grimmer's proofs are fundamentally different from traditional optimization analysis:
+    
+    > "Our proofs are based on the Performance Estimation Problem (PEP) ideas, which cast computing/bounding the worst-case problem instance of a given algorithm as a Semidefinite Program (SDP). We show that the existence of a feasible solution to a related SDP implies a convergence rate for gradient descent using a corresponding pattern of nonconstant stepsizes. **Here the computer output itself constitutes the proof.**"
+
+This contrasts with the Parrilo/Altschuler approach, which uses analytic recursive certificates that collapse to low-rank quadratic forms. Both techniques converge on the same conclusion — step size variation alone can accelerate GD — but through different proof paradigms.
+
+### 2.5 The Grimmer–Shu–Wang Composition Theory
+
+Grimmer, Shu, and Wang later unified both lines of work through a general **composition theory** for stepsize schedules (arXiv:2410.16249, 2024). They propose three notions of composable schedules:
+
+1. **Basic composable**: Two copies of a schedule can be concatenated into a longer schedule that certifies multi-step descent
+2. **The Silver schedule is basic $s$-composable** — this is why its recursive doubling argument works
+3. **Optimized schedules of every length** generalizing the exponentially-spaced silver stepsizes
+
+The composition framework explains why both the fractal Silver schedule and the SDP-derived long step patterns achieve acceleration: both rely on the same underlying principle that multi-step descent certificates can be composed from shorter certificates.
+
+#### Relation to the $O(N^{-1.2716})$ Rate
+
+Grimmer, Shu, and Wang (arXiv:2403.14045, 2024) used these techniques to construct stepsize sequences achieving $O(N^{-1.2716})$ convergence — a **constant-factor improvement** over the Silver schedule's $O(N^{-0.7864})$ exponent for the objective gap, and an **exponent improvement** for squared gradient norm convergence (from $O(N^{-1})$ to $O(N^{-1.2716})$). Their schedules are similar to but differ slightly from the Silver stepsizes, and are claimed to match or beat numerically computed minimax optimal rates.
+
+#### Extensions of the Stepsize Acceleration Paradigm
+
+The core idea has been extended beyond unconstrained smooth optimization:
+
+* **Proximal gradient descent** (arXiv:2412.05497, 2024): Silver stepsizes accelerate composite optimization $\min f(x) + g(x)$, matching the rates $O(\kappa^{\log_\rho 2})$ and $O(\varepsilon^{-\log_\rho 2})$
+* **Riemannian optimization** (arXiv:2506.06160, 2025): Silver schedules apply on manifolds with applications to Wasserstein space, suggesting the principle is geometric
+* **Schedule concatenation** (arXiv:2410.12395, Fudan, 2024): A unified technique for constructing stepsizes with analytic bounds by concatenating shorter optimal schedules
+
+### 2.6 Fundamental Limits of Variable-Step GD
 
 A classic result from approximation theory gives the fundamental limit of what variable step size GD can achieve: the optimal step size sequence corresponds to a Chebyshev polynomial that minimizes the worst-case error, and this rate is optimal among all deterministic first-order methods:
 
@@ -283,7 +340,7 @@ A classic result from approximation theory gives the fundamental limit of what v
 
     where $T_K$ is the $K$-th Chebyshev polynomial. This lower bound matches the Chebyshev upper bound up to a constant factor. The convergence is **never second-order** (i.e., never $e^{-cK^2}$), but achieves the optimal first-order rate $((\sqrt{\kappa}-1)/(\sqrt{\kappa}+1))^K$.
 
-### 2.4 Verification Code
+### 2.7 Verification Code
 
 ```python
 import numpy as np
@@ -336,7 +393,7 @@ plt.legend()
 plt.grid(True)
 ```
 
-### 2.5 Open Questions
+### 2.8 Open Questions
 
 !!! question "Open Problem 2.1 — Silver Schedule for Non-Separable Non-Quadratic"
     The Arcsine random stepsize schedule achieves full acceleration only for **separable** convex functions. Does there exist a stepsize schedule (deterministic or randomized) that achieves $O(\kappa^{1/2})$ without momentum for *all* convex functions? The Silver schedule gives partial acceleration $\kappa^{\log_\rho 2} \approx \kappa^{0.7864}$ — can this exponent be improved to $0.5$?
