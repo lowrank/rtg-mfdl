@@ -238,23 +238,29 @@ The worst-case error is controlled by minimizing the maximum of the polynomial $
 !!! info "Why this matters"
     This is pure gradient descent with no momentum term and no gradient history. The acceleration comes entirely from the deterministic step size schedule. The method is also known as the **Richardson-Chebyshev iteration** and achieves the same asymptotic rate as conjugate gradient and Nesterov's accelerated method — but with a simpler, predictable schedule.
 
-### 2.3 The Parrilo Result: SDP-Optimized Step Sizes
+### 2.3 The Parrilo Result: The Silver Stepsize Schedule
 
-The Chebyshev schedule is optimal for quadratics, but what about **general convex functions**? Parrilo and collaborators developed a framework using **semidefinite programming (SDP)** and **sum-of-squares (SOS)** optimization to find optimal step size sequences for worst-case convex problems:
+A recent breakthrough by Altschuler & Parrilo (2023) proves that variable step size GD can achieve rates **between** unaccelerated and accelerated, using a fractal-like schedule:
 
-!!! success "Theorem 2.2 (Parrilo — SOS-Optimized Step Sizes)"
-    For the class of $L$-smooth convex functions, the optimal step size sequence $\{\eta_k\}_{k=0}^{K-1}$ minimizing the worst-case final error can be computed by solving a semidefinite program. The resulting variable-step GD achieves:
+!!! success "Theorem 2.2 (Silver Stepsize Schedule — Altschuler & Parrilo, 2023)"
+    For an $L$-smooth $\mu$-strongly convex quadratic, gradient descent with the Silver Stepsize Schedule converges in:
 
     $$
-    \max_{f \in \mathcal{F}_{L}} \|w_K - w^*\| \leq \rho_K \cdot \|w_0 - w^*\|
+    k^{\log_\rho 2} \approx k^{0.7864}
     $$
 
-    where $\rho_K$ is strictly smaller than the fixed-step contraction factor $((\kappa-1)/(\kappa+1))^K$ for all $K \ge 2$. The improvement is **provably optimal** among all deterministic step size sequences.
+    iterations to reach a fixed accuracy, where $\rho = 1 + \sqrt{2}$ is the silver ratio and $\kappa = L/\mu$ is the condition number. This is strictly between the textbook unaccelerated rate (linear in $\kappa$) and Nesterov's accelerated rate ($\sqrt{\kappa}$). The schedule is defined recursively and is **non-monotonic and fractal-like**.
 
-The technique works by formulating the convergence bound as a polynomial inequality and checking feasibility via SOS. For quadratics, this recovers the Chebyshev schedule. For general convex functions, it produces step sizes that are **nearly Chebyshev-optimal** but with corrections that account for non-quadratic curvature.
+    For non-strongly convex $L$-smooth functions, the same technique yields the rate:
+
+    $$
+    \varepsilon^{-\log_\rho 2} \approx \varepsilon^{-0.7864}
+    $$
+
+    improving on the standard $O(1/\varepsilon)$ rate but not reaching Nesterov's $O(1/\sqrt{\varepsilon})$.
 
 !!! info "Key distinction from momentum"
-    This is distinct from the heavy-ball or Nesterov methods. Those algorithms incorporate the **previous iterate** $w_{k-1}$ in the update (momentum). Here, the update is pure GD $w_{k+1} = w_k - \eta_k \nabla f(w_k)$ — only the step size is varied. The acceleration comes from careful pre-selection of the step sizes, not from using past gradient information.
+    This is **pure gradient descent** — no momentum term, no gradient history. The acceleration comes entirely from a fractal, recursively-defined step size sequence chosen *before* the algorithm runs. The Silver Stepsize Schedule is provably optimal among all deterministic step size sequences for a class of problems, settling a long-standing open question about the power of stepsize hedging.
 
 ### 2.3 Fundamental Limits of Variable-Step GD
 
@@ -344,6 +350,7 @@ plt.grid(True)
 - Nemirovski, A., & Yudin, D. (1983). *Problem Complexity and Method Efficiency in Optimization*. Wiley.
 - Nesterov, Y. (2004). *Introductory Lectures on Convex Optimization*. Springer.
 - Golub, G. H., & Van Loan, C. F. (2013). *Matrix Computations* (4th ed.). Johns Hopkins University Press. [See Chapter 10 on Chebyshev acceleration for linear systems.]
+- Altschuler, J. M., & Parrilo, P. A. (2023). Acceleration by stepsize hedging I: Multi-step descent and the silver stepsize schedule. *Journal of the ACM*, 72(2), 1–38. arXiv:2309.07879.
 
 ---
 
