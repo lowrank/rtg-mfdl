@@ -92,8 +92,6 @@ The 2-layer case ($L = 2$) is well-understood — the dynamics can be diagonaliz
 
 - Saxe, A. M., McClelland, J. L., & Ganguli, S. (2014). Exact solutions to the nonlinear dynamics of learning in deep linear neural networks. *ICLR 2014*.
 - Arora, S., Cohen, N., Hu, W., & Luo, Y. (2019). Implicit regularization in deep matrix factorization. *NeurIPS 2019*.
-- Kawaguchi, K. (2016). Deep learning without poor local minima. *NeurIPS 2016*.
-- Cohen, N., Sharir, O., & Shashua, A. (2016). On the expressive power of deep learning: A tensor analysis. *COLT 2016*.
 
 ---
 
@@ -190,20 +188,16 @@ A recent breakthrough by Altschuler & Parrilo (2023) proves that variable step s
 
 ### 2.4 The Long Steps Approach (Grimmer et al.)
 
-Parallel to the Silver schedule, **Benjamin Grimmer (Johns Hopkins)** and collaborators developed a fundamentally different methodology using **computer-assisted proofs**. Rather than constructing a closed-form schedule, they solve semidefinite programs (SDPs) derived from the **Performance Estimation Problem (PEP)** framework to discover optimal step size patterns.
+Parallel to the Silver schedule, Grimmer et al. developed a fundamentally different methodology using **computer-assisted proofs**. Rather than constructing a closed-form schedule, they solve semidefinite programs (SDPs) derived from the **Performance Estimation Problem (PEP)** framework to discover optimal step size patterns.
 
-!!! success "Theorem 2.3 (Grimmer — Long Steps, 2023)"
-    For $L$-smooth convex optimization, gradient descent with a periodic pattern of long steps achieves convergence rate $O(LD^2 / (C \cdot T))$ where $C$ grows with the pattern length:
-    
-    | Length | Max step | Convergence rate |
-    |--------|----------|-----------------|
-    | $t=7$ | $\mathbf{12.0}$ | $\frac{LD^2}{3.20 \times T}$ |
-    | $t=15$ | $\mathbf{29.7}$ | $\frac{LD^2}{3.86 \times T}$ |
-    | $t=31$ | $\mathbf{72.3}$ | $\frac{LD^2}{4.60 \times T}$ |
-    | $t=63$ | $\mathbf{164.0}$ | $\frac{LD^2}{5.23 \times T}$ |
-    | $t=127$ | $\mathbf{370.0}$ | $\frac{LD^2}{5.83 \times T}$ |
-    
-    The stepsizes periodically take extremely long steps (far beyond the $2/L$ stability threshold) that temporarily increase the objective, but analyzed over multiple iterations they yield provably faster convergence.
+!!! success "Theorem 2.3 (Grimmer, 2023)"
+    For $L$-smooth convex optimization, gradient descent with a periodic pattern of long steps achieves the same accelerated rate $O\big(N^{-\log_2(1+\sqrt{2})}\big)$ as the Silver schedule, but with improved constants. The stepsizes are non-monotonic and periodically exceed the $2/L$ stability threshold, temporarily increasing the objective. The asymptotic exponent matches the Silver schedule:
+
+    $$
+    f(x_N) - f(x^*) \le \frac{C \cdot L D^2}{N^{\log_2(1+\sqrt{2})}}
+    $$
+
+    where the constant $C$ depends on the pattern length and is strictly smaller than the corresponding constant for the Silver schedule of the same length.
 
 !!! info "Methodology: Computer-Assisted Proofs"
     Grimmer's proofs are fundamentally different from traditional optimization analysis:
@@ -238,23 +232,13 @@ Zhang and Jiang (arXiv:2410.12395, Fudan, 2024) proposed a unified **concatenati
 
 **References:**
 
-- d'Aspremont, A., Karimi, A., & Gower, R. M. (2021). Optimal fast gradient methods. *Foundations and Trends in Optimization*, 5(1).
-- Drori, Y., & Teboulle, M. (2014). Performance of first-order methods for smooth convex minimization: A novel approach. *Mathematical Programming*, 145(1), 451–482.
-- Taylor, A., Hendrickx, J. M., & Glineur, F. (2017). Performance estimation toolbox (PESTO): Automated worst-case analysis of first-order optimization methods. *IEEE CDC 2017*.
-- Lessard, L., Recht, B., & Packard, A. (2016). Analysis and design of optimization algorithms via integral quadratic constraints. *SIAM Journal on Optimization*, 26(1), 57–95.
-- Hu, B., & Lessard, L. (2017). Dissipativity theory for accelerating gradient methods. *IEEE CDC 2017*.
-- Parrilo, P. A. (2003). Semidefinite programming relaxations for semialgebraic problems. *Mathematical Programming*, 96(2), 293–320.
-- Polyak, B. T. (1964). Some methods of speeding up the convergence of iteration methods. *USSR Computational Mathematics and Mathematical Physics*, 4(5), 1–17.
-- Polyak, B. T. (1987). *Introduction to Optimization*. Optimization Software, Inc.
 - Nesterov, Y. (1983). A method for solving the convex programming problem with convergence rate $O(1/k^2)$. *Doklady AN SSSR*, 269, 543–547.
-- Nemirovski, A., & Yudin, D. (1983). *Problem Complexity and Method Efficiency in Optimization*. Wiley.
-- Nesterov, Y. (2004). *Introductory Lectures on Convex Optimization*. Springer.
-- Golub, G. H., & Van Loan, C. F. (2013). *Matrix Computations* (4th ed.). Johns Hopkins University Press. [See Chapter 10 on Chebyshev acceleration for linear systems.]
 - Altschuler, J. M., & Parrilo, P. A. (2023). Acceleration by stepsize hedging I: Multi-step descent and the silver stepsize schedule. *Journal of the ACM*, 72(2), 1–38. arXiv:2309.07879.
 - Altschuler, J. M., & Parrilo, P. A. (2024). Acceleration by stepsize hedging II: Silver stepsize schedule for smooth convex optimization. *Mathematical Programming*, 2024. arXiv:2309.16530.
 - Altschuler, J. M., & Parrilo, P. A. (2024). Acceleration by random stepsizes: Hedging, equalization, and the arcsine stepsize schedule. arXiv:2412.05790.
 - Grimmer, B., Shu, K., & Wang, A. L. (2024). Accelerated objective gap and gradient norm convergence for gradient descent via long steps. arXiv:2403.14045.
 - Grimmer, B., Shu, K., & Wang, A. L. (2024). Composing optimized stepsize schedules for gradient descent. arXiv:2410.16249.
+- Zhang, Z., & Jiang, R. (2024). Accelerated gradient descent by concatenation of stepsize schedules. arXiv:2410.12395.
 
 ---
 
@@ -293,10 +277,6 @@ In the lazy (NTK) regime, deep ReLU networks behave like kernel regression with 
 **References:**
 
 - Chizat, L., & Bach, F. (2020). Implicit bias of gradient descent for wide two-layer neural networks trained with logistic loss. *COLT 2020*.
-- Ji, Z., & Telgarsky, M. (2020). Directional convergence and alignment in deep learning. *NeurIPS 2020*.
-- Lyu, K., & Li, J. (2020). Gradient descent maximizes the margin of homogeneous neural networks. *ICLR 2020*.
-- Gunasekar, S., Lee, J., Soudry, D., & Srebro, N. (2018). Characterizing implicit bias in terms of optimization geometry. *ICML 2018*.
-- Soudry, D., Hoffer, E., Nacson, M. S., Gunasekar, S., & Srebro, N. (2018). The implicit bias of gradient descent on separable data. *JMLR*, 19(1).
 
 ---
 
@@ -336,10 +316,7 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
 
 **References:**
 
-- Telgarsky, M. (2016). Benefits of depth in neural networks. *COLT 2016*.
-- Safran, I., & Shamir, O. (2018). Spurious local minima are common in two-layer ReLU neural networks. *ICML 2018*.
-- Du, S. S., Zhai, X., Poczos, B., & Singh, A. (2019). Gradient descent provably optimizes over-parameterized neural networks. *ICLR 2019*.
-- Chizat, L., & Bach, F. (2018). On the global convergence of gradient descent for over-parameterized models using optimal transport. *NeurIPS 2018*.
+None.
 
 ---
 
