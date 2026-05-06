@@ -309,54 +309,55 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
 import numpy as np
 import matplotlib.pyplot as plt
 
-def train_and_track_biases(m=100, steps=50000, lr=0.01):
-    np.random.seed(0)
-    x = np.linspace(-3, 3, 500)
-    f_star = np.sin(2 * x) + 0.7 * np.sin(5 * x) + 0.3 * np.sin(11 * x)
+np.random.seed(0)
+m = 100
+steps = 50000
+lr = 0.01
 
-    a = np.random.randn(m) * 0.5
-    b = np.random.uniform(-1, 1, m)
-    w = np.ones(m)
+x = np.linspace(-1, 1, 500)
+f_star = np.sin(2 * np.pi * x) + 0.5 * np.sin(4 * np.pi * x)
 
-    bias_log = [b.copy()]
-    loss_log = []
-    for t in range(steps):
-        z = w * x[:, None] + b[None, :]
-        h = np.maximum(0, z)
-        f = h @ a
-        residual = f - f_star
-        loss = np.mean(residual ** 2)
-        a -= lr * h.T @ residual / len(x)
-        b -= lr * (a[None, :] * (z > 0)).T @ residual / len(x)
-        if t % 2000 == 0:
-            bias_log.append(b.copy())
-            loss_log.append(loss)
+a = np.random.randn(m) * 0.5
+b = np.sort(np.random.uniform(-1, 1, m))
+w = np.ones(m)
 
-    return b, bias_log, f, f_star, x, loss_log
+b_log = np.zeros((steps // 1000 + 1, m))
+b_log[0] = b
+loss_log = []
 
-b, hist, f, f_star, x, loss_log = train_and_track_biases()
+for t in range(steps):
+    z = w * x[:, None] + b[None, :]
+    h = np.maximum(0, z)
+    f = h @ a
+    residual = f - f_star
+    loss = np.mean(residual ** 2)
+    a -= lr * h.T @ residual / len(x)
+    b -= lr * (a[None, :] * (z > 0)).T @ residual / len(x)
+    if t % 1000 == 0:
+        b_log[t // 1000] = np.sort(b)
+        loss_log.append(loss)
 
 plt.figure(figsize=(14, 4))
 plt.subplot(131)
-for i, bh in enumerate(hist):
-    plt.scatter(np.full(len(bh), i * 2000), bh, s=4, alpha=0.3, color='C0')
+for j in range(m):
+    plt.plot(np.arange(len(b_log)) * 1000, b_log[:, j], lw=0.5, alpha=0.3, color='C0')
 plt.xlabel('Iteration')
-plt.ylabel('Bias value $b_j$')
-plt.title('Bias trajectories')
+plt.ylabel('$b_j$')
+plt.title('Bias trajectories (sorted)')
 
 plt.subplot(132)
-plt.plot(x, f_star, 'k--', linewidth=2, label='Target')
-plt.plot(x, f, 'r-', linewidth=1.5, label='Network')
-plt.scatter(b, np.full_like(b, -1.5), s=10, color='C0', alpha=0.6, zorder=3)
+plt.plot(x, f_star, 'k--', lw=2, label='Target')
+plt.plot(x, f, 'r-', lw=1.5, label='Network')
+plt.scatter(b, np.full_like(b, -1.3), s=8, color='C0', alpha=0.6, zorder=3)
+plt.xlim(-1, 1)
 plt.xlabel('$x$')
 plt.legend()
-plt.title('Final fit and bias locations')
+plt.title('Final fit')
 
 plt.subplot(133)
 plt.semilogy(loss_log)
-plt.xlabel('Iteration (x2000)')
-plt.ylabel('MSE Loss')
-plt.title('Loss curve')
+plt.xlabel('Iteration (x1000)')
+plt.ylabel('MSE')
 plt.tight_layout()
 ```
 
