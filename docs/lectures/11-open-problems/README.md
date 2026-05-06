@@ -243,13 +243,13 @@ The worst-case error is controlled by minimizing the maximum of the polynomial $
 A recent breakthrough by Altschuler & Parrilo (2023) proves that variable step size GD can achieve rates **between** unaccelerated and accelerated, using a fractal-like schedule:
 
 !!! success "Theorem 2.2 (Silver Stepsize Schedule — Altschuler & Parrilo, 2023)"
-    For an $L$-smooth $\mu$-strongly convex quadratic, gradient descent with the Silver Stepsize Schedule converges in:
+    For an $L$-smooth $\mu$-strongly convex function, gradient descent with the Silver Stepsize Schedule converges in:
 
     $$
-    k^{\log_\rho 2} \approx k^{0.7864}
+    \kappa^{\log_\rho 2} \approx \kappa^{0.7864}
     $$
 
-    iterations to reach a fixed accuracy, where $\rho = 1 + \sqrt{2}$ is the silver ratio and $\kappa = L/\mu$ is the condition number. This is strictly between the textbook unaccelerated rate (linear in $\kappa$) and Nesterov's accelerated rate ($\sqrt{\kappa}$). The schedule is defined recursively and is **non-monotonic and fractal-like**.
+    iterations to reach a fixed accuracy, where $\rho = 1 + \sqrt{2}$ is the silver ratio and $\kappa = L/\mu$ is the condition number. This is strictly between the textbook unaccelerated rate (linear in $\kappa$) and Nesterov's accelerated rate ($\sqrt{\kappa}$). The schedule is defined recursively and is **non-monotonic and fractal-like**. The result holds for all smooth strongly convex functions, not just quadratics.
 
     For non-strongly convex $L$-smooth functions, the same technique yields the rate:
 
