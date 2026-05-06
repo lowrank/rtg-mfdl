@@ -360,6 +360,8 @@ plt.title('Loss curve')
 plt.tight_layout()
 ```
 
+![Bias collapse: trajectories, final fit, and loss curve](bias_collapse.png)
+
 ### 4.4 Open Questions
 
 !!! question "Open Problem 4.1 — Precise Number of Clusters"
