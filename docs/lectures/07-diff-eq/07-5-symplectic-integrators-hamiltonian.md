@@ -233,6 +233,7 @@ We define an HNN that learns a scalar $H(z)$ and differentiates it to get the ve
 ```python
 import torch
 import torch.nn as nn
+torch.manual_seed(42)
 
 class HNN(nn.Module):
     def __init__(self):
@@ -271,7 +272,7 @@ print("HNN Predicted Dynamics dz/dt:", dynamics[0])
 ```
 
 ```
-State z: tensor([ 0.5266, -2.9713])
-HNN Predicted Dynamics dz/dt: tensor([0.0039, 0.0075], grad_fn=<SelectBackward0>)
+State z: tensor([-0.1345, -0.5799])
+HNN Predicted Dynamics dz/dt: tensor([ 0.2399, -0.0786], grad_fn=<SelectBackward0>)
 ```
 

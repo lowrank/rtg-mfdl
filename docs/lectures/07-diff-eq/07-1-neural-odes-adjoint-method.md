@@ -312,6 +312,7 @@ To leverage the memory advantages of the Adjoint method, we use the `torchdiffeq
 ```python
 import torch
 import torch.nn as nn
+torch.manual_seed(42)
 
 # Simple RK4 solver (torchdiffeq not required)
 def rk4_step(func, t, y, dt):
@@ -365,7 +366,7 @@ print("Gradients populated for Neural ODE layers.")
 ```
 
 ```
-Loss computed: 0.3088473975658417
+Loss computed: 0.34562692046165466
 Gradients populated for Neural ODE layers.
 ```
 

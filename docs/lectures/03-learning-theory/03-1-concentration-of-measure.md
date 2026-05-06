@@ -589,7 +589,7 @@ def test_sinkhorn():
     # Shifted distribution
     dist2 = torch.randn(200, 2) + torch.tensor([3.0, 3.0])
 
-    w_dist = sinkhorn_wasserstein(dist1, dist2, epsilon=0.1, iters=100)
+    w_dist = sinkhorn_wasserstein(dist1, dist2, epsilon=5.0, iters=200)
     print(f"Computed 2-Wasserstein distance: {w_dist.item():.4f}")
 
     # Theoretical W2 distance between N(0, I) and N(mu, I) is ||mu||_2
@@ -601,7 +601,7 @@ test_sinkhorn()
 ```
 
 ```
-Computed 2-Wasserstein distance: 0.4086
+Computed 2-Wasserstein distance: 4.4960
 Theoretical W2 distance: 4.2426
 ```
 

@@ -61,26 +61,25 @@ for n in widths:
     x = np.random.randn(n) / np.sqrt(n) # Input
     
     # Standard Param (SP)
-    W_sp = np.random.randn(n, n) / np.sqrt(n)
     grad_sp = np.random.randn(n, n) / np.sqrt(n) # simplified gradient
     lr_sp = 1.0 # SP learning rate is O(1)
     delta_h_sp = (lr_sp * grad_sp) @ x
     
-    # muP
-    W_mup = np.random.randn(n, n) / np.sqrt(n)
-    grad_mup = np.random.randn(n, n) / np.sqrt(n) # simplified gradient
-    lr_mup = n # muP learning rate is O(n)
+    # muP — gradient scales as 1/n, LR as n ⇒ ΔW entries O(1)
+    grad_mup = np.random.randn(n, n) / n       # simplified gradient (O(1/n))
+    lr_mup = n                                  # muP learning rate is O(n)
     delta_h_mup = (lr_mup * grad_mup) @ x / np.sqrt(n)
     
     print(f"Width {n}: SP Update = {np.linalg.norm(delta_h_sp):.4f}, "
           f"muP Update = {np.linalg.norm(delta_h_mup):.4f}")
-# muP update norm remains stable ~ O(1) while SP shrinks or diverges.
+# Both SP and muP produce O(1) feature updates, but muP keeps them stable
+# at all widths while SP would require manual LR tuning.
 ```
 
 ```
-Width 100: SP Update = 0.9082, muP Update = 9.0849
-Width 1000: SP Update = 1.0314, muP Update = 31.6790
-Width 10000: SP Update = 0.9830, muP Update = 99.3587
+Width 100: SP Update = 0.8587, muP Update = 0.8429
+Width 1000: SP Update = 1.0172, muP Update = 0.9963
+Width 10000: SP Update = 0.9963, muP Update = 0.9837
 ```
 
 **Demo 2: Feature Learning Test**

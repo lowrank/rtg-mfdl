@@ -198,12 +198,26 @@ Final MSE: 0.048438
 
 ### Demo 7.2: Symbolic Regression with pykan
 (Note: Requires `pykan` library)
+
 ```python
-# from kan import KAN
-# model = KAN(width=[2, 5, 1], grid=5, k=3)
-# model.train(dataset)
-# model.plot() # Visualizes the learned functions
-# model.suggest_symbolic() # Outputs discovered formulas
+try:
+    from kan import KAN
+    print("pykan library is available. Example usage:")
+    print("  model = KAN(width=[2, 5, 1], grid=5, k=3)")
+    print("  model.train(dataset)")
+    print("  model.suggest_symbolic()")
+except ImportError:
+    print("pykan library is NOT installed. Install via: pip install pykan")
+    print("Example usage would be:")
+    print("  model = KAN(width=[2, 5, 1], grid=5, k=3)")
+    print("  model.train(dataset)")
+```
+
+```
+pykan library is NOT installed. Install via: pip install pykan
+Example usage would be:
+  model = KAN(width=[2, 5, 1], grid=5, k=3)
+  model.train(dataset)
 ```
 
 ---

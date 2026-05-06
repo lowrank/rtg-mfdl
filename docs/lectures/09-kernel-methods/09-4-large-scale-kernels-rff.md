@@ -272,13 +272,14 @@ time_exact = time.time() - start
 acc_exact = accuracy_score(y_test, svm_exact.predict(X_test))
 
 # --- 2. RFF + Linear SVM (O(nD^2)) ---
+np.random.seed(42)  # Seed for reproducible RFF features
 start = time.time()
 rff = RFF_Gaussian(n_features=500, gamma=gamma_val)
 rff.fit(X_train)
 Z_train = rff.transform(X_train) # Full 16,000 samples!
 Z_test = rff.transform(X_test)
 
-svm_linear = LinearSVC(dual=False, C=1.0, max_iter=2000)
+svm_linear = LinearSVC(dual=False, C=1.0, max_iter=2000, random_state=42)
 svm_linear.fit(Z_train, y_train)
 time_rff = time.time() - start
 acc_rff = accuracy_score(y_test, svm_linear.predict(Z_test))
@@ -292,10 +293,10 @@ print(f"Time: {time_rff:.4f}s | Accuracy: {acc_rff*100:.2f}%")
 
 ```
 --- Kernel SVM (Trained on subset 2,000 points) ---
-Time: 0.3031s | Accuracy: 96.17%
+Time: 0.2501s | Accuracy: 96.17%
 
 --- RFF Linear SVM (Trained on full 16,000 points, D=500) ---
-Time: 2.7936s | Accuracy: 86.90%
+Time: 2.5784s | Accuracy: 85.50%
 ```
 
 RFF allows the linear model to leverage the full dataset rapidly, often surpassing the accuracy of the exact but subsampled kernel model within a fraction of the time.

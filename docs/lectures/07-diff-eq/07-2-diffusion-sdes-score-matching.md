@@ -260,6 +260,7 @@ Here we implement the fundamental objective of Score-Based Generative Models: De
 ```python
 import torch
 import torch.nn as nn
+torch.manual_seed(42)
 
 class ToyScoreNet(nn.Module):
     def __init__(self):
@@ -308,6 +309,6 @@ print(f"Denoising Score Matching Loss: {loss.item():.4f}")
 ```
 
 ```
-Denoising Score Matching Loss: 630.3624
+Denoising Score Matching Loss: 14.2597
 ```
 

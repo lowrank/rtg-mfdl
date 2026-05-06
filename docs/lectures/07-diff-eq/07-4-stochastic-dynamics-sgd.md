@@ -164,6 +164,7 @@ import matplotlib
 matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
+np.random.seed(42)
 
 # Problem: Minimize L(x) = 0.5 * c * x^2
 c = 2.0
@@ -203,7 +204,7 @@ print(f"Theoretical SDE Variance: {theoretical_var:.5f}")
 ```
 
 ```
-Empirical SGD Variance (last 1000 steps): 0.01702
+Empirical SGD Variance (last 1000 steps): 0.01215
 Theoretical SDE Variance: 0.01250
 ```
 
@@ -215,6 +216,7 @@ We simulate the Kramers escape time across the barrier of a double-well potentia
 
 ```python
 import numpy as np
+np.random.seed(42)
 
 def simulate_escape(beta, max_steps=1000000):
     """ Simulate SDE dx = -U'(x)dt + sqrt(2/beta) dW """
@@ -243,8 +245,8 @@ for b in betas:
 ```
 
 ```
-Beta=1.0: Avg Simulated Time = 2.61, Theoretical = 6.04
-Beta=2.0: Avg Simulated Time = 14.69, Theoretical = 16.41
-Beta=3.0: Avg Simulated Time = 23.85, Theoretical = 44.62
+Beta=1.0: Avg Simulated Time = 3.63, Theoretical = 6.04
+Beta=2.0: Avg Simulated Time = 5.25, Theoretical = 16.41
+Beta=3.0: Avg Simulated Time = 29.01, Theoretical = 44.62
 ```
 

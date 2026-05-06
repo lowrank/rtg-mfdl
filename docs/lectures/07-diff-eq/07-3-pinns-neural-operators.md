@@ -195,6 +195,7 @@ We solve $\frac{du}{dx} + u = 0$, with $u(0) = 1$. The true solution is $u(x) = 
 import torch
 import torch.nn as nn
 import torch.optim as optim
+torch.manual_seed(42)
 
 class PINN(nn.Module):
     def __init__(self):
@@ -242,7 +243,7 @@ print(f"PINN Prediction at x=1: {u_test:.4f} (True: {0.3679:.4f})")
 ```
 
 ```
-PINN Prediction at x=1: 0.3710 (True: 0.3679)
+PINN Prediction at x=1: 0.3681 (True: 0.3679)
 ```
 
 ### 6.2 Fourier Neural Operator (FNO) 1D Layer
