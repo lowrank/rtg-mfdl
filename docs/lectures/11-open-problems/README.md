@@ -182,6 +182,7 @@ plt.grid(True)
 ```
 
 **References:**
+
 - Saxe, A. M., McClelland, J. L., & Ganguli, S. (2014). *Exact solutions to the nonlinear dynamics of learning in deep linear neural networks*. ICLR.
 - Arora, S., Cohen, N., Hu, W., & Luo, Y. (2019). *Implicit Regularization in Deep Matrix Factorization*. NeurIPS.
 - Bah, B., et al. (2022). *Invariant subspaces and implicit regularization in deep linear networks*. JMLR.
@@ -299,6 +300,7 @@ plt.grid(True)
     The Chebyshev schedule is optimal for quadratic objectives. For general neural network loss landscapes (which are non-quadratic and non-convex), do variable step size schedules provably outperform fixed step sizes? Can we derive algorithms that interpolate between Chebyshev acceleration and Adam-style adaptive methods?
 
 **References:**
+
 - d'Aspremont, A., et al. (2021). *Optimal Fast Gradient Methods*. Foundations and Trends in Optimization.
 - Parrilo, P. A. (2003). *Semidefinite programming relaxations for semialgebraic problems*. Mathematical Programming.
 - Lee, Y.-T., et al. (2021). *Optimization with First-Order Methods: Beyond Gradient Descent*. JHU Preprint.
@@ -391,6 +393,7 @@ plt.tight_layout()
 ```
 
 **References:**
+
 - Chizat, L., & Bach, F. (2020). *Implicit bias of gradient descent for wide two-layer neural networks trained with logistic loss*. COLT.
 - Ji, Z., & Telgarsky, M. (2020). *Directional convergence and alignment in deep learning*. NeurIPS.
 - Lyu, K., & Li, J. (2020). *Gradient descent maximizes the margin of homogeneous neural networks*. ICLR.
@@ -490,6 +493,7 @@ plt.tight_layout()
     Bias collapse suggests that many neurons are redundant. Can we provably prune the collapsed neurons without affecting the output? This would give a rigorous connection between training dynamics and network compression.
 
 **References:**
+
 - Williams, F., et al. (2019). *On the collapse of deep neural networks training*. arXiv.
 - Xie, Y., et al. (2020). *Neural networks as kernel learners: The wide and deep limits*. NeurIPS.
 - Telgarsky, M. (2016). *Benefits of depth in neural networks*. COLT.
