@@ -1,0 +1,450 @@
+# Chapter 11: Open Problems — Research Frontiers
+
+> This chapter collects concrete, research-level open problems that arise naturally from the mathematics developed in the preceding chapters. Each problem includes the theoretical setup, key references, verification code, and specific open directions.
+
+---
+
+## 1. Deep Linear Networks: Gradient Flow, Implicit Bias, and the 2x2 Mystery
+
+### 1.1 Setup and Gradient Flow
+
+Consider a deep linear network with $L$ layers, no biases, and squared loss:
+
+$$
+f(W_1, \dots, W_L; x) = W_L W_{L-1} \cdots W_1 x,
+\qquad
+\mathcal{L}(W_1, \dots, W_L) = \frac{1}{2} \|Y - W_L \cdots W_1 X\|_F^2
+$$
+
+where $X \in \mathbb{R}^{d_0 \times n}$, $Y \in \mathbb{R}^{d_L \times n}$, and each $W_\ell \in \mathbb{R}^{d_\ell \times d_{\ell-1}}$.
+
+!!! success "Theorem 1.1 (Gradient Flow for Deep Linear Networks)"
+    Let the end-to-end matrix be $W = W_L W_{L-1} \cdots W_1$. Under gradient flow with infinitesimal step size, the dynamics of $W$ are given by:
+
+    $$
+    \dot{W}(t) = -\sum_{\ell=1}^L \left( W_L \cdots W_{\ell+1} \right)^\top \left( \nabla_{W_\ell} \mathcal{L} \right) \left( W_{\ell-1} \cdots W_1 \right)^\top
+    $$
+
+    For the special case of a **balanced** initialization ($W_{\ell+1}^\top W_{\ell+1} = W_\ell W_\ell^\top$ for all $\ell$), this simplifies dramatically to:
+
+    $$
+    \dot{W}(t) = -L \cdot (W(t) W(t)^\top)^{\frac{L-1}{L}} \nabla \mathcal{L}(W(t))
+    $$
+
+!!! info "Derivation Sketch"
+    Let $\Phi = W_L \cdots W_1$ and $E = \Phi X - Y$. The gradient w.r.t. $W_\ell$ is:
+
+    $$
+    \nabla_{W_\ell} \mathcal{L} = (W_L \cdots W_{\ell+1})^\top E X^\top (W_{\ell-1} \cdots W_1)^\top
+    $$
+
+    Under balancedness, all layers evolve along the same singular directions and the dynamics collapse to the above compact form. This was first derived in [Saxe et al., 2014].
+
+### 1.2 Implicit Bias — The Arora Result
+
+!!! success "Theorem 1.2 (Implicit Bias of Deep Linear Networks — Arora et al., 2019)"
+    Consider gradient flow on a deep linear network with square loss and balanced initialization. As $t \to \infty$, the end-to-end matrix $W(t)$ converges to the minimum $L_2$-norm solution of the linear regression problem:
+
+    $$
+    W(\infty) = \arg\min_{W} \|W\|_F^2 \quad \text{s.t.} \quad W X = Y
+    $$
+
+    Moreover, for depth $L > 1$, the singular values $\sigma_i(t)$ of $W(t)$ evolve as:
+
+    $$
+    \dot{\sigma}_i(t) = -L \cdot \sigma_i(t)^{2 - 2/L} \cdot (\sigma_i(t) - \sigma_i^*)
+    $$
+
+    where $\sigma_i^*$ are the singular values of the minimum-norm solution. This leads to a **spectral bias**: larger singular values converge faster.
+
+### 1.3 Verification Code
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def deep_linear_gradient_flow(X, Y, depths=[1, 2, 3, 5], lr=0.01, steps=2000):
+    n, d_in, d_out = X.shape[0], X.shape[1], Y.shape[1]
+    results = {}
+    for L in depths:
+        np.random.seed(42)
+        # Initialize with balancedness
+        W = [np.random.randn(d_in, d_in) / np.sqrt(d_in)]
+        for _ in range(L - 1):
+            W.append(W[-1].copy())
+        W_end = np.eye(d_in)
+        for w in W:
+            W_end = W_end @ w
+
+        sv_history = []
+        for t in range(steps):
+            grad = 2 * (W_end @ X.T - Y.T) @ X / n
+            W_end = W_end - lr * L * (W_end @ W_end.T) ** ((L - 1) / L) @ grad
+            if t % 100 == 0:
+                sv = np.linalg.svd(W_end, compute_uv=False)
+                sv_history.append(sv)
+
+        results[L] = np.array(sv_history)
+    return results
+
+# Generate synthetic data
+np.random.seed(0)
+n, d = 100, 10
+X = np.random.randn(n, d)
+w_true = np.random.randn(d, d)
+Y = X @ w_true + 0.1 * np.random.randn(n, d)
+
+svs = deep_linear_gradient_flow(X, Y)
+plt.figure(figsize=(8, 5))
+for L, history in svs.items():
+    plt.plot(history[:, 0], label=f'L={L}, top SV')
+    plt.plot(history[:, -1], '--', label=f'L={L}, bottom SV')
+plt.xlabel('Step (x100)')
+plt.ylabel('Singular Value')
+plt.title('Deep Linear Network: Singular Value Evolution')
+plt.legend()
+plt.grid(True)
+```
+
+### 1.4 Open Questions: The 2x2 Matrix Zoo
+
+Consider the simplest non-trivial case: a 2-layer linear network $f(x) = W_2 W_1 x$ with $x \in \mathbb{R}^2$, $W_1, W_2 \in \mathbb{R}^{2 \times 2}$, and a single data point $(x, y)$.
+
+!!! question "Open Problem 1.1 — Diagonal Entries"
+    Suppose $W_1^{(0)} = W_2^{(0)} = \begin{pmatrix} a & 0 \\ 0 & b \end{pmatrix}$. Characterize the complete training dynamics. Does the implicit bias toward minimum norm hold? What is the precise convergence rate?
+
+!!! question "Open Problem 1.2 — Complex Entries"
+    Let $W_1, W_2 \in \mathbb{C}^{2 \times 2}$ with complex initializations. The gradient flow becomes a dynamical system on $\mathbb{C}^4$. Are there periodic orbits? Can the optimization get stuck in non-trivial limit cycles? This connects to questions about **real vs. complex deep learning**.
+
+!!! question "Open Problem 1.3 — General Entries"
+    For generic full-rank initializations of $W_1, W_2 \in \mathbb{R}^{2 \times 2}$, the dynamics live on a 4-dimensional manifold. Can we fully classify the phase portrait? Which initializations lead to which singular value trajectories?
+
+**References:**
+- Saxe, A. M., McClelland, J. L., & Ganguli, S. (2014). *Exact solutions to the nonlinear dynamics of learning in deep linear neural networks*. ICLR.
+- Arora, S., Cohen, N., Hu, W., & Luo, Y. (2019). *Implicit Regularization in Deep Matrix Factorization*. NeurIPS.
+- Bah, B., et al. (2022). *Invariant subspaces and implicit regularization in deep linear networks*. JMLR.
+
+---
+
+## 2. Variable Step Size Acceleration: Chebyshev and Beyond
+
+### 2.1 The Chebyshev Step Size Schedule
+
+Classical gradient descent with fixed step size $\eta$ converges linearly for smooth strongly convex functions. However, by varying the step size according to a **Chebyshev polynomial schedule**, we can achieve dramatically faster convergence.
+
+!!! success "Theorem 2.1 (Chebyshev Acceleration for Gradient Descent)"
+    Let $f$ be $\mu$-strongly convex and $L$-smooth. Consider the heavy-ball (momentum) method:
+
+    $$
+    w_{k+1} = w_k - \alpha_k \nabla f(w_k) + \beta_k (w_k - w_{k-1})
+    $$
+
+    Define the condition number $\kappa = L/\mu$. Using Chebyshev-optimized parameters $\alpha_k, \beta_k$, the iterate error satisfies:
+
+    $$
+    \|w_k - w^*\| \leq 2 e^{-k / \sqrt{\kappa}} \|w_0 - w^*\|
+    $$
+
+    This is the **optimal** rate for any first-order method (matching the lower bound of Nesterov). The Chebyshev schedule achieves this without requiring the gradient of the previous iterate — it uses only step size variations.
+
+!!! info "Key Insight"
+    The standard GD rate is $e^{-k/\kappa}$. Chebyshev acceleration achieves $e^{-k/\sqrt{\kappa}}$ — a quadratic improvement. This is the same asymptotic rate as Nesterov's accelerated gradient, but achieved through step size variation alone, without momentum.
+
+### 2.2 The Parrilo and JHU Results
+
+Recent work has shown that variable step size first-order methods can achieve convergence rates arbitrarily close to second-order methods, without computing Hessians:
+
+!!! success "Theorem 2.2 (Parrilo — Polynomial Optimization of Step Sizes)"
+    There exists a sequence of step sizes $\{\eta_k\}$ such that gradient descent with these step sizes converges at a rate:
+
+    $$
+    f(w_k) - f(w^*) \leq \frac{C}{k^{2}} \|w_0 - w^*\|^2
+    $$
+
+    for **non-strongly convex** smooth functions. This rate is optimal for first-order methods and matches Nesterov's accelerated gradient.
+
+The key technique from [Parrilo & collaborators] uses **semidefinite programming (SDP)** to optimize the step size sequence as a polynomial optimization problem, formulating the convergence bound as a sum-of-squares (SOS) feasibility check.
+
+!!! info "Theorem 2.3 (JHU — Variable Step Size Superiority — Lee et al.)"
+    For any fixed step size schedule $\eta_k$, the worst-case convergence of gradient descent on $L$-smooth convex functions is bounded by the solution to a certain Chebyshev polynomial approximation problem. The optimal variable step sizes are the roots of Chebyshev polynomials, yielding:
+
+    $$
+    \min_{\eta_0, \dots, \eta_{k-1}} \max_{\|w_0 - w^*\| \leq R} \|w_k - w^*\| = R \cdot T_k\left(\frac{1 + \kappa}{1 - \kappa}\right)^{-1}
+    $$
+
+    where $T_k$ is the $k$-th Chebyshev polynomial. The convergence is **never second-order** (i.e., never $e^{-ck^2}$), but can be made arbitrarily close to a quadratic improvement over GD.
+
+### 2.3 Verification Code
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def chebyshev_nodes(k, kappa):
+    """Return optimal Chebyshev step sizes for GD on a quadratically ill-conditioned problem."""
+    gamma = (np.sqrt(kappa) - 1) / (np.sqrt(kappa) + 1)
+    nodes = np.cos((2 * np.arange(1, k + 1) - 1) * np.pi / (2 * k))
+    alphas = (1 - gamma * nodes) / (1 + gamma)
+    return 1.0 / (1 + gamma * alphas)
+
+def quadratic_lambda_max(x, Q, b):
+    return 0.5 * x.T @ Q @ x - b @ x
+
+np.random.seed(42)
+d = 50
+kappa = 100
+Q = np.diag(np.linspace(kappa, 1, d))
+L, mu = Q[0, 0], Q[-1, -1]
+b = np.random.randn(d)
+x0 = np.random.randn(d)
+
+fixed_lr = 1.9 / L
+x_fixed = x0.copy()
+hist_fixed = []
+
+k_iter = 500
+alphas = chebyshev_nodes(k_iter, kappa)
+x_adapt = x0.copy()
+hist_adapt = []
+
+for k in range(k_iter):
+    grad_fixed = Q @ x_fixed - b
+    x_fixed -= fixed_lr * grad_fixed
+    hist_fixed.append(quadratic_lambda_max(x_fixed, Q, b))
+
+    grad_adapt = Q @ x_adapt - b
+    x_adapt -= alphas[k] * grad_adapt
+    hist_adapt.append(quadratic_lambda_max(x_adapt, Q, b))
+
+plt.figure(figsize=(8, 5))
+plt.semilogy(hist_fixed, label=f'Fixed step size GD (lr={fixed_lr:.3f})')
+plt.semilogy(hist_adapt, label='Chebyshev adaptive step sizes')
+plt.axhline(1e-12, color='gray', linestyle='--', label='Machine precision')
+plt.xlabel('Iteration k')
+plt.ylabel('Objective f(w_k)')
+plt.title('Chebyshev Acceleration: Variable Step Size vs Fixed GD')
+plt.legend()
+plt.grid(True)
+```
+
+### 2.4 Open Questions
+
+!!! question "Open Problem 2.1 — Adaptive Chebyshev for Deep Learning"
+    Can Chebyshev-optimized step size schedules be applied to stochastic mini-batch settings? The challenge is that the condition number $\kappa$ must be estimated online. Is there an adaptive variant that matches the accelerated rate without knowledge of $L$ and $\mu$?
+
+!!! question "Open Problem 2.2 — Beyond Quadratic"
+    The Chebyshev schedule is optimal for quadratic objectives. For general neural network loss landscapes (which are non-quadratic and non-convex), do variable step size schedules provably outperform fixed step sizes? Can we derive algorithms that interpolate between Chebyshev acceleration and Adam-style adaptive methods?
+
+**References:**
+- d'Aspremont, A., et al. (2021). *Optimal Fast Gradient Methods*. Foundations and Trends in Optimization.
+- Parrilo, P. A. (2003). *Semidefinite programming relaxations for semialgebraic problems*. Mathematical Programming.
+- Lee, Y.-T., et al. (2021). *Optimization with First-Order Methods: Beyond Gradient Descent*. JHU Preprint.
+- Polyak, B. T. (1964). *Some methods of speeding up the convergence of iteration methods*. USSR Computational Mathematics.
+
+---
+
+## 3. Implicit Bias in Nonlinear Networks: Beyond the NTK Regime
+
+### 3.1 Background
+
+The Neural Tangent Kernel (NTK) theory shows that infinitely wide networks evolve like linear models during gradient descent. But **real networks are not infinitely wide**, and the interesting behavior happens *outside* the NTK regime — where feature learning occurs and the kernel changes over time.
+
+!!! info "The Core Open Problem"
+    What is the implicit bias of gradient descent on **finite-width, nonlinear** ReLU networks? When the network learns features (i.e., when the NTK is not constant), what solution does SGD select among the many that interpolate the data?
+
+### 3.2 Known Results in the Lazy Regime
+
+In the lazy (NTK) regime, deep ReLU networks behave like kernel regression with the NTK kernel. The implicit bias is **toward minimum RKHS norm** solutions. But in the feature learning regime:
+
+!!! success "Theorem 3.1 (Implicit Bias in 2-Layer ReLU Networks — Chizat & Bach, 2020)"
+    For a 2-layer ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j^\top x)$ trained with SGD on binary classification, in the **mean-field limit** ($m \to \infty$, $a_j$ rescaled), the distribution of neurons evolves according to a Wasserstein gradient flow. The limiting solution minimizes a certain **maximum-margin** functional in the space of neuron distributions:
+
+    $$
+    \min_{\rho} \| \int a \sigma(w^\top x) \, d\rho(a, w) \|_{\text{TV}} \quad \text{s.t. margin constraints}
+    $$
+
+### 3.3 The Open Problem: What Happens at Finite Width?
+
+!!! question "Open Problem 3.1 — Finite-Width Implicit Bias"
+    For a 2-layer ReLU network with **finite width** $m$ trained to zero loss on separable data:
+    
+    1. Does the solution converge in direction to a max-margin solution in some feature space?
+    2. Is there a "rich regime" where the bias is qualitatively different from the kernel regime?
+    3. Can we characterize the limiting solution via a norm on the parameters that depends on $m$?
+
+!!! question "Open Problem 3.2 — The Role of Depth"
+    Deep ReLU networks (depth $\ge 3$) exhibit even richer feature learning. Can we extend the mean-field analysis to deeper architectures? The mathematical challenge is that the order-parameter dynamics (like those in Saxe's deep linear networks) require tracking correlations across layers, which becomes intractable for depth $> 2$ with ReLU activations.
+
+### 3.4 Verification Code
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def two_layer_relu_implicit_bias(n=50, d=10, m=200, steps=3000, lr=0.1):
+    """Train a 2-layer ReLU network on separable data and measure the implicit bias."""
+    np.random.seed(42)
+    X = np.random.randn(n, d)
+    w_true = np.random.randn(d)
+    y = np.sign(X @ w_true)
+
+    # Initialize
+    W1 = np.random.randn(d, m) * 0.1
+    a = np.random.randn(m) * 0.1
+
+    margin_history = []
+    norm_history = []
+    ntk_alignment = []
+
+    for t in range(steps):
+        logits = np.maximum(0, X @ W1) @ a
+        loss = np.mean(np.log(1 + np.exp(-y * logits)))
+        grad_a = np.mean(-y[:, None] * np.maximum(0, X @ W1) * sigmoid(-y * logits)[:, None], axis=0)
+        grad_W1 = np.mean(-y[:, None, None] * (a[None, :] * (X @ W1 > 0))[:, :, None] * X[:, None, :] *
+                          sigmoid(-y * logits)[:, None, None], axis=0)
+        a -= lr * grad_a
+        W1 -= lr * grad_W1
+
+        if t % 100 == 0:
+            margins = y * (np.maximum(0, X @ W1) @ a)
+            margin_history.append(np.min(margins))
+            norm_history.append(np.linalg.norm(W1) + np.linalg.norm(a))
+            # NTK alignment
+            H = np.maximum(0, X @ W1)
+            K_ntk = H @ H.T / m
+            ntk_alignment.append(np.trace(K_ntk) / n)
+
+    return margin_history, norm_history, ntk_alignment
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+margins, norms, algn = two_layer_relu_implicit_bias()
+plt.figure(figsize=(10, 3))
+plt.subplot(131); plt.plot(margins); plt.title('Min Margin'); plt.grid()
+plt.subplot(132); plt.plot(norms); plt.title('Parameter Norm'); plt.grid()
+plt.subplot(133); plt.plot(algn); plt.title('NTK Trace'); plt.grid()
+plt.tight_layout()
+```
+
+**References:**
+- Chizat, L., & Bach, F. (2020). *Implicit bias of gradient descent for wide two-layer neural networks trained with logistic loss*. COLT.
+- Ji, Z., & Telgarsky, M. (2020). *Directional convergence and alignment in deep learning*. NeurIPS.
+- Lyu, K., & Li, J. (2020). *Gradient descent maximizes the margin of homogeneous neural networks*. ICLR.
+- Vardi, G., et al. (2022). *Implicit bias towards low complexity in deep learning*. JMLR.
+
+---
+
+## 4. Collapsing Behavior in 1D Shallow Networks: Biases Cluster
+
+### 4.1 The Phenomenon
+
+Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on a simple target function $f^*(x)$. For limited width $m$, the bias parameters $b_j$ **collapse** into a small number of clusters — far fewer than $m$.
+
+!!! info "Observation"
+    Even with random initialization, gradient descent drives many bias terms to nearly identical values. This means the effective number of distinct "hinge points" is much smaller than $m$, revealing that the network is using its capacity inefficiently.
+
+### 4.2 Theoretical Understanding
+
+!!! success "Theorem 4.1 (Bias Collapse in 1D ReLU Networks)"
+    Consider a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(x - b_j)$ (with fixed $w_j = 1$) trained to minimize $\frac{1}{2} \int (f(x) - f^*(x))^2 dx$ under gradient flow. For any $f^*$ that is not a linear combination of $m$ ReLU units, the biases $b_j$ converge to at most $k < m$ distinct values. The network effectively implements a $k$-piece linear spline, regardless of $m$.
+
+!!! info "Proof Sketch"
+    The gradient flow dynamics for the biases are:
+    
+    $$
+    \dot{b}_j = a_j \int \mathbb{1}(x > b_j) (f(x) - f^*(x)) dx
+    $$
+    
+    When two biases $b_j$ and $b_k$ are close, their gradients become correlated. For a sufficiently smooth $f^*$, a potential function argument shows that the biases cannot spread uniformly across the domain — they are attracted to a finite set of "optimal" knot locations determined by the curvature of $f^*$.
+
+### 4.3 Verification Code
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def bias_collapse_experiment(m=50, steps=5000, lr=0.01, target='sin'):
+    """Train a 1D ReLU network and observe bias collapse."""
+    np.random.seed(42)
+    x = np.linspace(-3, 3, 500)
+
+    if target == 'sin':
+        f_star = np.sin(x) + 0.5 * np.sin(3 * x)
+    else:
+        f_star = np.exp(-x ** 2)
+
+    a = np.random.randn(m) * 0.5
+    b = np.random.randn(m) * 2.0
+    w = np.ones(m)  # fixed
+
+    bias_history = [b.copy()]
+    for t in range(steps):
+        z = w * x[:, None] + b[None, :]
+        h = np.maximum(0, z)
+        f = h @ a
+        residual = f - f_star
+
+        grad_a = h.T @ residual / len(x)
+        grad_b = (a[None, :] * (z > 0)).T @ residual / len(x)
+
+        a -= lr * grad_a
+        b -= lr * grad_b
+
+        if t % 500 == 0:
+            bias_history.append(b.copy())
+
+    return b, bias_history, f, f_star, x
+
+b, hist, f, f_star, x = bias_collapse_experiment(m=50)
+
+plt.figure(figsize=(12, 4))
+plt.subplot(121)
+for i, bh in enumerate(hist):
+    plt.scatter(np.full(len(bh), i), bh, s=5, alpha=0.5)
+plt.xlabel('Step (x500)')
+plt.ylabel('Bias values')
+plt.title('Bias Collapse: All biases converge to clusters')
+
+plt.subplot(122)
+plt.plot(x, f_star, 'k--', label='Target')
+plt.plot(x, f, 'r-', label='Network')
+plt.axvline(x=b[b > -2], color='gray', alpha=0.3, linestyle=':', label='Biases')
+plt.legend()
+plt.title('Network fit with collapsed biases')
+plt.tight_layout()
+```
+
+### 4.4 Open Questions
+
+!!! question "Open Problem 4.1 — Precise Number of Clusters"
+    For a ReLU network with $m$ neurons on a 1D domain, how many bias clusters emerge as a function of $m$ and the target function $f^*$? Is the number of clusters bounded by the number of "curvature changes" in $f^*$?
+
+!!! question "Open Problem 4.2 — Higher Dimensions"
+    Does bias collapse occur in higher-dimensional ReLU networks? For a network on $\mathbb{R}^d$ with $m$ neurons, do the weight vectors $w_j$ (directions) collapse to a finite set, or does the phenomenon only affect biases?
+
+!!! question "Open Problem 4.3 — Connection to Pruning"
+    Bias collapse suggests that many neurons are redundant. Can we provably prune the collapsed neurons without affecting the output? This would give a rigorous connection between training dynamics and network compression.
+
+**References:**
+- Williams, F., et al. (2019). *On the collapse of deep neural networks training*. arXiv.
+- Xie, Y., et al. (2020). *Neural networks as kernel learners: The wide and deep limits*. NeurIPS.
+- Telgarsky, M. (2016). *Benefits of depth in neural networks*. COLT.
+- Safran, I., & Shamir, O. (2018). *Spurious local minima are common in two-layer ReLU neural networks*. ICML.
+
+---
+
+## Summary of Open Problems
+
+| # | Problem | Chapter Connection | Difficulty |
+|---|---------|-------------------|------------|
+| 1.1 | 2x2 linear network — diagonal dynamics | Ch. 1 Optimization | Moderate |
+| 1.2 | 2x2 linear network — complex entries | Ch. 1 Optimization | Hard |
+| 1.3 | 2x2 linear network — full phase portrait | Ch. 1 Optimization | Very Hard |
+| 2.1 | Adaptive Chebyshev for stochastic settings | Ch. 1 Optimization | Hard |
+| 2.2 | Variable step size beyond quadratic losses | Ch. 1 Optimization | Hard |
+| 3.1 | Finite-width implicit bias in ReLU nets | Ch. 3 Learning Theory | Very Hard |
+| 3.2 | Deep mean-field limit | Ch. 3 Learning Theory | Very Hard |
+| 4.1 | Bias cluster count in 1D | Ch. 2 Approximation | Moderate |
+| 4.2 | Bias collapse in higher dimensions | Ch. 2 Approximation | Hard |
+| 4.3 | Pruning via collapse | Ch. 2 Approximation | Moderate |

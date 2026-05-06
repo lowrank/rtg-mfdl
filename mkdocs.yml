@@ -149,3 +149,5 @@ nav:
       - "10.5 Beyond Attention (SSMs)": lectures/10-transformers-modern/10-5-beyond-attention-ssms.md
       - Practice Set: lectures/10-transformers-modern/PRACTICE.md
       - Project Guide: lectures/10-transformers-modern/PROJECT.md
+  - "11 Open Problems":
+      - "Research Frontiers": lectures/11-open-problems/README.md
