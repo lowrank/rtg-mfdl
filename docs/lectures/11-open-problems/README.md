@@ -224,7 +224,7 @@ The composition framework explains why both the fractal Silver schedule and the 
 
 #### Relation to the $O(N^{-1.2716})$ Rate
 
-Grimmer, Shu, and Wang (arXiv:2403.14045, 2024) used these techniques to construct stepsize sequences achieving $O(N^{-1.2716})$ convergence — a **constant-factor improvement** over the Silver schedule's $O(N^{-0.7864})$ exponent for the objective gap, and an **exponent improvement** for squared gradient norm convergence (from $O(N^{-1})$ to $O(N^{-1.2716})$). Their schedules are similar to but differ slightly from the Silver stepsizes, and are claimed to match or beat numerically computed minimax optimal rates.
+Grimmer, Shu, and Wang (arXiv:2403.14045, 2024) used these techniques to construct stepsize sequences achieving $O(N^{-1.2716})$ convergence — the same asymptotic exponent as the Silver schedule (which implies $N \approx \varepsilon^{-\log_\rho 2}$), but with an improved **constant factor**. For the squared gradient norm, this provides an exponent improvement from the prior best $O(N^{-1})$ to $O(N^{-1.2716})$. Their schedules are similar to but differ slightly from the Silver stepsizes, and are claimed to match or beat numerically computed minimax optimal rates.
 
 #### Extensions of the Stepsize Acceleration Paradigm
 
