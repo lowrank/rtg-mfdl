@@ -2,17 +2,31 @@
   --md-text-font: "Gentium Book Plus";
   --md-code-font: "Roboto Mono";
   --md-typeset-font-size: 1.05rem;
+  
+  /* Academic Color Tweaks */
+  --md-primary-fg-color: #3f51b5; /* Indigo 500 */
+  --md-accent-fg-color: #009688;  /* Teal 500 */
 }
 
 /* Ensure global typography consistency */
 body {
   font-size: var(--md-typeset-font-size);
+  line-height: 1.6;
+}
+
+/* Header Typography - Using Lora for a classic academic feel */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Lora", serif !important;
+  font-weight: 700;
+  color: #1a237e; /* Darker indigo for headers */
 }
 
 /* Admonitions (Theorems/Definitions) must match the main text exactly */
 .md-typeset .admonition,
 .md-typeset details {
-  font-size: 1em; /* Relative to the typeset base */
+  font-size: 1em;
+  border-radius: 0.2rem;
+  box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,0.05);
 }
 
 /* Force all child elements in callouts to match the base font size */
@@ -23,14 +37,53 @@ body {
   font-size: 1em !important;
 }
 
+/* Grid Card Enhancements */
+.md-typeset .grid.cards > ul > li {
+  border: 1px solid #e0e0e0;
+  border-radius: 0.4rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #ffffff;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+  border-color: var(--md-accent-fg-color);
+}
+
+.md-typeset .grid.cards > ul > li hr {
+  margin: 0.5rem 0;
+  opacity: 0.5;
+}
+
+.md-typeset .grid.cards > ul > li p {
+  font-size: 0.95rem;
+  color: #444;
+}
+
+/* Icon styling in cards */
+.md-typeset .grid.cards .lg {
+  font-size: 2rem;
+  color: var(--md-primary-fg-color);
+  margin-bottom: 0.5rem;
+}
+
 /* Ensure italic text uses the italic font face of Gentium Book Plus */
 em, i, .italic, .md-typeset em {
   font-family: "Gentium Book Plus", serif;
   font-style: italic;
 }
 
-/* Header Typography */
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Lora", serif !important;
-  font-weight: 700;
+/* Navigation & Sidebar Polishing */
+.md-nav__link {
+  font-weight: 500;
+}
+
+.md-nav__link--active {
+  color: var(--md-primary-fg-color) !important;
+}
+
+/* MathJax Spacing */
+.MathJax {
+  margin: 1em 0;
 }

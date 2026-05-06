@@ -1,6 +1,8 @@
 site_name: Mathematical Foundations of Deep Learning
 site_url: https://lowrank.github.io/rtg-mfdl/
 site_description: A 100-hour intensive undergraduate/graduate textbook on the mathematical soul of AI.
+repo_name: lowrank/rtg-mfdl
+repo_url: https://github.com/lowrank/rtg-mfdl
 
 copyright: Copyright &copy; 2025
 
@@ -9,13 +11,13 @@ theme:
   palette:
     - scheme: default
       primary: indigo
-      accent: deep purple
+      accent: teal
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
       primary: indigo
-      accent: deep purple
+      accent: teal
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -24,7 +26,10 @@ theme:
     - navigation.path
     - navigation.top
     - navigation.footer
+    - navigation.tracking
+    - navigation.indexes
     - toc.follow
+    - toc.integrate
     - search.suggest
     - search.highlight
     - content.code.copy
@@ -64,9 +69,15 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.smartsymbols
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 extra_javascript:
   - javascripts/mathjax.js
+
+watch:
+  - docs
 
 plugins:
   - search:
