@@ -146,45 +146,47 @@ The reconstruction loss is then $\mathbb{E}_{p(z)}[\log p_\theta(x)]$. Since the
 Computing the R(D) curve for a discrete binary source.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
 def blahut_arimoto(p_x, distortion_matrix, beta, max_iter=1000, tol=1e-6):
-"""
-Computes Rate and Distortion for a given beta using Blahut-Arimoto.
-"""
-n_x = len(p_x)
-n_x_hat = distortion_matrix.shape[1]
-    
-# Initialize q(x_hat) uniformly
-q_x_hat = np.ones(n_x_hat) / n_x_hat
-    
-for i in range(max_iter):
-    # Step 1: Update p(x_hat | x)
-    exp_neg_beta_d = np.exp(-beta * distortion_matrix)
-    p_x_hat_given_x = q_x_hat * exp_neg_beta_d
-    # Normalize rows
-    Z = np.sum(p_x_hat_given_x, axis=1, keepdims=True)
-    p_x_hat_given_x = p_x_hat_given_x / Z
-        
-    # Step 2: Update q(x_hat)
-    q_x_hat_new = np.sum(p_x[:, None] * p_x_hat_given_x, axis=0)
-        
-    if np.max(np.abs(q_x_hat_new - q_x_hat)) < tol:
+    """
+    Computes Rate and Distortion for a given beta using Blahut-Arimoto.
+    """
+    n_x = len(p_x)
+    n_x_hat = distortion_matrix.shape[1]
+
+    # Initialize q(x_hat) uniformly
+    q_x_hat = np.ones(n_x_hat) / n_x_hat
+
+    for i in range(max_iter):
+        # Step 1: Update p(x_hat | x)
+        exp_neg_beta_d = np.exp(-beta * distortion_matrix)
+        p_x_hat_given_x = q_x_hat * exp_neg_beta_d
+        # Normalize rows
+        Z = np.sum(p_x_hat_given_x, axis=1, keepdims=True)
+        p_x_hat_given_x = p_x_hat_given_x / Z
+
+        # Step 2: Update q(x_hat)
+        q_x_hat_new = np.sum(p_x[:, None] * p_x_hat_given_x, axis=0)
+
+        if np.max(np.abs(q_x_hat_new - q_x_hat)) < tol:
+            q_x_hat = q_x_hat_new
+            break
         q_x_hat = q_x_hat_new
-        break
-    q_x_hat = q_x_hat_new
-        
-# Calculate expected distortion
-joint_p = p_x[:, None] * p_x_hat_given_x
-D = np.sum(joint_p * distortion_matrix)
-    
-# Calculate Mutual Information (Rate)
-p_x_hat_given_x_safe = np.maximum(p_x_hat_given_x, 1e-12)
-q_x_hat_safe = np.maximum(q_x_hat, 1e-12)
-R = np.sum(joint_p * np.log2(p_x_hat_given_x_safe / q_x_hat_safe[None, :]))
-    
-return R, D
+
+    # Calculate expected distortion
+    joint_p = p_x[:, None] * p_x_hat_given_x
+    D = np.sum(joint_p * distortion_matrix)
+
+    # Calculate Mutual Information (Rate)
+    p_x_hat_given_x_safe = np.maximum(p_x_hat_given_x, 1e-12)
+    q_x_hat_safe = np.maximum(q_x_hat, 1e-12)
+    R = np.sum(joint_p * np.log2(p_x_hat_given_x_safe / q_x_hat_safe[None, :]))
+
+    return R, D
 
 # Binary source (e.g., 0.8 chance of 0, 0.2 chance of 1)
 p_x = np.array([0.8, 0.2])
@@ -195,15 +197,27 @@ betas = np.logspace(-2, 1, 30)
 rates, distortions = [], []
 
 for b in betas:
-r, d = blahut_arimoto(p_x, d_mat, b)
-rates.append(r)
-distortions.append(d)
+    r, d = blahut_arimoto(p_x, d_mat, b)
+    rates.append(r)
+    distortions.append(d)
 
 print("Beta | Rate (bits) | Distortion")
 print("-" * 35)
 for b, r, d in zip(betas[::5], rates[::5], distortions[::5]):
-print(f"{b:4.2f} | {r:10.4f} | {d:10.4f}")
+    print(f"{b:4.2f} | {r:10.4f} | {d:10.4f}")
+
+plt.figure(figsize=(7, 5))
+plt.plot(distortions, rates, 'b-o', markersize=4)
+plt.xlabel('Distortion D')
+plt.ylabel('Rate R (bits)')
+plt.title('Rate-Distortion Curve (Blahut-Arimoto, Binary Source)')
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('figures/05-3-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/05-3-demo1.png)
 
 ### Demo 2: Simple VAE Loss showing Rate and Distortion Breakdown
 Demonstrating how PyTorch VAE loss naturally splits into R and D.
@@ -213,23 +227,23 @@ import torch
 import torch.nn.functional as F
 
 def vae_loss(x, x_recon, mu, logvar, beta=1.0):
-"""
-Computes VAE loss separating Rate and Distortion.
-"""
-# Distortion: Mean Squared Error Reconstruction
-# (Reduction = sum per batch element, then mean across batch)
-distortion = F.mse_loss(x_recon, x, reduction='none')
-distortion = distortion.sum(dim=[1, 2, 3]).mean() # Assuming NCHW format
-    
-# Rate: KL Divergence between N(mu, sigma^2) and N(0, 1)
-# -0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
-rate = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp(), dim=1)
-rate = rate.mean()
-    
-# Total Objective (Negative ELBO)
-loss = distortion + beta * rate
-    
-return loss, rate.item(), distortion.item()
+    """
+    Computes VAE loss separating Rate and Distortion.
+    """
+    # Distortion: Mean Squared Error Reconstruction
+    # (Reduction = sum per batch element, then mean across batch)
+    distortion = F.mse_loss(x_recon, x, reduction='none')
+    distortion = distortion.sum(dim=[1, 2, 3]).mean() # Assuming NCHW format
+
+    # Rate: KL Divergence between N(mu, sigma^2) and N(0, 1)
+    # -0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+    rate = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp(), dim=1)
+    rate = rate.mean()
+
+    # Total Objective (Negative ELBO)
+    loss = distortion + beta * rate
+
+    return loss, rate.item(), distortion.item()
 
 # Mock inputs
 N, C, H, W = 32, 1, 28, 28
@@ -247,5 +261,8 @@ print(f"Rate (KL penalty):        {R:.4f}")
 print(f"Total Beta-VAE Loss:      {total_loss:.4f}")
 ```
 
-*Word Count Estimate: ~2100 words. Comprehensive and exhaustively proved.*
-
+```
+Distortion (Recon Error): 130.8464
+Rate (KL penalty):        7.5700
+Total Beta-VAE Loss:      168.6963
+```

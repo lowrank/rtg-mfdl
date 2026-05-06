@@ -122,30 +122,28 @@ We will observe the "compression" artifact by using Kernel Density Estimation (K
 
 ```python
 import numpy as np
-from sklearn.neighbors import KernelDensity
-from sklearn.metrics import mutual_info_score
 from scipy.stats import entropy
 
 def estimate_mi_kde(X, T, bins=30):
-"""
-Estimates I(X; T) using a naive binning/KDE approach 
-which causes the Saxe et al. artifact.
-"""
-# 2D binning for demonstration
-c_X, _ = np.histogramdd(X, bins=bins)
-c_T, _ = np.histogramdd(T, bins=bins)
-c_XT, _ = np.histogramdd(np.hstack((X, T)), bins=bins)
-    
-p_X = c_X / np.sum(c_X)
-p_T = c_T / np.sum(c_T)
-p_XT = c_XT / np.sum(c_XT)
-    
-# Flatten for entropy calculation
-H_X = entropy(p_X.flatten()[p_X.flatten() > 0])
-H_T = entropy(p_T.flatten()[p_T.flatten() > 0])
-H_XT = entropy(p_XT.flatten()[p_XT.flatten() > 0])
-    
-return H_X + H_T - H_XT
+    """
+    Estimates I(X; T) using a naive binning/KDE approach 
+    which causes the Saxe et al. artifact.
+    """
+    # 2D binning for demonstration
+    c_X, _ = np.histogramdd(X, bins=bins)
+    c_T, _ = np.histogramdd(T, bins=bins)
+    c_XT, _ = np.histogramdd(np.hstack((X, T)), bins=bins)
+
+    p_X = c_X / np.sum(c_X)
+    p_T = c_T / np.sum(c_T)
+    p_XT = c_XT / np.sum(c_XT)
+
+    # Flatten for entropy calculation
+    H_X = entropy(p_X.flatten()[p_X.flatten() > 0])
+    H_T = entropy(p_T.flatten()[p_T.flatten() > 0])
+    H_XT = entropy(p_XT.flatten()[p_XT.flatten() > 0])
+
+    return H_X + H_T - H_XT
 
 # Simulate representation changes over training epochs
 np.random.seed(0)
@@ -164,6 +162,11 @@ print(f"MI at Epoch 50 (Compressed): {mi_50:.3f} nats")
 # Output will show lower MI due to geometric shrinking and binning artifacts!
 ```
 
+```
+MI at Epoch 1: 5.061 nats
+MI at Epoch 50 (Compressed): 5.094 nats
+```
+
 ### Demo 2: Exact Gaussian IB Computation
 Computing the exact optimal linear projection for continuous variables.
 
@@ -172,39 +175,39 @@ import numpy as np
 import scipy.linalg as la
 
 def gaussian_ib(Sigma_X, Sigma_Y, Sigma_XY, beta):
-"""
-Solves the Gaussian Information Bottleneck.
-Returns the projection matrix A.
-"""
-d_x = Sigma_X.shape[0]
-    
-# Compute Sigma_{X|Y} = Sigma_X - Sigma_XY * Sigma_Y^-1 * Sigma_YX
-Sigma_Y_inv = np.linalg.inv(Sigma_Y)
-Sigma_X_cond_Y = Sigma_X - Sigma_XY @ Sigma_Y_inv @ Sigma_XY.T
-    
-# Generalized eigenvalue problem: Sigma_{X|Y} v = lambda Sigma_X v
-evals, evecs = la.eig(Sigma_X_cond_Y, Sigma_X)
-evals = np.real(evals)
-    
-# Sort eigenvalues ascending
-idx = np.argsort(evals)
-evals = evals[idx]
-evecs = evecs[:, idx]
-    
-# Critical threshold
-threshold = 1.0 - 1.0 / beta
-    
-# Select eigenvectors where lambda < threshold
-valid_idx = evals < threshold
-    
-A = []
-if np.any(valid_idx):
-    A = evecs[:, valid_idx].T
-else:
-    # Maximum compression, everything is mapped to zero
-    A = np.zeros((1, d_x))
-        
-return A, evals
+    """
+    Solves the Gaussian Information Bottleneck.
+    Returns the projection matrix A.
+    """
+    d_x = Sigma_X.shape[0]
+
+    # Compute Sigma_{X|Y} = Sigma_X - Sigma_XY * Sigma_Y^-1 * Sigma_YX
+    Sigma_Y_inv = np.linalg.inv(Sigma_Y)
+    Sigma_X_cond_Y = Sigma_X - Sigma_XY @ Sigma_Y_inv @ Sigma_XY.T
+
+    # Generalized eigenvalue problem: Sigma_{X|Y} v = lambda Sigma_X v
+    evals, evecs = la.eig(Sigma_X_cond_Y, Sigma_X)
+    evals = np.real(evals)
+
+    # Sort eigenvalues ascending
+    idx = np.argsort(evals)
+    evals = evals[idx]
+    evecs = evecs[:, idx]
+
+    # Critical threshold
+    threshold = 1.0 - 1.0 / beta
+
+    # Select eigenvectors where lambda < threshold
+    valid_idx = evals < threshold
+
+    A = []
+    if np.any(valid_idx):
+        A = evecs[:, valid_idx].T
+    else:
+        # Maximum compression, everything is mapped to zero
+        A = np.zeros((1, d_x))
+
+    return A, evals
 
 # Example Matrices
 S_X = np.array([[1.0, 0.8], [0.8, 1.0]])
@@ -220,5 +223,12 @@ A_high, _ = gaussian_ib(S_X, S_Y, S_XY, beta=10.0)
 print("Projection Matrix A:\n", np.real(A_high))
 ```
 
-*Word Count Estimate: ~2200 words. Comprehensive and exhaustively proved.*
+```
+Beta = 1.05 (High Compression):
+Projection Matrix A:
+ [[0. 0.]]
 
+Beta = 10.0 (High Relevance):
+Projection Matrix A:
+ [[-0.91531503  0.40273861]]
+```

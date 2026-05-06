@@ -310,71 +310,96 @@ Estimating differential entropy from samples is non-trivial. Histogram methods s
     
 ```python
 import numpy as np
-from scipy.special import digamma
+from scipy.special import digamma, gamma
 from sklearn.neighbors import NearestNeighbors
-    
+
 def kl_entropy(X, k=3):
-"""
-Estimates differential entropy of a set of samples X using k-NN.
-X: (n_samples, n_features)
-"""
-n, d = X.shape
-nn = NearestNeighbors(n_neighbors=k+1)
-nn.fit(X)
-    
-# distances to the k-th nearest neighbor
-distances, _ = nn.kneighbors(X)
-r_k = distances[:, k]
-    
-# Volume of unit d-ball
-c_d = (np.pi ** (d/2)) / np.math.gamma(d/2 + 1)
-    
-# Estimate
-log_dists = np.log(r_k[r_k > 0])
-h = d * np.mean(log_dists) + np.log(c_d) + np.log(n - 1) - digamma(k)
-return h
-    
+    """
+    Estimates differential entropy of a set of samples X using k-NN.
+    X: (n_samples, n_features)
+    """
+    n, d = X.shape
+    nn = NearestNeighbors(n_neighbors=k+1)
+    nn.fit(X)
+
+    # distances to the k-th nearest neighbor
+    distances, _ = nn.kneighbors(X)
+    r_k = distances[:, k]
+
+    # Volume of unit d-ball
+    c_d = (np.pi ** (d/2)) / gamma(d/2 + 1)
+
+    # Estimate
+    log_dists = np.log(r_k[r_k > 0])
+    h = d * np.mean(log_dists) + np.log(c_d) + np.log(n - 1) - digamma(k)
+    return h
+
 # Generate samples from 2D Gaussian
 np.random.seed(42)
 cov = [[1.0, 0.5], [0.5, 2.0]]
 X = np.random.multivariate_normal([0, 0], cov, 10000)
-    
+
 # True entropy
 det_cov = np.linalg.det(cov)
 true_h = 0.5 * np.log((2 * np.pi * np.e) ** 2 * det_cov)
-    
+
 est_h = kl_entropy(X, k=5)
 print(f"True Entropy: {true_h:.4f} nats")
 print(f"Estimated Entropy: {est_h:.4f} nats")
 ```
-    
+
+```
+True Entropy: 3.1177 nats
+Estimated Entropy: 3.1144 nats
+```
+
 ### Demo 2: Empirical Verification of the Entropy Power Inequality
     
 ```python
 import numpy as np
-    
+from scipy.special import digamma, gamma
+from sklearn.neighbors import NearestNeighbors
+
+def kl_entropy(X, k=3):
+    """
+    Estimates differential entropy of a set of samples X using k-NN.
+    X: (n_samples, n_features)
+    """
+    n, d = X.shape
+    nn = NearestNeighbors(n_neighbors=k+1)
+    nn.fit(X)
+    distances, _ = nn.kneighbors(X)
+    r_k = distances[:, k]
+    c_d = (np.pi ** (d/2)) / gamma(d/2 + 1)
+    log_dists = np.log(r_k[r_k > 0])
+    h = d * np.mean(log_dists) + np.log(c_d) + np.log(n - 1) - digamma(k)
+    return h
+
 # Let's verify EPI for non-Gaussian distributions (e.g., Uniform + Exponential)
 n_samples = 50000
-    
+
 # X ~ U(0, 1) -> True entropy = 0, Entropy power = 1 / (2*pi*e)
 X = np.random.uniform(0, 1, n_samples).reshape(-1, 1)
 NX = np.exp(2 * 0) / (2 * np.pi * np.e)
-    
+
 # Y ~ Exp(1) -> True entropy = 1, Entropy power = e^2 / (2*pi*e)
 Y = np.random.exponential(1, n_samples).reshape(-1, 1)
 NY = np.exp(2 * 1) / (2 * np.pi * np.e)
-    
+
 # Z = X + Y
 Z = X + Y
-    
+
 # Estimate h(Z) using our k-NN estimator from Demo 1
 h_Z_est = kl_entropy(Z, k=5)
 NZ_est = np.exp(2 * h_Z_est) / (2 * np.pi * np.e)
-    
+
 print(f"N(X) + N(Y) = {NX + NY:.5f}")
 print(f"Estimated N(X+Y) = {NZ_est:.5f}")
 print(f"EPI Holds: {NZ_est >= (NX + NY)}")
 ```
-    
-*Word Count Estimate: ~2100 words. Comprehensive and exhaustively proved.*
 
+```
+N(X) + N(Y) = 0.49118
+Estimated N(X+Y) = 0.68622
+EPI Holds: True
+```

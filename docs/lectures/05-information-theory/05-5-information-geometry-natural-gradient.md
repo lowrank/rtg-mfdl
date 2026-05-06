@@ -143,29 +143,29 @@ import torch
 import torch.nn as nn
 
 def compute_empirical_fisher(model, inputs, targets, loss_fn):
-"""
-Computes the diagonal of the Empirical Fisher Information Matrix.
-"""
-fisher_diag = [torch.zeros_like(p) for p in model.parameters()]
-    
-# Must compute gradient per sample!
-for i in range(len(inputs)):
-    x = inputs[i:i+1]
-    y = targets[i:i+1]
-        
-    model.zero_grad()
-    output = model(x)
-    loss = loss_fn(output, y)
-    loss.backward()
-        
-    # Accumulate squared gradients
-    for j, p in enumerate(model.parameters()):
-        if p.grad is not None:
-            fisher_diag[j] += p.grad.data ** 2
-                
-# Average over batch
-fisher_diag = [f / len(inputs) for f in fisher_diag]
-return fisher_diag
+    """
+    Computes the diagonal of the Empirical Fisher Information Matrix.
+    """
+    fisher_diag = [torch.zeros_like(p) for p in model.parameters()]
+
+    # Must compute gradient per sample!
+    for i in range(len(inputs)):
+        x = inputs[i:i+1]
+        y = targets[i:i+1]
+
+        model.zero_grad()
+        output = model(x)
+        loss = loss_fn(output, y)
+        loss.backward()
+
+        # Accumulate squared gradients
+        for j, p in enumerate(model.parameters()):
+            if p.grad is not None:
+                fisher_diag[j] += p.grad.data ** 2
+
+    # Average over batch
+    fisher_diag = [f / len(inputs) for f in fisher_diag]
+    return fisher_diag
 
 # Toy network
 model = nn.Sequential(nn.Linear(10, 2))
@@ -182,6 +182,8 @@ print(f"Fisher Diagonal Shape for Layer 1 Weights: {fisher[0].shape}")
 A simple 2D optimization comparing SGD to NGD on a Gaussian log-likelihood surface.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -190,21 +192,21 @@ np.random.seed(0)
 data = np.random.normal(loc=5.0, scale=2.0, size=1000)
 
 def neg_log_likelihood(mu, var):
-n = len(data)
-return (n/2)*np.log(2*np.pi*var) + np.sum((data - mu)**2) / (2*var)
+    n = len(data)
+    return (n/2)*np.log(2*np.pi*var) + np.sum((data - mu)**2) / (2*var)
 
 def grad_nll(mu, var):
-n = len(data)
-d_mu = -np.sum(data - mu) / var
-d_var = n / (2*var) - np.sum((data - mu)**2) / (2*var**2)
-return np.array([d_mu, d_var])
+    n = len(data)
+    d_mu = -np.sum(data - mu) / var
+    d_var = n / (2*var) - np.sum((data - mu)**2) / (2*var**2)
+    return np.array([d_mu, d_var])
 
 def fisher_matrix(var):
-n = len(data)
-return np.array([
-    [n / var, 0],
-    [0, n / (2 * var**2)]
-])
+    n = len(data)
+    return np.array([
+        [n / var, 0],
+        [0, n / (2 * var**2)]
+    ])
 
 # Initialize
 theta_sgd = np.array([0.0, 10.0]) # [mu, var]
@@ -217,22 +219,42 @@ path_sgd = [theta_sgd.copy()]
 path_ngd = [theta_ngd.copy()]
 
 for i in range(50):
-# SGD Step
-g_sgd = grad_nll(theta_sgd[0], theta_sgd[1])
-theta_sgd -= lr_sgd * g_sgd
-path_sgd.append(theta_sgd.copy())
-    
-# NGD Step
-g_ngd = grad_nll(theta_ngd[0], theta_ngd[1])
-F = fisher_matrix(theta_ngd[1])
-F_inv = np.linalg.inv(F)
-theta_ngd -= lr_ngd * (F_inv @ g_ngd)
-path_ngd.append(theta_ngd.copy())
+    # SGD Step
+    g_sgd = grad_nll(theta_sgd[0], theta_sgd[1])
+    theta_sgd = theta_sgd - lr_sgd * g_sgd
+    path_sgd.append(theta_sgd.copy())
+
+    # NGD Step
+    g_ngd = grad_nll(theta_ngd[0], theta_ngd[1])
+    F = fisher_matrix(theta_ngd[1])
+    F_inv = np.linalg.inv(F)
+    theta_ngd = theta_ngd - lr_ngd * (F_inv @ g_ngd)
+    path_ngd.append(theta_ngd.copy())
 
 print(f"Final SGD: mu={theta_sgd[0]:.2f}, var={theta_sgd[1]:.2f}")
 print(f"Final NGD: mu={theta_ngd[0]:.2f}, var={theta_ngd[1]:.2f}")
 # NGD converges much faster directly to (5.0, 4.0) because it follows the geometry!
+
+path_sgd = np.array(path_sgd)
+path_ngd = np.array(path_ngd)
+
+mu_grid = np.linspace(-1, 8, 100)
+var_grid = np.linspace(0.5, 15, 100)
+MU, VAR = np.meshgrid(mu_grid, var_grid)
+Z = np.array([[neg_log_likelihood(m, v) for m in mu_grid] for v in var_grid])
+
+plt.figure(figsize=(8, 6))
+plt.contourf(MU, VAR, Z, levels=40, cmap='viridis')
+plt.colorbar(label='Negative Log-Likelihood')
+plt.plot(path_sgd[:, 0], path_sgd[:, 1], 'r-o', markersize=4, label='SGD')
+plt.plot(path_ngd[:, 0], path_ngd[:, 1], 'w-s', markersize=4, label='NGD')
+plt.xlabel('mu')
+plt.ylabel('var')
+plt.title('SGD vs Natural Gradient Descent on Gaussian NLL')
+plt.legend()
+plt.tight_layout()
+plt.savefig('figures/05-5-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
 
-*Word Count Estimate: ~2200 words. Comprehensive and exhaustively proved.*
-
+![Figure](figures/05-5-demo2.png)

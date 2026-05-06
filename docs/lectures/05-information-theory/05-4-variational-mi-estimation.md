@@ -126,54 +126,54 @@ import torch.optim as optim
 import numpy as np
 
 class Critic(nn.Module):
-def __init__(self, hidden_dim=64):
-    super().__init__()
-    # Input is concatenation of x and y
-    self.net = nn.Sequential(
-        nn.Linear(2, hidden_dim),
-        nn.ReLU(),
-        nn.Linear(hidden_dim, hidden_dim),
-        nn.ReLU(),
-        nn.Linear(hidden_dim, 1)
-    )
-        
-def forward(self, x, y):
-    # Concatenate along feature dimension
-    xy = torch.cat([x, y], dim=-1)
-    return self.net(xy)
+    def __init__(self, hidden_dim=64):
+        super().__init__()
+        # Input is concatenation of x and y
+        self.net = nn.Sequential(
+            nn.Linear(2, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 1)
+        )
+
+    def forward(self, x, y):
+        # Concatenate along feature dimension
+        xy = torch.cat([x, y], dim=-1)
+        return self.net(xy)
 
 def train_nwj(rho, epochs=500, batch_size=512):
-# Covariance matrix for correlated Gaussians
-cov = np.array([[1.0, rho], [rho, 1.0]])
-true_mi = -0.5 * np.log(1 - rho**2)
-    
-critic = Critic()
-optimizer = optim.Adam(critic.parameters(), lr=1e-3)
-    
-for epoch in range(epochs):
-    # Sample joint P(x,y)
-    xy_joint = np.random.multivariate_normal([0,0], cov, batch_size)
-    x_joint = torch.tensor(xy_joint[:, 0:1], dtype=torch.float32)
-    y_joint = torch.tensor(xy_joint[:, 1:2], dtype=torch.float32)
-        
-    # Sample marginal Q(x)Q(y) by shuffling y
-    y_marginal = y_joint[torch.randperm(batch_size)]
-        
-    # Compute NWJ terms
-    t_joint = critic(x_joint, y_joint)
-    t_marginal = critic(x_joint, y_marginal)
-        
-    # NWJ Loss to minimize (negative of the bound)
-    # Expected value under P: mean of t_joint
-    # Expected value under Q: mean of exp(t_marginal - 1)
-    loss = -(torch.mean(t_joint) - torch.mean(torch.exp(t_marginal - 1.0)))
-        
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
-        
-estimated_mi = -loss.item()
-print(f"True MI: {true_mi:.4f} nats, NWJ Estimated MI: {estimated_mi:.4f} nats")
+    # Covariance matrix for correlated Gaussians
+    cov = np.array([[1.0, rho], [rho, 1.0]])
+    true_mi = -0.5 * np.log(1 - rho**2)
+
+    critic = Critic()
+    optimizer = optim.Adam(critic.parameters(), lr=1e-3)
+
+    for epoch in range(epochs):
+        # Sample joint P(x,y)
+        xy_joint = np.random.multivariate_normal([0,0], cov, batch_size)
+        x_joint = torch.tensor(xy_joint[:, 0:1], dtype=torch.float32)
+        y_joint = torch.tensor(xy_joint[:, 1:2], dtype=torch.float32)
+
+        # Sample marginal Q(x)Q(y) by shuffling y
+        y_marginal = y_joint[torch.randperm(batch_size)]
+
+        # Compute NWJ terms
+        t_joint = critic(x_joint, y_joint)
+        t_marginal = critic(x_joint, y_marginal)
+
+        # NWJ Loss to minimize (negative of the bound)
+        # Expected value under P: mean of t_joint
+        # Expected value under Q: mean of exp(t_marginal - 1)
+        loss = -(torch.mean(t_joint) - torch.mean(torch.exp(t_marginal - 1.0)))
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    estimated_mi = -loss.item()
+    print(f"True MI: {true_mi:.4f} nats, NWJ Estimated MI: {estimated_mi:.4f} nats")
 
 # Test with correlation 0.8
 train_nwj(rho=0.8)
@@ -185,34 +185,35 @@ A robust implementation of the InfoNCE loss for a batch of embeddings.
 ```python
 import torch
 import torch.nn.functional as F
+import numpy as np
 
 def infonce_loss(features_a, features_b, temperature=0.1):
-"""
-Computes InfoNCE loss given two views of a batch.
-features_a: (Batch, Dim)
-features_b: (Batch, Dim)
-"""
-batch_size = features_a.size(0)
-    
-# Normalize features to unit sphere (Cosine Similarity)
-features_a = F.normalize(features_a, dim=-1)
-features_b = F.normalize(features_b, dim=-1)
-    
-# Compute similarity matrix (Batch x Batch)
-# Entry (i, j) is sim(a_i, b_j)
-sim_matrix = torch.matmul(features_a, features_b.T) / temperature
-    
-# The positive pairs are on the diagonal: a_i and b_i
-# Labels are [0, 1, 2, ..., Batch-1]
-labels = torch.arange(batch_size).to(features_a.device)
-    
-# InfoNCE is standard Cross Entropy on this similarity matrix!
-loss = F.cross_entropy(sim_matrix, labels)
-    
-# The MI lower bound is log(K) - loss
-mi_bound = np.log(batch_size) - loss.item()
-    
-return loss, mi_bound
+    """
+    Computes InfoNCE loss given two views of a batch.
+    features_a: (Batch, Dim)
+    features_b: (Batch, Dim)
+    """
+    batch_size = features_a.size(0)
+
+    # Normalize features to unit sphere (Cosine Similarity)
+    features_a = F.normalize(features_a, dim=-1)
+    features_b = F.normalize(features_b, dim=-1)
+
+    # Compute similarity matrix (Batch x Batch)
+    # Entry (i, j) is sim(a_i, b_j)
+    sim_matrix = torch.matmul(features_a, features_b.T) / temperature
+
+    # The positive pairs are on the diagonal: a_i and b_i
+    # Labels are [0, 1, 2, ..., Batch-1]
+    labels = torch.arange(batch_size).to(features_a.device)
+
+    # InfoNCE is standard Cross Entropy on this similarity matrix!
+    loss = F.cross_entropy(sim_matrix, labels)
+
+    # The MI lower bound is log(K) - loss
+    mi_bound = np.log(batch_size) - loss.item()
+
+    return loss, mi_bound
 
 # Simulate embeddings
 B, D = 64, 128
@@ -225,6 +226,3 @@ print(f"Batch Size: {B}, Max possible bound: {np.log(B):.3f}")
 print(f"InfoNCE Loss: {loss.item():.3f}")
 print(f"MI Lower Bound: {mi:.3f} nats")
 ```
-
-*Word Count Estimate: ~2100 words. Comprehensive and exhaustively proved.*
-
