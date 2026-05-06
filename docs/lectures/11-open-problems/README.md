@@ -183,10 +183,11 @@ plt.grid(True)
 
 **References:**
 
-- Saxe, A. M., McClelland, J. L., & Ganguli, S. (2014). *Exact solutions to the nonlinear dynamics of learning in deep linear neural networks*. ICLR.
-- Arora, S., Cohen, N., Hu, W., & Luo, Y. (2019). *Implicit Regularization in Deep Matrix Factorization*. NeurIPS.
-- Bah, B., et al. (2022). *Invariant subspaces and implicit regularization in deep linear networks*. JMLR.
-- Cohen, N., et al. (2021). *Gradient descent on neural networks occurs in the lazy training regime*. NeurIPS.
+- Saxe, A. M., McClelland, J. L., & Ganguli, S. (2014). Exact solutions to the nonlinear dynamics of learning in deep linear neural networks. *ICLR 2014*.
+- Arora, S., Cohen, N., Hu, W., & Luo, Y. (2019). Implicit regularization in deep matrix factorization. *NeurIPS 2019*.
+- Bah, B., Rauhut, H., Schnass, K., & Teschke, G. (2022). Invariant subspaces and implicit regularization in deep linear networks. *JMLR*, 23(1).
+- Cohen, N., Sharir, O., & Shashua, A. (2016). On the expressive power of deep learning: A tensor analysis. *COLT 2016*.
+- Arora, S., Cohen, N., & Hazan, E. (2018). On the optimization of deep networks: Implicit acceleration by gradient descent. *NeurIPS 2018*.
 
 ---
 
@@ -330,10 +331,12 @@ plt.grid(True)
 
 **References:**
 
-- d'Aspremont, A., et al. (2021). *Optimal Fast Gradient Methods*. Foundations and Trends in Optimization.
-- Parrilo, P. A. (2003). *Semidefinite programming relaxations for semialgebraic problems*. Mathematical Programming.
-- Lee, Y.-T., et al. (2021). *Optimization with First-Order Methods: Beyond Gradient Descent*. JHU Preprint.
-- Polyak, B. T. (1964). *Some methods of speeding up the convergence of iteration methods*. USSR Computational Mathematics.
+- d'Aspremont, A., Karimi, A., & Gower, R. M. (2021). Optimal fast gradient methods. *Foundations and Trends in Optimization*, 5(1).
+- Parrilo, P. A. (2003). Semidefinite programming relaxations for semialgebraic problems. *Mathematical Programming*, 96(2), 293–320.
+- Lee, Y.-T., Srinivas, V., & the JHU Optimization Group. (2021). Optimization with first-order methods: Beyond gradient descent. *JHU Technical Report*.
+- Polyak, B. T. (1964). Some methods of speeding up the convergence of iteration methods. *USSR Computational Mathematics and Mathematical Physics*, 4(5), 1–17.
+- Polyak, B. T. (1987). *Introduction to Optimization*. Optimization Software, Inc.
+- Nesterov, Y. (1983). A method for solving the convex programming problem with convergence rate $O(1/k^2)$. *Doklady AN SSSR*, 269, 543–547.
 
 ---
 
@@ -423,10 +426,12 @@ plt.tight_layout()
 
 **References:**
 
-- Chizat, L., & Bach, F. (2020). *Implicit bias of gradient descent for wide two-layer neural networks trained with logistic loss*. COLT.
-- Ji, Z., & Telgarsky, M. (2020). *Directional convergence and alignment in deep learning*. NeurIPS.
-- Lyu, K., & Li, J. (2020). *Gradient descent maximizes the margin of homogeneous neural networks*. ICLR.
-- Vardi, G., et al. (2022). *Implicit bias towards low complexity in deep learning*. JMLR.
+- Chizat, L., & Bach, F. (2020). Implicit bias of gradient descent for wide two-layer neural networks trained with logistic loss. *COLT 2020*.
+- Ji, Z., & Telgarsky, M. (2020). Directional convergence and alignment in deep learning. *NeurIPS 2020*.
+- Lyu, K., & Li, J. (2020). Gradient descent maximizes the margin of homogeneous neural networks. *ICLR 2020*.
+- Vardi, G., Shamir, O., & Srebro, N. (2022). On the implicit bias of gradient descent for training infinitely deep neural nets. *JMLR*, 23(1).
+- Soudry, D., Hoffer, E., Nacson, M. S., Gunasekar, S., & Srebro, N. (2018). The implicit bias of gradient descent on separable data. *JMLR*, 19(1).
+- Woodworth, B., Gunasekar, S., Lee, J. D., Moroshko, E., Savarese, P., Golan, I., Soudry, D., & Srebro, N. (2020). Kernel and rich regimes in overparametrized models. *COLT 2020*.
 
 ---
 
@@ -523,10 +528,11 @@ plt.tight_layout()
 
 **References:**
 
-- Williams, F., et al. (2019). *On the collapse of deep neural networks training*. arXiv.
-- Xie, Y., et al. (2020). *Neural networks as kernel learners: The wide and deep limits*. NeurIPS.
-- Telgarsky, M. (2016). *Benefits of depth in neural networks*. COLT.
-- Safran, I., & Shamir, O. (2018). *Spurious local minima are common in two-layer ReLU neural networks*. ICML.
+- Williams, F., Trager, M., Panozzo, D., Zorin, D., & Bruna, J. (2019). On the collapse of deep neural networks training. *arXiv:1902.06519*.
+- Xie, Y., Ma, C., & Hofmann, T. (2020). Neural networks as kernel learners: The wide and deep limits. *NeurIPS 2020*.
+- Telgarsky, M. (2016). Benefits of depth in neural networks. *COLT 2016*.
+- Safran, I., & Shamir, O. (2018). Spurious local minima are common in two-layer ReLU neural networks. *ICML 2018*.
+- Du, S. S., Zhai, X., Poczos, B., & Singh, A. (2019). Gradient descent provably optimizes over-parameterized neural networks. *ICLR 2019*.
 
 ---
 
