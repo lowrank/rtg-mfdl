@@ -57,55 +57,6 @@ where $X \in \mathbb{R}^{d_0 \times n}$, $Y \in \mathbb{R}^{d_L \times n}$, and 
 
     where $\sigma_i^*$ are the singular values of the minimum-norm solution. This leads to a **spectral bias**: larger singular values converge faster.
 
-### 1.3 Verification Code
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-def deep_linear_gradient_flow(X, Y, depths=[1, 2, 3, 5], lr=0.01, steps=2000):
-    n, d_in, d_out = X.shape[0], X.shape[1], Y.shape[1]
-    results = {}
-    for L in depths:
-        np.random.seed(42)
-        # Initialize with balancedness
-        W = [np.random.randn(d_in, d_in) / np.sqrt(d_in)]
-        for _ in range(L - 1):
-            W.append(W[-1].copy())
-        W_end = np.eye(d_in)
-        for w in W:
-            W_end = W_end @ w
-
-        sv_history = []
-        for t in range(steps):
-            grad = 2 * (W_end @ X.T - Y.T) @ X / n
-            W_end = W_end - lr * L * (W_end @ W_end.T) ** ((L - 1) / L) @ grad
-            if t % 100 == 0:
-                sv = np.linalg.svd(W_end, compute_uv=False)
-                sv_history.append(sv)
-
-        results[L] = np.array(sv_history)
-    return results
-
-# Generate synthetic data
-np.random.seed(0)
-n, d = 100, 10
-X = np.random.randn(n, d)
-w_true = np.random.randn(d, d)
-Y = X @ w_true + 0.1 * np.random.randn(n, d)
-
-svs = deep_linear_gradient_flow(X, Y)
-plt.figure(figsize=(8, 5))
-for L, history in svs.items():
-    plt.plot(history[:, 0], label=f'L={L}, top SV')
-    plt.plot(history[:, -1], '--', label=f'L={L}, bottom SV')
-plt.xlabel('Step (x100)')
-plt.ylabel('Singular Value')
-plt.title('Deep Linear Network: Singular Value Evolution')
-plt.legend()
-plt.grid(True)
-```
-
 ### 1.4 Open Questions: The $2 \times 2$ Matrix Zoo at Depth $L \ge 3$
 
 The 2-layer case ($L = 2$) is well-understood — the dynamics can be diagonalized via SVD and the convergence rates are known explicitly [Saxe 2014]. The true frontier lies at **depth $L \ge 3$**. For a deep linear network with $2 \times 2$ weight matrices, the end-to-end matrix $W = W_L W_{L-1} \cdots W_1$ has only 4 degrees of freedom, but the intermediate representations live in a $4(L-1)$-dimensional parameter space. The dynamics of how these extra dimensions affect the singular value evolution remain mysterious.
@@ -135,51 +86,7 @@ The 2-layer case ($L = 2$) is well-understood — the dynamics can be diagonaliz
     Let $W_\ell \in \mathbb{C}^{2 \times 2}$ for $\ell = 1, \dots, L$ with $L \ge 3$. The gradient flow becomes a dynamical system on $\mathbb{C}^{4L}$. The balancedness condition becomes $W_{\ell+1}^* W_{\ell+1} = W_\ell W_\ell^*$. Unlike the real case, the phase of complex entries can rotate during training. Can we characterize the **complex phase dynamics**? Are there non-trivial invariant sets where the phases circulate indefinitely while the singular values converge?
 
 !!! question "Open Problem 1.4 — $2 \times 2$ General Entries, Large Depth"
-    For generic $W_\ell \in \mathbb{R}^{2 \times 2}$ and depth $L \gg 1$, numerical experiments show that the convergence time scales as $O(L^{p})$ for some exponent $p$ (see verification code below). What is the precise scaling exponent $p$? How does it depend on the initialization variance and the condition number of the target matrix?
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-def deep_linear_2x2(L, steps=5000, lr=0.01, seed=42):
-    """Train a deep linear network with 2x2 weight matrices on a single task."""
-    np.random.seed(seed)
-    W = [np.eye(2) + 0.1 * np.random.randn(2, 2) for _ in range(L)]
-    W_end = np.eye(2)
-    target = np.array([[2.0, 0.0], [0.0, 0.5]])
-    X = np.eye(2)
-    Y = target @ X
-
-    error_history = []
-    for t in range(steps):
-        W_end = np.eye(2)
-        for w in W:
-            W_end = W_end @ w
-        grad = 2 * (W_end - target)
-        # Layer-wise gradient
-        for ell in range(L):
-            left = np.eye(2)
-            for j in range(ell + 1, L):
-                left = left @ W[j]
-            right = np.eye(2)
-            for j in range(ell):
-                right = W[j] @ right
-            W[ell] -= lr * left.T @ grad @ right.T
-        if t % 100 == 0:
-            error_history.append(np.linalg.norm(W_end - target))
-    return error_history
-
-depths = [2, 3, 4, 6, 8]
-plt.figure(figsize=(8, 5))
-for L in depths:
-    err = deep_linear_2x2(L)
-    plt.semilogy(err, label=f'L={L}')
-plt.xlabel('Step (x100)')
-plt.ylabel('Frobenius Error')
-plt.title('Deep 2x2 Linear Networks: Convergence vs Depth')
-plt.legend()
-plt.grid(True)
-```
+    For generic $W_\ell \in \mathbb{R}^{2 \times 2}$ and depth $L \gg 1$, numerical experiments show that the convergence time scales as $O(L^{p})$ for some exponent $p$. What is the precise scaling exponent $p$? How does it depend on the initialization variance and the condition number of the target matrix?
 
 **References:**
 
@@ -327,60 +234,7 @@ The core idea has been extended beyond unconstrained smooth optimization:
 * **Riemannian optimization** (arXiv:2506.06160, 2025): Silver schedules apply on manifolds with applications to Wasserstein space, suggesting the principle is geometric
 * **Schedule concatenation** (arXiv:2410.12395, Fudan, 2024): A unified technique for constructing stepsizes with analytic bounds by concatenating shorter optimal schedules
 
-### 2.6 Verification Code
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-def chebyshev_nodes(k, kappa):
-    """Return optimal Chebyshev step sizes for GD on a quadratically ill-conditioned problem."""
-    gamma = (np.sqrt(kappa) - 1) / (np.sqrt(kappa) + 1)
-    nodes = np.cos((2 * np.arange(1, k + 1) - 1) * np.pi / (2 * k))
-    alphas = (1 - gamma * nodes) / (1 + gamma)
-    return 1.0 / (1 + gamma * alphas)
-
-def quadratic_lambda_max(x, Q, b):
-    return 0.5 * x.T @ Q @ x - b @ x
-
-np.random.seed(42)
-d = 50
-kappa = 100
-Q = np.diag(np.linspace(kappa, 1, d))
-L, mu = Q[0, 0], Q[-1, -1]
-b = np.random.randn(d)
-x0 = np.random.randn(d)
-
-fixed_lr = 1.9 / L
-x_fixed = x0.copy()
-hist_fixed = []
-
-k_iter = 500
-alphas = chebyshev_nodes(k_iter, kappa)
-x_adapt = x0.copy()
-hist_adapt = []
-
-for k in range(k_iter):
-    grad_fixed = Q @ x_fixed - b
-    x_fixed -= fixed_lr * grad_fixed
-    hist_fixed.append(quadratic_lambda_max(x_fixed, Q, b))
-
-    grad_adapt = Q @ x_adapt - b
-    x_adapt -= alphas[k] * grad_adapt
-    hist_adapt.append(quadratic_lambda_max(x_adapt, Q, b))
-
-plt.figure(figsize=(8, 5))
-plt.semilogy(hist_fixed, label=f'Fixed step size GD (lr={fixed_lr:.3f})')
-plt.semilogy(hist_adapt, label='Chebyshev adaptive step sizes')
-plt.axhline(1e-12, color='gray', linestyle='--', label='Machine precision')
-plt.xlabel('Iteration k')
-plt.ylabel('Objective f(w_k)')
-plt.title('Chebyshev Acceleration: Variable Step Size vs Fixed GD')
-plt.legend()
-plt.grid(True)
-```
-
-### 2.7 Open Questions
+### 2.6 Open Questions
 
 !!! question "Open Problem 2.1 — Silver Schedule for Non-Separable Non-Quadratic"
     The Arcsine random stepsize schedule achieves full acceleration only for **separable** convex functions. Does there exist a stepsize schedule (deterministic or randomized) that achieves $O(\kappa^{1/2})$ without momentum for *all* convex functions? The Silver schedule gives partial acceleration $\kappa^{\log_\rho 2} \approx \kappa^{0.7864}$ — can this exponent be improved to $0.5$?
@@ -442,58 +296,6 @@ In the lazy (NTK) regime, deep ReLU networks behave like kernel regression with 
 !!! question "Open Problem 3.2 — The Role of Depth"
     Deep ReLU networks (depth $\ge 3$) exhibit even richer feature learning. Can we extend the mean-field analysis to deeper architectures? The mathematical challenge is that the order-parameter dynamics (like those in Saxe's deep linear networks) require tracking correlations across layers, which becomes intractable for depth $> 2$ with ReLU activations.
 
-### 3.4 Verification Code
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-def two_layer_relu_implicit_bias(n=50, d=10, m=200, steps=3000, lr=0.1):
-    """Train a 2-layer ReLU network on separable data and measure the implicit bias."""
-    np.random.seed(42)
-    X = np.random.randn(n, d)
-    w_true = np.random.randn(d)
-    y = np.sign(X @ w_true)
-
-    # Initialize
-    W1 = np.random.randn(d, m) * 0.1
-    a = np.random.randn(m) * 0.1
-
-    margin_history = []
-    norm_history = []
-    ntk_alignment = []
-
-    for t in range(steps):
-        logits = np.maximum(0, X @ W1) @ a
-        loss = np.mean(np.log(1 + np.exp(-y * logits)))
-        grad_a = np.mean(-y[:, None] * np.maximum(0, X @ W1) * sigmoid(-y * logits)[:, None], axis=0)
-        grad_W1 = np.mean(-y[:, None, None] * (a[None, :] * (X @ W1 > 0))[:, :, None] * X[:, None, :] *
-                          sigmoid(-y * logits)[:, None, None], axis=0)
-        a -= lr * grad_a
-        W1 -= lr * grad_W1
-
-        if t % 100 == 0:
-            margins = y * (np.maximum(0, X @ W1) @ a)
-            margin_history.append(np.min(margins))
-            norm_history.append(np.linalg.norm(W1) + np.linalg.norm(a))
-            # NTK alignment
-            H = np.maximum(0, X @ W1)
-            K_ntk = H @ H.T / m
-            ntk_alignment.append(np.trace(K_ntk) / n)
-
-    return margin_history, norm_history, ntk_alignment
-
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
-
-margins, norms, algn = two_layer_relu_implicit_bias()
-plt.figure(figsize=(10, 3))
-plt.subplot(131); plt.plot(margins); plt.title('Min Margin'); plt.grid()
-plt.subplot(132); plt.plot(norms); plt.title('Parameter Norm'); plt.grid()
-plt.subplot(133); plt.plot(algn); plt.title('NTK Trace'); plt.grid()
-plt.tight_layout()
-```
-
 **References:**
 
 - Chizat, L., & Bach, F. (2020). Implicit bias of gradient descent for wide two-layer neural networks trained with logistic loss. *COLT 2020*.
@@ -527,64 +329,7 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
     
     When two biases $b_j$ and $b_k$ are close, their gradients become correlated. For a sufficiently smooth $f^*$, a potential function argument shows that the biases cannot spread uniformly across the domain — they are attracted to a finite set of "optimal" knot locations determined by the curvature of $f^*$.
 
-### 4.3 Verification Code
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-def bias_collapse_experiment(m=50, steps=5000, lr=0.01, target='sin'):
-    """Train a 1D ReLU network and observe bias collapse."""
-    np.random.seed(42)
-    x = np.linspace(-3, 3, 500)
-
-    if target == 'sin':
-        f_star = np.sin(x) + 0.5 * np.sin(3 * x)
-    else:
-        f_star = np.exp(-x ** 2)
-
-    a = np.random.randn(m) * 0.5
-    b = np.random.randn(m) * 2.0
-    w = np.ones(m)  # fixed
-
-    bias_history = [b.copy()]
-    for t in range(steps):
-        z = w * x[:, None] + b[None, :]
-        h = np.maximum(0, z)
-        f = h @ a
-        residual = f - f_star
-
-        grad_a = h.T @ residual / len(x)
-        grad_b = (a[None, :] * (z > 0)).T @ residual / len(x)
-
-        a -= lr * grad_a
-        b -= lr * grad_b
-
-        if t % 500 == 0:
-            bias_history.append(b.copy())
-
-    return b, bias_history, f, f_star, x
-
-b, hist, f, f_star, x = bias_collapse_experiment(m=50)
-
-plt.figure(figsize=(12, 4))
-plt.subplot(121)
-for i, bh in enumerate(hist):
-    plt.scatter(np.full(len(bh), i), bh, s=5, alpha=0.5)
-plt.xlabel('Step (x500)')
-plt.ylabel('Bias values')
-plt.title('Bias Collapse: All biases converge to clusters')
-
-plt.subplot(122)
-plt.plot(x, f_star, 'k--', label='Target')
-plt.plot(x, f, 'r-', label='Network')
-plt.axvline(x=b[b > -2], color='gray', alpha=0.3, linestyle=':', label='Biases')
-plt.legend()
-plt.title('Network fit with collapsed biases')
-plt.tight_layout()
-```
-
-### 4.4 Open Questions
+### 4.3 Open Questions
 
 !!! question "Open Problem 4.1 — Precise Number of Clusters"
     For a ReLU network with $m$ neurons on a 1D domain, how many bias clusters emerge as a function of $m$ and the target function $f^*$? Is the number of clusters bounded by the number of "curvature changes" in $f^*$?
@@ -604,18 +349,3 @@ plt.tight_layout()
 
 ---
 
-## Summary of Open Problems
-
-| # | Problem | Chapter Connection | Difficulty |
-|---|---------|-------------------|------------|
-| 1.1 | $2 \times 2$ depth-3 singular vector rotation | Ch. 1 Optimization | Hard |
-| 1.2 | $2 \times 2$ depth-4 periodic orbits and chaos | Ch. 1 Optimization | Very Hard |
-| 1.3 | $2 \times 2$ complex entries at depth $L \ge 3$ | Ch. 1 Optimization | Very Hard |
-| 1.4 | $2 \times 2$ general entries, large depth scaling | Ch. 1 Optimization | Hard |
-| 2.1 | Silver schedule for non-separable non-quadratic | Ch. 1 Optimization | Very Hard |
-| 2.2 | Stepsize hedging for stochastic/non-convex | Ch. 1 Optimization | Hard |
-| 3.1 | Finite-width implicit bias in ReLU nets | Ch. 3 Learning Theory | Very Hard |
-| 3.2 | Deep mean-field limit | Ch. 3 Learning Theory | Very Hard |
-| 4.1 | Bias cluster count in 1D | Ch. 2 Approximation | Moderate |
-| 4.2 | Bias collapse in higher dimensions | Ch. 2 Approximation | Hard |
-| 4.3 | Pruning via collapse | Ch. 2 Approximation | Moderate |
