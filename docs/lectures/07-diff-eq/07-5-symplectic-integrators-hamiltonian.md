@@ -182,6 +182,8 @@ Even though there is a local error $O(\Delta t^2)$, the trajectory stays on a to
 This script visualizes the dramatic difference in long-term stability.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -218,8 +220,11 @@ plt.xlabel('q (position)')
 plt.ylabel('p (momentum)')
 plt.legend()
 plt.title("Phase Space Trajectories: Standard vs Symplectic")
-plt.show()
+plt.savefig('figures/07-5-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/07-5-demo1.png)
 
 ### 6.2 Basic Hamiltonian Neural Network (HNN) Implementation
 

@@ -438,129 +438,139 @@ So the signal eigenvalue $\lambda_{\max} \approx 9.333$ separates from the maxim
 This rigorous demonstration visualizes the Morse landscape locally around critical points of varying indices. It generates a high-quality surface and contour plot for both a local minimum and a saddle point, emphasizing how eigenvectors dictate the directions of ascent and descent.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-    
+
 def plot_morse_neighborhood():
-# Define a grid
-x = np.linspace(-3, 3, 200)
-y = np.linspace(-3, 3, 200)
-X, Y = np.meshgrid(x, y)
-    
-# 1. Local Minimum (Index k=0)
-# Quadratic form: L = 1*x^2 + 2*y^2 (Positive definite Hessian)
-Z_min = 1.0 * X**2 + 2.0 * Y**2
-    
-# 2. Saddle Point (Index k=1)
-# Quadratic form: L = 2*x^2 - 1.5*y^2 (Indefinite Hessian)
-Z_saddle = 2.0 * X**2 - 1.5 * Y**2
-    
-fig = plt.figure(figsize=(14, 6))
-    
-# Subplot 1: Local Minimum
-ax1 = fig.add_subplot(121, projection='3d')
-surf1 = ax1.plot_surface(X, Y, Z_min, cmap='viridis', alpha=0.8, antialiased=True)
-ax1.contour(X, Y, Z_min, zdir='z', offset=-5, cmap='viridis')
-ax1.set_title("Index 0 (Local Minimum)\nPositive Definite Hessian", fontsize=14, pad=20)
-ax1.set_xlabel('$x_1$ (Eigenvector 1)')
-ax1.set_ylabel('$x_2$ (Eigenvector 2)')
-ax1.set_zlim(-5, 20)
-ax1.view_init(elev=30, azim=-45)
-    
-# Subplot 2: Saddle Point
-ax2 = fig.add_subplot(122, projection='3d')
-surf2 = ax2.plot_surface(X, Y, Z_saddle, cmap='coolwarm', alpha=0.8, antialiased=True)
-ax2.contour(X, Y, Z_saddle, zdir='z', offset=-15, cmap='coolwarm')
-ax2.set_title("Index 1 (Saddle Point)\nIndefinite Hessian (One negative eigenvalue)", fontsize=14, pad=20)
-ax2.set_xlabel('$x_1$ (Positive curvature)')
-ax2.set_ylabel('$x_2$ (Negative curvature)')
-ax2.set_zlim(-15, 20)
-ax2.view_init(elev=30, azim=-45)
-    
-plt.tight_layout()
-# plt.show() # Uncomment to display in a local environment
-    
+    # Define a grid
+    x = np.linspace(-3, 3, 200)
+    y = np.linspace(-3, 3, 200)
+    X, Y = np.meshgrid(x, y)
+
+    # 1. Local Minimum (Index k=0)
+    # Quadratic form: L = 1*x^2 + 2*y^2 (Positive definite Hessian)
+    Z_min = 1.0 * X**2 + 2.0 * Y**2
+
+    # 2. Saddle Point (Index k=1)
+    # Quadratic form: L = 2*x^2 - 1.5*y^2 (Indefinite Hessian)
+    Z_saddle = 2.0 * X**2 - 1.5 * Y**2
+
+    fig = plt.figure(figsize=(14, 6))
+
+    # Subplot 1: Local Minimum
+    ax1 = fig.add_subplot(121, projection='3d')
+    surf1 = ax1.plot_surface(X, Y, Z_min, cmap='viridis', alpha=0.8, antialiased=True)
+    ax1.contour(X, Y, Z_min, zdir='z', offset=-5, cmap='viridis')
+    ax1.set_title("Index 0 (Local Minimum)\nPositive Definite Hessian", fontsize=14, pad=20)
+    ax1.set_xlabel('$x_1$ (Eigenvector 1)')
+    ax1.set_ylabel('$x_2$ (Eigenvector 2)')
+    ax1.set_zlim(-5, 20)
+    ax1.view_init(elev=30, azim=-45)
+
+    # Subplot 2: Saddle Point
+    ax2 = fig.add_subplot(122, projection='3d')
+    surf2 = ax2.plot_surface(X, Y, Z_saddle, cmap='coolwarm', alpha=0.8, antialiased=True)
+    ax2.contour(X, Y, Z_saddle, zdir='z', offset=-15, cmap='coolwarm')
+    ax2.set_title("Index 1 (Saddle Point)\nIndefinite Hessian (One negative eigenvalue)", fontsize=14, pad=20)
+    ax2.set_xlabel('$x_1$ (Positive curvature)')
+    ax2.set_ylabel('$x_2$ (Negative curvature)')
+    ax2.set_zlim(-15, 20)
+    ax2.view_init(elev=30, azim=-45)
+
+    plt.tight_layout()
+    plt.savefig('figures/01-1-demo1.png', dpi=150, bbox_inches='tight')
+    plt.close()
+
 # Execute the plotting routine
 plot_morse_neighborhood()
 ```
+
+![Figure](figures/01-1-demo1.png)
     
 **Demo 2: Simulating the BBP Phase Transition empirically**
     
 This simulation rigorously verifies Theorem 1.3 by constructing a high-dimensional covariance matrix, injecting a rank-1 signal of controlled strength, calculating the eigenspectrum, and overlaying the theoretical Marchenko-Pastur bulk distribution density. It visually demonstrates the exact detachment of the outlier eigenvalue.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-    
+
 def marchenko_pastur_density(x, c):
-"""Computes the theoretical Marchenko-Pastur probability density."""
-b_plus = (1 + np.sqrt(c))**2
+    """Computes the theoretical Marchenko-Pastur probability density."""
+    b_plus = (1 + np.sqrt(c))**2
     b_minus = (1 - np.sqrt(c))**2
-        
+
     # Initialize density array
     density = np.zeros_like(x)
-        
+
     # Compute density only within the bounds
     valid = (x > b_minus) & (x < b_plus)
     density[valid] = np.sqrt((b_plus - x[valid]) * (x[valid] - b_minus)) / (2 * np.pi * c * x[valid])
-        
+
     # If c > 1, there is a point mass at zero, which we ignore for the continuous plot
     return density
-    
+
 def simulate_bbp_transition():
-N, M = 400, 1600 # Dimension N, Samples M
-c = N / M        # Aspect ratio c = 0.25
-    
-# Critical threshold
-theta_c = np.sqrt(c) # 0.5
-    
-# We will test two cases: below threshold and above threshold
-thetas = [0.3, 1.5]
-    
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-    
-for i, theta in enumerate(thetas):
-    ax = axes[i]
-        
-    # Create the true covariance matrix: Identity + Rank-1 signal
-    v = np.random.randn(N)
-    v = v / np.linalg.norm(v) # Unit vector
-    Sigma = np.eye(N) + theta * np.outer(v, v)
-        
-    # Draw samples
-    X = np.random.multivariate_normal(np.zeros(N), Sigma, M)
-        
-    # Compute sample covariance matrix
-    W = (X.T @ X) / M
-        
-    # Calculate eigenvalues
-    eigvals = np.linalg.eigvalsh(W)
-        
-    # Plot empirical histogram
-    ax.hist(eigvals, bins=60, density=True, color='skyblue', edgecolor='black', alpha=0.7, label='Empirical Eigenvalues')
-        
-    # Plot theoretical Marchenko-Pastur distribution
-    x_vals = np.linspace(0.01, max(eigvals) * 1.1, 1000)
-    mp_pdf = marchenko_pastur_density(x_vals, c)
-    ax.plot(x_vals, mp_pdf, 'r-', lw=2, label='Marchenko-Pastur Bulk')
-        
-    # Theoretical Outlier Position
-    if theta > theta_c:
-        lambda_outlier = 1 + theta + c * (1 + theta) / theta
-        ax.axvline(lambda_outlier, color='green', linestyle='dashed', linewidth=2, label=f'Theoretical Outlier ({lambda_outlier:.2f})')
-        
-    ax.set_title(f"BBP Transition: $\\theta={theta}$ (Threshold $\\theta_c={theta_c}$)")
-    ax.set_xlabel("Eigenvalue $\\lambda$")
-    ax.set_ylabel("Density")
-    ax.legend()
-        
-plt.tight_layout()
-# plt.show() # Uncomment to display
-    
+    N, M = 400, 1600 # Dimension N, Samples M
+    c = N / M        # Aspect ratio c = 0.25
+
+    # Critical threshold
+    theta_c = np.sqrt(c) # 0.5
+
+    # We will test two cases: below threshold and above threshold
+    thetas = [0.3, 1.5]
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+    for i, theta in enumerate(thetas):
+        ax = axes[i]
+
+        # Create the true covariance matrix: Identity + Rank-1 signal
+        v = np.random.randn(N)
+        v = v / np.linalg.norm(v) # Unit vector
+        Sigma = np.eye(N) + theta * np.outer(v, v)
+
+        # Draw samples
+        X = np.random.multivariate_normal(np.zeros(N), Sigma, M)
+
+        # Compute sample covariance matrix
+        W = (X.T @ X) / M
+
+        # Calculate eigenvalues
+        eigvals = np.linalg.eigvalsh(W)
+
+        # Plot empirical histogram
+        ax.hist(eigvals, bins=60, density=True, color='skyblue', edgecolor='black', alpha=0.7, label='Empirical Eigenvalues')
+
+        # Plot theoretical Marchenko-Pastur distribution
+        x_vals = np.linspace(0.01, max(eigvals) * 1.1, 1000)
+        mp_pdf = marchenko_pastur_density(x_vals, c)
+        ax.plot(x_vals, mp_pdf, 'r-', lw=2, label='Marchenko-Pastur Bulk')
+
+        # Theoretical Outlier Position
+        if theta > theta_c:
+            lambda_outlier = 1 + theta + c * (1 + theta) / theta
+            ax.axvline(lambda_outlier, color='green', linestyle='dashed', linewidth=2, label=f'Theoretical Outlier ({lambda_outlier:.2f})')
+
+        ax.set_title(f"BBP Transition: $\\theta={theta}$ (Threshold $\\theta_c={theta_c}$)")
+        ax.set_xlabel("Eigenvalue $\\lambda$")
+        ax.set_ylabel("Density")
+        ax.legend()
+
+    plt.tight_layout()
+    plt.savefig('figures/01-1-demo2.png', dpi=150, bbox_inches='tight')
+    plt.close()
+
 # Execute the simulation
 simulate_bbp_transition()
 ```
+
+![Figure](figures/01-1-demo2.png)
     
 This completes our deep, rigorous exploration of the geometry of high-dimensional loss landscapes. You now possess the mathematical machinery—from Morse Theory to Random Matrices—required to analyze the complex critical points encountered in modern machine learning.
 

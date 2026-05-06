@@ -140,6 +140,8 @@ $y=1, P=0.8$. $S = (1-0.8)^2 + (0-0.2)^2 = 0.04 + 0.04 = 0.08$.
 ### 6.1 Coding Demo 1: Reliability Diagram
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -148,12 +150,14 @@ def reliability_diagram(y_true, y_prob, n_bins=10):
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
     accuracy = np.zeros(n_bins)
     confidence = np.zeros(n_bins)
+    counts = np.zeros(n_bins)
     for i in range(n_bins):
         mask = (y_prob >= bin_edges[i]) & (y_prob < bin_edges[i + 1])
-        if np.sum(mask) > 0:
+        counts[i] = np.sum(mask)
+        if counts[i] > 0:
             accuracy[i] = np.mean(y_true[mask] == 1)
             confidence[i] = np.mean(y_prob[mask])
-    ece = np.sum(np.abs(accuracy - confidence) * np.sum(mask)) / len(y_true)
+    ece = np.sum(np.abs(accuracy - confidence) * counts) / len(y_true)
     return bin_centers, accuracy, confidence, ece
 
 np.random.seed(42)
@@ -167,7 +171,11 @@ plt.plot([0, 1], [0, 1], 'k--', label='Perfect Calibration')
 plt.plot(conf, acc, 'o-', label=f'Model (ECE={ece:.3f})')
 plt.xlabel('Confidence'); plt.ylabel('Accuracy')
 plt.title('Reliability Diagram'); plt.legend(); plt.grid(True)
+plt.savefig('figures/08-5-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/08-5-demo1.png)
 
 ### 6.2 Coding Demo 2: Conformal Prediction in Python
 
@@ -181,6 +189,7 @@ def conformal_prediction_interval(model, X_train, y_train, X_test, alpha=0.1):
     y_pred = model.predict(X_train)
     residuals = np.abs(y_train - y_pred)
     q_level = np.ceil((n + 1) * (1 - alpha)) / n
+    q_level = min(q_level, 1.0)  # Clip to [0,1] for valid quantile
     q = np.quantile(residuals, q_level, method='higher')
     y_test_pred = model.predict(X_test)
     return y_test_pred - q, y_test_pred + q
@@ -188,13 +197,17 @@ def conformal_prediction_interval(model, X_train, y_train, X_test, alpha=0.1):
 np.random.seed(42)
 X = np.random.randn(200, 1)
 y = X.squeeze() + 0.5 * np.random.randn(200)
-X_train, X_test = X[:150], X[50:]
-y_train, y_test = y[:150], y[50:]
+X_train, X_test = X[:150], X[150:]
+y_train, y_test = y[:150], y[150:]
 
 model = KNeighborsRegressor(n_neighbors=5)
 lower, upper = conformal_prediction_interval(model, X_train, y_train, X_test)
 coverage = np.mean((y_test >= lower) & (y_test <= upper))
 print(f"Coverage: {coverage:.3f} (target: {0.90})")
+```
+
+```
+Coverage: 0.840 (target: 0.9)
 ```
 
 ## 7. Conclusion

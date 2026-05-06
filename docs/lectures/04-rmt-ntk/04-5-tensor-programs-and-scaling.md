@@ -77,6 +77,12 @@ for n in widths:
 # muP update norm remains stable ~ O(1) while SP shrinks or diverges.
 ```
 
+```
+Width 100: SP Update = 0.9082, muP Update = 9.0849
+Width 1000: SP Update = 1.0314, muP Update = 31.6790
+Width 10000: SP Update = 0.9830, muP Update = 99.3587
+```
+
 **Demo 2: Feature Learning Test**
 ```python
 import numpy as np
@@ -99,5 +105,10 @@ def test_feature_learning(width, param_type='mup'):
 
 print(f"NTK Feature Shift (n=10k): {test_feature_learning(10000, 'ntk'):.4f}")
 print(f"muP Feature Shift (n=10k): {test_feature_learning(10000, 'mup'):.4f}")
+```
+
+```
+NTK Feature Shift (n=10k): 0.9748
+muP Feature Shift (n=10k): 98.9391
 ```
 

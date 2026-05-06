@@ -326,13 +326,15 @@ The error $\|x^3 - (Ax^2 + Bx + C)\|_\infty$ is always strictly positive because
 We empirically demonstrate Cybenko's theorem by training networks of increasing width to fit a complex, oscillatory 1D function.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
 
 # 1. Define the complex target function
 def target_function(x):
-return torch.sin(5*x) / (x + 0.1)
+    return torch.sin(5*x) / (x + 0.1)
 
 # 2. Universal Approximator Model
 class SimpleNet(nn.Module):
@@ -353,26 +355,32 @@ y = target_function(x)
 # 4. Training loop and visualization
 widths = [2, 10, 100]
 plt.figure(figsize=(10, 6))
-plt.plot(x, y, 'k--', label='Target')
+plt.plot(x.detach().numpy(), y.detach().numpy(), 'k--', label='Target')
 
 for w in widths:
     model = SimpleNet(w)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-    for _ in range(5000):
+    for _ in range(2000):
         optimizer.zero_grad()
         loss = nn.MSELoss()(model(x), y)
         loss.backward()
         optimizer.step()
-    plt.plot(x, model(x).detach(), label=f'Width={w}')
+    plt.plot(x.detach().numpy(), model(x).detach().numpy(), label=f'Width={w}')
 
 plt.title("UAT in Action: Approximating f(x) = sin(5x)/(x+0.1)")
-plt.legend(); plt.grid(True); plt.show()
+plt.legend(); plt.grid(True)
+plt.savefig('figures/02-1-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/02-1-demo1.png)
 
 ### Demo 7.2: Leshno's Finite Difference Construction in NumPy
 We implement the sufficiency proof of Leshno's theorem by constructing $x^2$ from the finite differences of a non-polynomial activation (SiLU).
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -395,8 +403,12 @@ plt.plot(x_vals, approximate_x2(x_vals, h=0.5), label='h=0.5')
 plt.plot(x_vals, approximate_x2(x_vals, h=0.1), label='h=0.1')
 
 plt.title("Leshno's Theorem: Constructive Polynomial via Finite Differences")
-plt.legend(); plt.grid(True); plt.show()
+plt.legend(); plt.grid(True)
+plt.savefig('figures/02-1-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/02-1-demo2.png)
 
 ---
 

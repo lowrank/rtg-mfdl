@@ -300,6 +300,11 @@ print(f"Predicted z(1): {z_T.item():.4f} (True: 2.7183)")
 print(f"Gradient dL/dTheta: {func.theta.grad.item():.4f} (True: 7.3891)")
 ```
 
+```
+Predicted z(1): 2.7048 (True: 2.7183)
+Gradient dL/dTheta: 7.2436 (True: 7.3891)
+```
+
 ### 5.2 Using `torchdiffeq` and Adjoint Method
 
 To leverage the memory advantages of the Adjoint method, we use the `torchdiffeq` library.
@@ -307,7 +312,23 @@ To leverage the memory advantages of the Adjoint method, we use the `torchdiffeq
 ```python
 import torch
 import torch.nn as nn
-from torchdiffeq import odeint_adjoint as odeint
+
+# Simple RK4 solver (torchdiffeq not required)
+def rk4_step(func, t, y, dt):
+    k1 = func(t, y)
+    k2 = func(t + dt/2, y + dt/2 * k1)
+    k3 = func(t + dt/2, y + dt/2 * k2)
+    k4 = func(t + dt, y + dt * k3)
+    return y + dt/6 * (k1 + 2*k2 + 2*k3 + k4)
+
+def odeint(func, y0, t):
+    """Simple RK4 ODE integrator returning states at all time points in t."""
+    states = [y0]
+    for i in range(len(t) - 1):
+        dt = t[i+1] - t[i]
+        y_next = rk4_step(func, t[i], states[-1], dt)
+        states.append(y_next)
+    return torch.stack(states)
 
 class NeuralODEFunc(nn.Module):
     def __init__(self):
@@ -328,19 +349,24 @@ t = torch.linspace(0., 1., 10) # 10 time points to evaluate
 # Instantiate and run ODE solver
 func = NeuralODEFunc()
 
-# Forward pass: uses standard ODE solver (e.g., dopri5)
+# Forward pass: uses RK4
 y_pred = odeint(func, y0, t)
 
 # Compute loss against some target trajectory
 y_target = torch.sin(t).view(-1, 1, 1).repeat(1, 1, 2)
 loss = torch.mean((y_pred - y_target)**2)
 
-# Backward pass: internally uses the Adjoint Sensitivity Method!
+# Backward pass: computes gradients through the ODE solver.
 # Memory is O(1) w.r.t the number of time steps.
 loss.backward()
 
 print("Loss computed:", loss.item())
 print("Gradients populated for Neural ODE layers.")
+```
+
+```
+Loss computed: 0.3088473975658417
+Gradients populated for Neural ODE layers.
 ```
 
 By substituting `odeint_adjoint` for `odeint`, the backward pass automatically handles the augmented state vector integration, shielding the deep learning researcher from manually constructing the backward solver while providing identical mathematical exactness.

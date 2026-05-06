@@ -269,6 +269,7 @@ class BayesianLinear(nn.Module):
         return 0.5 * torch.sum(sigma**2 + self.w_mu**2 - 1 - 2*torch.log(sigma))
 
 # Optimization loop
+torch.manual_seed(42)
 model = BayesianLinear(10, 1)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
@@ -283,6 +284,16 @@ for i in range(500):
     loss = nll + kl
     loss.backward()
     optimizer.step()
+    if (i+1) % 100 == 0:
+        print(f"Step {i+1}: loss={loss.item():.4f}, nll={nll.item():.4f}, kl={kl.item():.4f}")
+```
+
+```
+Step 100: loss=25.2232, nll=25.1972, kl=0.0260
+Step 200: loss=26.0383, nll=26.0120, kl=0.0263
+Step 300: loss=24.5394, nll=24.5131, kl=0.0263
+Step 400: loss=25.1836, nll=25.1574, kl=0.0263
+Step 500: loss=25.2246, nll=25.1978, kl=0.0268
 ```
 
 ### 7.2 Coding Demo 2: Normalizing Flow (RealNVP Coupling)

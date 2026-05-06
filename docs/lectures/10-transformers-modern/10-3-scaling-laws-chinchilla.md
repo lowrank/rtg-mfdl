@@ -175,6 +175,8 @@ This makes sense: 3D rotation (1 degree of freedom in some setups, or 3) and tra
 This demo generates synthetic loss curves and fits a power-law to estimate $\alpha$.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
@@ -199,13 +201,30 @@ popt, _ = curve_fit(scaling_law, Ns, losses, p0=[1.0, 100, 0.3], bounds=(0, np.i
 E_fit, A_fit, alpha_fit = popt
 print(f"True alpha: {alpha_true}, Fitted alpha: {alpha_fit:.4f}")
 print(f"Intrinsic Dimension Estimate (2/alpha): {2/alpha_fit:.2f}")
+
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.scatter(Ns, losses, label='Synthetic data', zorder=5)
+N_plot = np.logspace(5, 10, 200)
+ax.plot(N_plot, scaling_law(N_plot, *popt), 'r-', label=f'Fitted (α={alpha_fit:.3f})')
+ax.set_xscale('log')
+ax.set_xlabel('Model Size N')
+ax.set_ylabel('Loss')
+ax.set_title('Scaling Law Fit')
+ax.legend()
+plt.tight_layout()
+plt.savefig('figures/10-3-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/10-3-demo1.png)
 
 ### Coding Demo 2: Visualizing the Chinchilla Compute Frontier
 
 This snippet plots the Iso-loss curves and the Compute constraint to show the tangency point (optimality).
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -232,8 +251,11 @@ plt.xlabel('Model Size (N)')
 plt.ylabel('Training Tokens (D)')
 plt.title('Chinchilla Scaling: Iso-Loss Curves and Compute Frontier')
 plt.legend()
-plt.show()
+plt.savefig('figures/10-3-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/10-3-demo2.png)
 
 Understanding these scaling laws allows researchers to allocate hundreds of millions of dollars in compute with mathematical confidence, ensuring that neither model capacity nor data quantity becomes a bottleneck for intelligence.
 

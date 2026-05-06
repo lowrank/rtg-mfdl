@@ -156,6 +156,8 @@ Generative Adversarial Networks usually use a neural network discriminator. MMD-
 We implement the unbiased MMD estimator and use a permutation test to calculate the p-value for testing if two datasets are from the same distribution.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import rbf_kernel
@@ -199,9 +201,10 @@ total_samples = 2 * n_samples
 
 mmd_null = np.zeros(n_permutations)
 for i in range(n_permutations):
-    np.random.shuffle(pooled_data)
-    X_perm = pooled_data[:n_samples]
-    Y_perm = pooled_data[n_samples:]
+    perm_idx = np.random.permutation(total_samples)
+    pooled_perm = pooled_data[perm_idx]
+    X_perm = pooled_perm[:n_samples]
+    Y_perm = pooled_perm[n_samples:]
     mmd_null[i] = compute_mmd(X_perm, Y_perm, gamma=gamma_val)
 
 p_value = np.mean(mmd_null >= actual_mmd)
@@ -213,15 +216,30 @@ plt.hist(mmd_null, bins=30, alpha=0.7, color='gray', label='Null Distribution ($
 plt.axvline(actual_mmd, color='red', linestyle='dashed', linewidth=2, label='Observed MMD^2')
 plt.title(f"MMD Permutation Test (p-value={p_value:.4f})")
 plt.legend()
-plt.show()
+plt.savefig('figures/09-5-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/09-5-demo1.png)
 
 ### Demo 2: Visualizing the Witness Function
 
 We plot the witness function, showing where the RKHS has detected the difference between the distributions.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics.pairwise import rbf_kernel
+
 # Reusing X, Y from previous demo
+np.random.seed(42)
+n_samples = 200
+X = np.random.normal(0, 1, size=(n_samples, 1))
+Y = np.random.normal(0.5, 1, size=(n_samples, 1))
+gamma_val = 1.0
+
 X_grid = np.linspace(-3, 4, 300).reshape(-1, 1)
 
 # Compute E[k(x, X)] and E[k(x, Y)]
@@ -240,7 +258,10 @@ plt.plot(X_grid, witness_function, 'k-', linewidth=2, label='Witness Function $f
 plt.axhline(0, color='gray', linestyle='--')
 plt.title("Distributions and their RKHS Witness Function")
 plt.legend()
-plt.show()
+plt.savefig('figures/09-5-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/09-5-demo2.png)
 *Observation:* The witness function is positive where $\mathbb{P}$ (blue) has more mass, and negative where $\mathbb{Q}$ (orange) has more mass. It cleanly separates the discrepancy between the two geometries, acting as the optimal discriminator in the RKHS.
 

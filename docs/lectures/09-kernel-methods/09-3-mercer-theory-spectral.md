@@ -135,6 +135,8 @@ For the Gaussian kernel, since $\lambda_n > 0$ for all $n \in \mathbb{N}$, the f
 We will compute the empirical eigenvalues of the Kernel matrix $K$ scaled by $1/n$ (which approximates the integral operator $T_k$) and observe the decay rates for RBF vs Laplace kernels.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import rbf_kernel, laplacian_kernel
@@ -163,11 +165,14 @@ plt.plot(eigvals_lap[:100], label='Laplacian Kernel', linewidth=2)
 plt.yscale('log')
 plt.title("Empirical Spectral Decay of Kernels (First 100 Eigenvalues)")
 plt.xlabel("Index $n$")
-plt.ylabel("Eigenvalue $\lambda_n$ (Log Scale)")
+plt.ylabel(r"Eigenvalue $\lambda_n$ (Log Scale)")
 plt.legend()
 plt.grid(True)
-plt.show()
+plt.savefig('figures/09-3-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/09-3-demo1.png)
 *Observation:* The RBF kernel eigenvalues plummet exponentially, reaching machine precision quickly, confirming it forms a very smooth RKHS. The Laplacian kernel eigenvalues decay linearly in log-space (polynomially), indicating higher capacity for rough functions.
 
 ### Demo 2: Mercer Expansion Approximation (Nyström Method)
@@ -175,7 +180,9 @@ plt.show()
 We can approximate a kernel matrix using a subset of points (landmarks) by relying on the eigenvectors of the sub-matrix. This is essentially empirical Mercer decomposition.
 
 ```python
+import numpy as np
 from scipy.linalg import eigh
+from sklearn.metrics.pairwise import rbf_kernel
 
 def nystrom_approximation(X, n_components=50, gamma=1.0):
     n = X.shape[0]
@@ -206,6 +213,7 @@ def nystrom_approximation(X, n_components=50, gamma=1.0):
     return phi, eigvals
 
 # Test approximation
+np.random.seed(42)
 n_samples = 800
 X_full = np.random.randn(n_samples, 2)
 K_exact = rbf_kernel(X_full, gamma=0.5)
@@ -216,5 +224,10 @@ K_approx = phi @ phi.T
 error = np.linalg.norm(K_exact - K_approx, ord='fro') / np.linalg.norm(K_exact, ord='fro')
 print(f"Relative Frobenius norm error with 100 landmarks (out of {n_samples}): {error*100:.2f}%")
 ```
+
+```
+Relative Frobenius norm error with 100 landmarks (out of 800): 0.19%
+```
+
 This Nyström approximation is heavily used in large-scale kernel methods, relying directly on the existence of Mercer's eigendecomposition.
 

@@ -310,21 +310,28 @@ diff = (out_shifted - out_rot).abs().max()
 print(f"G-CNN Equivariance Error: {diff.item():.6e}")
 ```
 
+```
+G-CNN Equivariance Error: 9.536743e-07
+```
+
 ### Demo 2: Spherical Harmonics and Steerability
 
 We visualize how a spherical harmonic $Y_l^m$ transforms under rotation.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
-from scipy.special import sph_harm
+from scipy.special import sph_harm_y
 import matplotlib.pyplot as plt
 
 def get_spherical_harmonic(l, m, res=100):
     phi = np.linspace(0, 2*np.pi, res)
     theta = np.linspace(0, np.pi, res)
     phi, theta = np.meshgrid(phi, theta)
-    
-    y = sph_harm(m, l, phi, theta)
+
+    # sph_harm_y(l, m, theta_polar, phi_azimuthal)
+    y = sph_harm_y(l, m, theta, phi)
     return y
 
 l, m = 2, 1
@@ -332,17 +339,26 @@ y_lm = get_spherical_harmonic(l, m)
 
 plt.figure(figsize=(10, 5))
 plt.subplot(121)
-plt.imshow(np.real(y_lm), extent=[0, 2*np.pi, 0, np.pi])
+plt.imshow(np.real(y_lm), extent=[0, 2*np.pi, 0, np.pi], aspect='auto')
 plt.title(f"Re(Y_{l}^{m}) - Original")
 plt.xlabel("Phi")
 plt.ylabel("Theta")
+plt.colorbar()
 
 # "Rotating" in spherical coordinates (simple shift for demo)
 plt.subplot(122)
-plt.imshow(np.roll(np.real(y_lm), shift=20, axis=1), extent=[0, 2*np.pi, 0, np.pi])
+plt.imshow(np.roll(np.real(y_lm), shift=20, axis=1), extent=[0, 2*np.pi, 0, np.pi], aspect='auto')
 plt.title(f"Re(Y_{l}^{m}) - Rotated (Shifted Phi)")
-plt.show()
+plt.xlabel("Phi")
+plt.ylabel("Theta")
+plt.colorbar()
+
+plt.tight_layout()
+plt.savefig('docs/lectures/06-geometry-topology/figures/06-1-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/06-1-demo2.png)
 
 ## 7. Advanced Topic: Gauge Equivariance
 

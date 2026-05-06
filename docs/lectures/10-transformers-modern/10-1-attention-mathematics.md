@@ -219,6 +219,8 @@ This elegantly shows that the gradient of the pre-softmax logit is the softmax p
 This snippet simulates the rank collapse of a pure attention network iteratively.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -263,7 +265,22 @@ print("Final token variance:", variances[-1])
 
 # In a pure attention model, the rank drops strictly to 1,
 # and variance across the sequence length dimension collapses to 0.
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+axes[0].plot(ranks)
+axes[0].set_xlabel('Layer')
+axes[0].set_ylabel('Effective Rank')
+axes[0].set_title('Rank Collapse in Pure Attention')
+axes[1].plot(variances)
+axes[1].set_xlabel('Layer')
+axes[1].set_ylabel('Mean Token Variance')
+axes[1].set_title('Token Variance Collapse')
+plt.tight_layout()
+plt.savefig('figures/10-1-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/10-1-demo1.png)
 
 ### Coding Demo 2: Simulating "Head Movement" via Positional Attention
 
@@ -316,10 +333,13 @@ b_K = np.array([0, 0, 0])
 Q = (X @ W_Q) + b_Q # cell i queries for value i-1
 K = (X @ W_K) + b_K # cell i provides value i
 
-# To avoid matching non-head cells, we add a massive bias if is_head is true
-K[:, 0] += X[:, 0] * 1000 
+# To avoid matching non-head cells, we add a massive bias on the
+# positional key dimension (col 2) only for cells where is_head == 1.
+# This makes the head cell's key dominate any positional match.
+K_aug = K.copy()
+K_aug[:, 2] += X[:, 0] * 1000
 
-S = Q @ K.T
+S = Q @ K_aug.T
 P = hard_softmax(S)
 
 print("Attention Matrix P:\n", P)
@@ -337,6 +357,22 @@ Y = P @ (X @ W_V)
 print("\nNew Sequence States (Y):")
 print(Y)
 # Note that Y[2] will now contain [1.0, 0.8, 0], meaning the head successfully moved right!
+```
+
+```
+Attention Matrix P:
+ [[1. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0.]
+ [0. 1. 0. 0. 0.]
+ [0. 1. 0. 0. 0.]
+ [0. 1. 0. 0. 0.]]
+
+New Sequence States (Y):
+[[0.  0.  0. ]
+ [0.  0.  0. ]
+ [1.  0.8 0. ]
+ [1.  0.8 0. ]
+ [1.  0.8 0. ]]
 ```
 
 These mathematical proofs and empirical validations form the foundation of our understanding of Transformers, separating intuitive geometric heuristics from rigorous theoretical guarantees.

@@ -282,11 +282,18 @@ K_vec = compute_rbf_vectorized(X)
 print(f"Vectorized (1000 samples) took: {time.time()-start:.4f}s")
 ```
 
+```
+Naive (200 samples) took: 3.1746s
+Vectorized (1000 samples) took: 0.1891s
+```
+
 ### Demo 2: Visualizing Functions in an RKHS
 
 Any function in the RKHS formed by a dataset $\{x_i\}$ can be written as $f(x) = \sum \alpha_i k(x, x_i)$. Let's visualize this.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -323,8 +330,11 @@ plt.legend()
 plt.grid(True)
 plt.xlabel("$x$")
 plt.ylabel("$f(x)$")
-plt.show()
+plt.savefig('figures/09-1-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/09-1-demo2.png)
 
 This clearly illustrates that a function in the RKHS is a smooth superposition of localized kernel evaluations anchored at the support points.
 

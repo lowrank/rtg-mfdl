@@ -151,8 +151,8 @@ class MambaLayer(nn.Module):
         delta = F.softplus(delta)
         
         # Discretize (Simplified)
-        A_bar = torch.exp(self.A.unsqueeze(1) * delta) # [batch, L, d, d_state]
-        B_bar = B.unsqueeze(2) * delta.unsqueeze(2)
+        A_bar = torch.exp(self.A.unsqueeze(0).unsqueeze(0) * delta.unsqueeze(-1)) # [batch, L, d_model, d_state]
+        B_bar = B.unsqueeze(2) * delta.unsqueeze(-1)  # [batch, L, 1, d_state] -> broadcast
         
         # In a real Mamba, we use a parallel scan or a hardware-aware kernel
         h = torch.zeros(batch, d, self.d_state)
@@ -170,27 +170,127 @@ class MambaLayer(nn.Module):
 ```python
 import numpy as np
 
-def associative_scan(A, b):
-    # A: list of matrices, b: list of vectors
-    # Simple binary tree implementation
-    L = len(A)
-    if L == 1:
-        return A, b
-    
-    # Pairwise combine
-    A_next, b_next = [], []
-    for i in range(0, L, 2):
-        if i+1 < L:
-            # (A2, b2) @ (A1, b1) = (A2 A1, A2 b1 + b2)
-            A_next.append(A[i+1] @ A[i])
-            b_next.append(A[i+1] @ b[i] + b[i+1])
-        else:
-            A_next.append(A[i])
-            b_next.append(b[i])
-            
-    # Recursive call and then expand (simplified)
-    # ... logic for full prefix sum ...
-    pass
+def associative_scan(A_list, b_list):
+    """
+    Compute all prefix states h_k for k=1..L using an associative scan.
+    Each state satisfies: h_k = A_k @ h_{k-1} + b_k, with h_0 = 0.
+
+    We represent computation via tuples T_k = (A_k, b_k) under the
+    associative binary operator:
+        (A2, b2) ⊗ (A1, b1) = (A2 @ A1, A2 @ b1 + b2)
+
+    The k-th prefix product T_{k:1} = T_k ⊗ ... ⊗ T_1 satisfies
+        h_k = b_{k:1}   (the second component, since h_0 = 0).
+
+    This implementation uses a parallel binary-tree (up-sweep / down-sweep)
+    reduction known as the Blelloch scan to compute all prefix products in
+    O(log L) parallel steps.
+
+    Returns: list of h_k (numpy arrays) for k = 1 .. L.
+    """
+    L = len(A_list)
+    # Work arrays — store tuples (A, b) for each leaf / internal node.
+    # We pad to the next power of two for a clean binary tree.
+    size = 1
+    while size < L:
+        size *= 2
+
+    # Pad with identity elements  (A=I, b=0)
+    n = A_list[0].shape[0]
+    I_n = np.eye(n)
+    zero_n = np.zeros(n)
+    A_tree = [I_n.copy() for _ in range(size)]
+    b_tree = [zero_n.copy() for _ in range(size)]
+    for k in range(L):
+        A_tree[k] = A_list[k].copy()
+        b_tree[k] = b_list[k].copy()
+
+    # ---- Up-sweep (reduce) phase ----
+    # Build a complete binary tree of partial products.
+    stride = 1
+    while stride < size:
+        for i in range(stride - 1, size, 2 * stride):
+            right = i + stride
+            if right < size:
+                # parent = right ⊗ left
+                new_b = A_tree[right] @ b_tree[i] + b_tree[right]
+                new_A = A_tree[right] @ A_tree[i]
+                A_tree[right] = new_A
+                b_tree[right] = new_b
+        stride *= 2
+
+    # ---- Down-sweep phase ----
+    # Set the root to the identity (exclusive-scan initialisation).
+    A_tree[size - 1] = I_n.copy()
+    b_tree[size - 1] = zero_n.copy()
+
+    stride = size // 2
+    while stride >= 1:
+        for i in range(stride - 1, size, 2 * stride):
+            right = i + stride
+            if right < size:
+                # Save left child
+                tmp_A = A_tree[i].copy()
+                tmp_b = b_tree[i].copy()
+                # Left child gets parent's value
+                A_tree[i] = A_tree[right].copy()
+                b_tree[i] = b_tree[right].copy()
+                # Right child = original_left ⊗ new_parent
+                A_tree[right] = tmp_A @ A_tree[i]
+                b_tree[right] = tmp_A @ b_tree[i] + tmp_b
+        stride //= 2
+
+    # After down-sweep, leaf k holds the EXCLUSIVE prefix product T_{k-1:1}.
+    # The INCLUSIVE prefix state h_k = A_k @ b_tree[k] + b_list[k]
+    prefix_states = []
+    for k in range(L):
+        h_k = A_list[k] @ b_tree[k] + b_list[k]
+        prefix_states.append(h_k)
+
+    return prefix_states
+
+
+# Simple binary tree implementation
+# A: list of matrices, b: list of vectors
+# Returns the list of prefix states h_1, ..., h_L
+np.random.seed(42)
+state_dim = 3
+L = 8
+
+A_mats = [np.random.randn(state_dim, state_dim) * 0.3 for _ in range(L)]
+b_vecs = [np.random.randn(state_dim) for _ in range(L)]
+
+# Sequential reference
+h = np.zeros(state_dim)
+ref_states = []
+for k in range(L):
+    h = A_mats[k] @ h + b_vecs[k]
+    ref_states.append(h.copy())
+
+# Parallel scan
+scan_states = associative_scan(A_mats, b_vecs)
+
+print("Sequential vs Associative Scan comparison:")
+for k in range(L):
+    err = np.max(np.abs(ref_states[k] - scan_states[k]))
+    print(f"  h_{k+1}: max_err = {err:.2e}")
+
+all_close = all(np.allclose(ref_states[k], scan_states[k], atol=1e-10) for k in range(L))
+print(f"\nAll states match: {all_close}")
+```
+
+```
+Sequential vs Associative Scan comparison:
+  h_1: max_err = 0.00e+00
+  h_2: max_err = 0.00e+00
+  h_3: max_err = 0.00e+00
+  h_4: max_err = 0.00e+00
+  h_5: max_err = 1.11e-16
+  h_6: max_err = 0.00e+00
+  h_7: max_err = 2.78e-17
+  h_8: max_err = 0.00e+00
+
+All states match: True
 ```
 
 By moving beyond the quadratic attention bottleneck, SSMs provide a path toward truly infinite-context models that can process entire books or video streams as a single, continuous signal.

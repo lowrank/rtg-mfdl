@@ -164,6 +164,8 @@ This requires drawing $b_i \sim \text{Uniform}[0, 2\pi]$ but uses half the memor
 ### Demo 1: Implementing Random Fourier Features for RBF
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import rbf_kernel
@@ -213,16 +215,20 @@ plt.xlabel("X")
 plt.ylabel("Kernel Value $k(x_0, x)$")
 plt.legend()
 plt.grid(True)
-plt.show()
+plt.savefig('figures/09-4-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 
 print(f"Mean Squared Error of Kernel Matrix: {np.mean((K_exact - K_approx)**2):.6f}")
 ```
+
+![Figure](figures/09-4-demo1.png)
 
 ### Demo 2: Speeding up SVM with RFF
 
 We compare training time and accuracy of Exact Kernel SVM vs Linear SVM on RFF features.
 
 ```python
+import numpy as np
 import time
 from sklearn.svm import SVC, LinearSVC
 from sklearn.datasets import make_classification
@@ -250,7 +256,7 @@ rff.fit(X_train)
 Z_train = rff.transform(X_train) # Full 16,000 samples!
 Z_test = rff.transform(X_test)
 
-svm_linear = LinearSVC(dual=False, C=1.0)
+svm_linear = LinearSVC(dual=False, C=1.0, max_iter=2000)
 svm_linear.fit(Z_train, y_train)
 time_rff = time.time() - start
 acc_rff = accuracy_score(y_test, svm_linear.predict(Z_test))
@@ -261,5 +267,14 @@ print(f"Time: {time_exact:.4f}s | Accuracy: {acc_exact*100:.2f}%")
 print(f"\n--- RFF Linear SVM (Trained on full 16,000 points, D=500) ---")
 print(f"Time: {time_rff:.4f}s | Accuracy: {acc_rff*100:.2f}%")
 ```
+
+```
+--- Kernel SVM (Trained on subset 2,000 points) ---
+Time: 0.2406s | Accuracy: 96.17%
+
+--- RFF Linear SVM (Trained on full 16,000 points, D=500) ---
+Time: 2.4336s | Accuracy: 87.30%
+```
+
 RFF allows the linear model to leverage the full dataset rapidly, often surpassing the accuracy of the exact but subsampled kernel model within a fraction of the time.
 

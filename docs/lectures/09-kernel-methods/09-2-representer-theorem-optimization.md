@@ -246,6 +246,8 @@ This is convex and differentiable, solvable via Newton-Raphson or L-BFGS, entire
 ### Demo 1: Kernel Ridge Regression from Scratch
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -283,14 +285,21 @@ plt.plot(X_test, y_pred, 'b-', label='KRR Prediction')
 plt.title("Kernel Ridge Regression")
 plt.legend()
 plt.grid(True)
-plt.show()
+plt.savefig('figures/09-2-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/09-2-demo1.png)
 
 ### Demo 2: The Sparsity of SVM Support Vectors
 
 We demonstrate how the hinge loss induces sparsity in the $\alpha$ coefficients (the support vectors), unlike KRR which uses all points. We'll use sklearn's SVC which wraps LIBSVM.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
+import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.svm import SVC
 from sklearn.datasets import make_moons
 
@@ -321,6 +330,9 @@ plt.scatter(X[:, 0], X[:, 1], c=y, cmap='bwr', edgecolors='k')
 plt.scatter(sv[:, 0], sv[:, 1], s=150, facecolors='none', edgecolors='gold', linewidths=2, label='Support Vectors')
 plt.title("Kernel SVM Decision Boundary and Support Vectors")
 plt.legend()
-plt.show()
+plt.savefig('figures/09-2-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/09-2-demo2.png)
 

@@ -469,67 +469,71 @@ This guarantees that to achieve a small operator norm error $t$, we need sample 
 This Python code using NumPy demonstrates the Matrix Bernstein bound in action by simulating the empirical covariance convergence of bounded random vectors.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-    
+
 def matrix_bernstein_covariance_demo():
-"""
-Demonstrates Matrix Bernstein inequality for empirical covariance estimation.
-We plot the empirical spectral norm error against the theoretical bound.
-"""
-np.random.seed(42)
-d = 20        # Dimension
-B = d         # Bound on squared norm
-num_trials = 100
-n_values = np.linspace(50, 2000, 20).astype(int)
-    
-# True covariance is Identity for simplicity
-Sigma = np.eye(d)
-    
-empirical_errors = []
-theoretical_errors = []
-    
-t_fixed = 0.5 # We look at the probability of exceeding t=0.5
-    
-for n in n_values:
-    violations = 0
-    for _ in range(num_trials):
-        # Generate bounded vectors on a sphere of radius sqrt(B)
-        # This ensures ||y||^2 <= B
-        Y = np.random.randn(n, d)
-        norms = np.linalg.norm(Y, axis=1, keepdims=True)
-        Y = Y / norms * np.sqrt(d) # norm is exactly sqrt(d) = sqrt(B)
-            
-        # Empirical covariance
-        Sigma_hat = (Y.T @ Y) / n
-            
-        # Operator norm error
-        error = np.linalg.norm(Sigma_hat - Sigma, ord=2)
-        if error >= t_fixed:
-            violations += 1
-                
-    prob_empirical = violations / num_trials
-    empirical_errors.append(prob_empirical)
-        
-    # Theoretical Matrix Bernstein Bound
-    R = 2 * B / n
-    sigma_sq = B * 1.0 / n # ||Sigma||_op = 1
-    bound = d * np.exp(- (t_fixed**2 / 2) / (sigma_sq + R * t_fixed / 3))
-    theoretical_errors.append(min(bound, 1.0)) # Probability <= 1
-        
-plt.figure(figsize=(10, 6))
-plt.plot(n_values, empirical_errors, 'o-', label='Empirical Probability $P(||E||_{op} \geq 0.5)$')
-plt.plot(n_values, theoretical_errors, 's--', label='Matrix Bernstein Bound')
-plt.xlabel('Sample Size $n$')
-plt.ylabel('Probability')
-plt.title('Concentration of Empirical Covariance Matrix')
-plt.legend()
-plt.grid(True)
-plt.show()
-    
-# Run the simulation if executed as a script
-# matrix_bernstein_covariance_demo()
+    """
+    Demonstrates Matrix Bernstein inequality for empirical covariance estimation.
+    We plot the empirical spectral norm error against the theoretical bound.
+    """
+    np.random.seed(42)
+    d = 20        # Dimension
+    B = d         # Bound on squared norm
+    num_trials = 100
+    n_values = np.linspace(50, 2000, 20).astype(int)
+
+    # True covariance is Identity for simplicity
+    Sigma = np.eye(d)
+
+    empirical_errors = []
+    theoretical_errors = []
+
+    t_fixed = 0.5 # We look at the probability of exceeding t=0.5
+
+    for n in n_values:
+        violations = 0
+        for _ in range(num_trials):
+            # Generate bounded vectors on a sphere of radius sqrt(B)
+            # This ensures ||y||^2 <= B
+            Y = np.random.randn(n, d)
+            norms = np.linalg.norm(Y, axis=1, keepdims=True)
+            Y = Y / norms * np.sqrt(d) # norm is exactly sqrt(d) = sqrt(B)
+
+            # Empirical covariance
+            Sigma_hat = (Y.T @ Y) / n
+
+            # Operator norm error
+            error = np.linalg.norm(Sigma_hat - Sigma, ord=2)
+            if error >= t_fixed:
+                violations += 1
+
+        prob_empirical = violations / num_trials
+        empirical_errors.append(prob_empirical)
+
+        # Theoretical Matrix Bernstein Bound
+        R = 2 * B / n
+        sigma_sq = B * 1.0 / n # ||Sigma||_op = 1
+        bound = d * np.exp(- (t_fixed**2 / 2) / (sigma_sq + R * t_fixed / 3))
+        theoretical_errors.append(min(bound, 1.0)) # Probability <= 1
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(n_values, empirical_errors, 'o-', label=r'Empirical Probability $P(||E||_{op} \geq 0.5)$')
+    plt.plot(n_values, theoretical_errors, 's--', label='Matrix Bernstein Bound')
+    plt.xlabel('Sample Size $n$')
+    plt.ylabel('Probability')
+    plt.title('Concentration of Empirical Covariance Matrix')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('figures/03-1-demo1.png', dpi=150, bbox_inches='tight')
+    plt.close()
+
+matrix_bernstein_covariance_demo()
 ```
+
+![Figure](figures/03-1-demo1.png)
     
 ### Demo 2: Empirical Wasserstein Distance via Sinkhorn Iterations
     
@@ -537,64 +541,69 @@ This PyTorch code demonstrates how to calculate the empirical Wasserstein distan
     
 ```python
 import torch
-    
+
 def sinkhorn_wasserstein(x, y, epsilon=0.01, iters=200):
-"""
-Computes the entropically regularized 2-Wasserstein distance 
-between two empirical distributions x and y using Sinkhorn iterations.
-    
-Args:
-    x: Tensor of shape (N, D) representing samples from mu
-    y: Tensor of shape (M, D) representing samples from nu
-    epsilon: Entropy regularization parameter
-    iters: Number of Sinkhorn iterations
-"""
-N = x.shape[0]
-M = y.shape[0]
-    
-# Cost matrix: squared Euclidean distance
-# x: (N, 1, D), y: (1, M, D) -> C: (N, M)
-C = torch.sum((x.unsqueeze(1) - y.unsqueeze(0)) ** 2, dim=-1)
-    
-# Gibbs kernel
-K = torch.exp(-C / epsilon)
-    
-# Uniform marginals
-u = torch.ones(N, dtype=torch.float32) / N
-v = torch.ones(M, dtype=torch.float32) / M
-    
-# Sinkhorn iterations
-for _ in range(iters):
-    # Update u
-    u = (1.0 / N) / (K @ v + 1e-8)
-    # Update v
-    v = (1.0 / M) / (K.T @ u + 1e-8)
-        
-# Optimal transport plan
-P = torch.diag(u) @ K @ torch.diag(v)
-    
-# Expected cost under the transport plan
-wasserstein_dist = torch.sum(P * C)
-    
-return torch.sqrt(wasserstein_dist) # Return W_2, not W_2^2
-    
+    """
+    Computes the entropically regularized 2-Wasserstein distance 
+    between two empirical distributions x and y using Sinkhorn iterations.
+
+    Args:
+        x: Tensor of shape (N, D) representing samples from mu
+        y: Tensor of shape (M, D) representing samples from nu
+        epsilon: Entropy regularization parameter
+        iters: Number of Sinkhorn iterations
+    """
+    N = x.shape[0]
+    M = y.shape[0]
+
+    # Cost matrix: squared Euclidean distance
+    # x: (N, 1, D), y: (1, M, D) -> C: (N, M)
+    C = torch.sum((x.unsqueeze(1) - y.unsqueeze(0)) ** 2, dim=-1)
+
+    # Gibbs kernel
+    K = torch.exp(-C / epsilon)
+
+    # Uniform marginals
+    u = torch.ones(N, dtype=torch.float32) / N
+    v = torch.ones(M, dtype=torch.float32) / M
+
+    # Sinkhorn iterations
+    for _ in range(iters):
+        # Update u
+        u = (1.0 / N) / (K @ v + 1e-8)
+        # Update v
+        v = (1.0 / M) / (K.T @ u + 1e-8)
+
+    # Optimal transport plan
+    P = torch.diag(u) @ K @ torch.diag(v)
+
+    # Expected cost under the transport plan
+    wasserstein_dist = torch.sum(P * C)
+
+    return torch.sqrt(wasserstein_dist) # Return W_2, not W_2^2
+
 def test_sinkhorn():
-# Generate two 2D Gaussian distributions
-torch.manual_seed(42)
-dist1 = torch.randn(200, 2)
-# Shifted distribution
-dist2 = torch.randn(200, 2) + torch.tensor([3.0, 3.0])
-    
-w_dist = sinkhorn_wasserstein(dist1, dist2, epsilon=0.1, iters=100)
-print(f"Computed 2-Wasserstein distance: {w_dist.item():.4f}")
-    
-# Theoretical W2 distance between N(0, I) and N(mu, I) is ||mu||_2
-theoretical_w2 = torch.norm(torch.tensor([3.0, 3.0]))
-print(f"Theoretical W2 distance: {theoretical_w2.item():.4f}")
-    
+    # Generate two 2D Gaussian distributions
+    torch.manual_seed(42)
+    dist1 = torch.randn(200, 2)
+    # Shifted distribution
+    dist2 = torch.randn(200, 2) + torch.tensor([3.0, 3.0])
+
+    w_dist = sinkhorn_wasserstein(dist1, dist2, epsilon=0.1, iters=100)
+    print(f"Computed 2-Wasserstein distance: {w_dist.item():.4f}")
+
+    # Theoretical W2 distance between N(0, I) and N(mu, I) is ||mu||_2
+    theoretical_w2 = torch.norm(torch.tensor([3.0, 3.0]))
+    print(f"Theoretical W2 distance: {theoretical_w2.item():.4f}")
+
 # Execute test
-# test_sinkhorn()
+test_sinkhorn()
 ```
-    
+
+```
+Computed 2-Wasserstein distance: 0.4086
+Theoretical W2 distance: 4.2426
+```
+
 These techniques heavily underscore the transition in modern learning theory from classical scalar bounds to rich, geometric, and matrix-valued analytical frameworks.
 

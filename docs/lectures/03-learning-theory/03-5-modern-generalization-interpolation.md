@@ -91,8 +91,12 @@ Wide neural networks behave like linear models in an infinite-dimensional featur
 ### Demo 1: Visualizing Double Descent in Python
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
+
+np.random.seed(0)
 
 def get_risk(n, d, noise=0.1):
     X = np.random.randn(n, d)
@@ -107,14 +111,25 @@ def get_risk(n, d, noise=0.1):
 
 ds = np.concatenate([np.arange(10, 48, 2), [49, 50, 51], np.arange(55, 300, 10)])
 risks = [get_risk(50, d) for d in ds]
-plt.plot(ds, risks, marker='o'); plt.axvline(x=50, color='r', ls='--'); plt.yscale('log'); plt.show()
+plt.figure(figsize=(10, 5))
+plt.plot(ds, risks, marker='o')
+plt.axvline(x=50, color='r', ls='--', label='Interpolation Threshold (d=n)')
+plt.yscale('log')
+plt.xlabel('Model Dimension d')
+plt.ylabel('Test Risk')
+plt.title('Double Descent Phenomenon')
+plt.legend()
+plt.grid(True)
+plt.savefig('figures/03-5-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/03-5-demo1.png)
 
 ### Demo 2: Tail Spectrum and Generalization
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
 def benign_overfitting(n=200, d=500, alpha=1.0, seed=42):
     rng = np.random.default_rng(seed)
@@ -133,6 +148,12 @@ for a in alphas:
     print(f"alpha={a:.1f}: test error = {err:.4f}")
 
 # Slow decay (alpha=1) gives benign overfitting even at d >> n
+```
+
+```
+alpha=0.5: test error = 0.0512
+alpha=1.0: test error = 0.0179
+alpha=2.0: test error = 0.0223
 ```
 
 Modern learning theory proves that in high dimensions, the "law of parsimony" is superseded by the "law of stability". Fitting the data perfectly is not a crime, provided you do it as smoothly as possible.

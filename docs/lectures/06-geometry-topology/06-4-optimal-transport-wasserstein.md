@@ -193,6 +193,10 @@ plan, dist = sinkhorn_normalized(mu, nu, C)
 print("Wasserstein Distance (Entropic):", dist.item())
 ```
 
+```
+Wasserstein Distance (Entropic): 0.8706879615783691
+```
+
 ### Demo 2: POT Library for Discrete OT and Sinkhorn
 
 ```python
@@ -225,6 +229,9 @@ $$
 The 1-Lipschitz constraint is enforced via a **Gradient Penalty**.
 
 ```python
+import torch
+import torch.nn as nn
+
 def wgan_gp_loss(discriminator, real_data, fake_data, lambda_gp=10.0):
     # Wasserstein Loss
     d_real = discriminator(real_data)
@@ -243,6 +250,14 @@ def wgan_gp_loss(discriminator, real_data, fake_data, lambda_gp=10.0):
     gp = lambda_gp * torch.mean((torch.norm(grads, p=2, dim=1) - 1)**2)
     
     return loss_wd + gp
+
+# Quick test
+torch.manual_seed(0)
+D = nn.Sequential(nn.Linear(2, 8), nn.ReLU(), nn.Linear(8, 1))
+real = torch.randn(4, 2)
+fake = torch.randn(4, 2)
+loss = wgan_gp_loss(D, real, fake)
+print(f"WGAN-GP loss: {loss.item():.4f}")
 ```
 
 ## 8. Summary and Conclusion

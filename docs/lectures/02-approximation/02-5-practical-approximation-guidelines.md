@@ -202,42 +202,55 @@ import torch.nn as nn
 import torch.optim as optim
 
 def test_capacity(N, d, W):
-x = torch.randn(N, d)
-y = torch.randn(N, 1)
-    
-model = nn.Sequential(nn.Linear(d, W//2), nn.ReLU(), nn.Linear(W//2, 1))
-optimizer = optim.Adam(model.parameters(), lr=0.01)
-    
-for _ in range(1000):
-    optimizer.zero_grad()
-    loss = nn.MSELoss()(model(x), y)
-    loss.backward()
-    optimizer.step()
-    if loss < 1e-4: return True
-return False
+    x = torch.randn(N, d)
+    y = torch.randn(N, 1)
+
+    model = nn.Sequential(nn.Linear(d, W//2), nn.ReLU(), nn.Linear(W//2, 1))
+    optimizer = optim.Adam(model.parameters(), lr=0.01)
+
+    for _ in range(1000):
+        optimizer.zero_grad()
+        loss = nn.MSELoss()(model(x), y)
+        loss.backward()
+        optimizer.step()
+        if loss.item() < 1e-4: return True
+    return False
 
 # N=100 points, d=10. W=200 should succeed. W=50 should fail.
+print("W=200:", test_capacity(100, 10, 200))
+print("W=50:", test_capacity(100, 10, 50))
+```
+
+```
+W=200: True
+W=50: True
 ```
 
 ### Demo 6.2: Scaling Law Simulator
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
 def compute_loss(N, alpha=0.1):
-return 10.0 / (N**alpha)
+    return 10.0 / (N**alpha)
 
 N_range = np.logspace(1, 9, 20)
 losses = compute_loss(N_range)
 
+plt.figure(figsize=(8, 5))
 plt.loglog(N_range, losses, 'o-')
 plt.title("Neural Scaling Law (L vs N)")
 plt.xlabel("Number of Parameters (N)")
 plt.ylabel("Test Loss (L)")
 plt.grid(True)
-plt.show()
+plt.savefig('figures/02-5-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/02-5-demo2.png)
 
 ---
 

@@ -218,6 +218,8 @@ The solution given a delta initialization $p(x, 0) = \delta(x - x_0)$ is the Gau
 This script simulates the forward process $dX_t = -0.5 X_t dt + dW_t$.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -245,8 +247,11 @@ for i in range(10):
 plt.title("Ornstein-Uhlenbeck Process Forward Paths")
 plt.xlabel("Time t")
 plt.ylabel("X_t")
-plt.show()
+plt.savefig('figures/07-2-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/07-2-demo1.png)
 
 ### 5.2 Denoising Score Matching Loss Implementation
 
@@ -300,5 +305,9 @@ sigma_t = t * 2.0        # Dummy schedule
 loss = denoising_score_matching_loss(model, x_0, t, sigma_t)
 loss.backward()
 print(f"Denoising Score Matching Loss: {loss.item():.4f}")
+```
+
+```
+Denoising Score Matching Loss: 630.3624
 ```
 

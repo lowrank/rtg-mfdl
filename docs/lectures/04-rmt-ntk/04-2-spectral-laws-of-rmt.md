@@ -86,8 +86,10 @@ Consider an asymmetric weight matrix $W$ in a neural network initialized with st
 
 **Demo 1: Empirical Semicircle Law**
 ```python
-import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 
 N = 2000
 W = np.random.randn(N, N)
@@ -95,18 +97,23 @@ W = (W + W.T) / np.sqrt(2 * N) # Symmetric, variance 1/N
 
 eigenvalues = np.linalg.eigvalsh(W)
 x = np.linspace(-2.5, 2.5, 1000)
-semicircle = np.where(np.abs(x) <= 2, np.sqrt(4 - x**2) / (2 * np.pi), 0)
+semicircle = np.where(np.abs(x) <= 2, np.sqrt(np.maximum(4 - x**2, 0)) / (2 * np.pi), 0)
 
 plt.hist(eigenvalues, bins=60, density=True, alpha=0.6, label='Empirical')
 plt.plot(x, semicircle, 'r-', lw=2, label='Semicircle Law')
 plt.legend()
-plt.show()
+plt.savefig('figures/04-2-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/04-2-demo1.png)
 
 **Demo 2: BBP Phase Transition Simulation**
 ```python
-import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 
 N, T = 500, 1000
 gamma = N / T
@@ -133,6 +140,9 @@ plt.axhline(edge, color='g', linestyle='--', label='Bulk Edge')
 plt.xlabel('Spike Strength')
 plt.ylabel('Max Eigenvalue')
 plt.legend()
-plt.show()
+plt.savefig('figures/04-2-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/04-2-demo2.png)
 

@@ -96,8 +96,11 @@ The MLP computes the product of these components. By the sum-to-product trigonom
 This demo shows how to identify induction heads by checking if they attend to token $S+1$ when the current token is $S$.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import torch
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
 
 def is_induction_head(attention_matrix):
     # attention_matrix: [seq_len, seq_len]
@@ -114,13 +117,17 @@ attn[4, 1] = 1.0
 attn[5, 2] = 1.0
 attn[6, 3] = 1.0
 
-import matplotlib.pyplot as plt
+plt.figure(figsize=(6, 5))
 plt.imshow(attn)
 plt.title("Ideal Induction Head Pattern")
 plt.xlabel("Key position")
 plt.ylabel("Query position")
-plt.show()
+plt.colorbar()
+plt.savefig('figures/10-4-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/10-4-demo1.png)
 
 ### Coding Demo 2: The Grokking Dynamics (Modular Addition)
 

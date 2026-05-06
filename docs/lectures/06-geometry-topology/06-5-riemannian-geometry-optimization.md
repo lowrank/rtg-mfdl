@@ -199,6 +199,8 @@ print("Orthogonality check (X^T X):\n", ortho_X.t() @ ortho_X)
 The Poincaré ball manifold is used to embed trees with low distortion.
 
 ```python
+import torch
+
 def mobius_add(x, y):
     # Möbius addition in the Poincaré ball
     norm_x2 = torch.sum(x**2, dim=-1, keepdim=True)
@@ -213,7 +215,18 @@ def hyperbolic_exp_map(x, v):
     # Exp map at x=0 is just tanh
     # In general, involves Möbius transformations
     norm_v = torch.norm(v, p=2, dim=-1, keepdim=True)
-    return mobius_add(x, torch.tanh(norm_v / 2) * (v / norm_v))
+    # Avoid division by zero
+    norm_v_safe = torch.clamp(norm_v, min=1e-10)
+    return mobius_add(x, torch.tanh(norm_v_safe / 2) * (v / norm_v_safe))
+
+# Quick test
+torch.manual_seed(5)
+x = torch.zeros(3, 2)  # Origin in Poincaré ball
+v = torch.randn(3, 2) * 0.3  # Small tangent vectors
+result = hyperbolic_exp_map(x, v)
+norms = torch.norm(result, dim=-1)
+print("Norms of mapped points (should be < 1 for Poincaré ball):", norms)
+print("Hyperbolic exp map result:\n", result)
 ```
 
 ## 8. Summary and Future Directions

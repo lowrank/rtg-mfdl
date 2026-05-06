@@ -157,126 +157,136 @@ This "equal distribution" of weights is the implicit bias of GD starting from th
 This demo simulates GD on a non-quadratic function and plots the product $\eta \lambda_{\max}$ over time. It demonstrates how the curvature "hovers" around the value 2, even when the loss is not monotonically decreasing.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-    
+
 def f(x):
-# Potential with increasing curvature
-return (x[0]**2 + x[1]**2)**1.1
-    
+    # Potential with increasing curvature
+    return (x[0]**2 + x[1]**2)**1.1
+
 def grad(x):
-r = np.sqrt(np.sum(x**2))
-return 2.2 * r**0.2 * x
-    
+    r = np.sqrt(np.sum(x**2))
+    return 2.2 * r**0.2 * x
+
 def hessian_max_eig(x):
-r = np.sqrt(np.sum(x**2))
-# Approximation of the sharpest eigenvalue
-return 2.2 * 1.2 * r**0.2
-    
+    r = np.sqrt(np.sum(x**2))
+    # Approximation of the sharpest eigenvalue
+    return 2.2 * 1.2 * r**0.2
+
 def run_eos_simulation():
-x = np.array([2.0, 2.0])
-eta = 0.5
-    
-losses = []
-eigs = []
-    
-for _ in range(500):
-    g = grad(x)
-    h_max = hessian_max_eig(x)
-        
-    losses.append(f(x))
-    eigs.append(h_max)
-        
-    x = x - eta * g
-        
-fig, ax1 = plt.subplots(figsize=(10, 6))
-    
-ax1.set_xlabel('Iteration')
-ax1.set_ylabel('Loss', color='tab:red')
-ax1.plot(losses, color='tab:red', alpha=0.6, label='Loss')
-ax1.tick_params(axis='y', labelcolor='tab:red')
-    
-ax2 = ax1.twinx()
-ax2.set_ylabel('$\eta \lambda_{max}$', color='tab:blue')
-ax2.plot(np.array(eigs) * eta, color='tab:blue', label='$\eta \lambda_{max}$')
-ax2.axhline(2.0, color='black', linestyle='--', label='Stability Limit')
-ax2.tick_params(axis='y', labelcolor='tab:blue')
-    
-plt.title("The Edge of Stability in Action")
-fig.tight_layout()
-plt.show()
-    
+    x = np.array([2.0, 2.0])
+    eta = 0.5
+
+    losses = []
+    eigs = []
+
+    for _ in range(500):
+        g = grad(x)
+        h_max = hessian_max_eig(x)
+
+        losses.append(f(x))
+        eigs.append(h_max)
+
+        x = x - eta * g
+
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    ax1.set_xlabel('Iteration')
+    ax1.set_ylabel('Loss', color='tab:red')
+    ax1.plot(losses, color='tab:red', alpha=0.6, label='Loss')
+    ax1.tick_params(axis='y', labelcolor='tab:red')
+
+    ax2 = ax1.twinx()
+    ax2.set_ylabel('$\\eta \\lambda_{max}$', color='tab:blue')
+    ax2.plot(np.array(eigs) * eta, color='tab:blue', label='$\\eta \\lambda_{max}$')
+    ax2.axhline(2.0, color='black', linestyle='--', label='Stability Limit')
+    ax2.tick_params(axis='y', labelcolor='tab:blue')
+
+    plt.title("The Edge of Stability in Action")
+    fig.tight_layout()
+    plt.savefig('figures/01-5-demo1.png', dpi=150, bbox_inches='tight')
+    plt.close()
+
 run_eos_simulation()
 ```
+
+![Figure](figures/01-5-demo1.png)
     
 **Demo 2: SAM vs. SGD Comparison on a Sharp Potential**
     
 This demo compares the trajectories of SGD and SAM on a function with a sharp local minimum and a flat global minimum. It shows how SAM is able to "jump out" of the sharp minimum to find the flatter one.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-    
+
 def f(x):
-# Sharp local minimum at (-2, -2), Flat global minimum at (2, 2)
-sharp = 5.0 * np.exp(-5.0 * np.sum((x - np.array([-2, -2]))**2))
+    # Sharp local minimum at (-2, -2), Flat global minimum at (2, 2)
+    sharp = 5.0 * np.exp(-5.0 * np.sum((x - np.array([-2, -2]))**2))
     flat = 2.0 * np.exp(-0.5 * np.sum((x - np.array([2, 2]))**2))
     return - (sharp + flat)
-    
+
 def grad(x):
-# Finite difference gradient for simplicity
-eps = 1e-6
-g = np.zeros_like(x)
-for i in range(len(x)):
-    x_plus = x.copy(); x_plus[i] += eps
-    g[i] = (f(x_plus) - f(x)) / eps
-return g
-    
+    # Finite difference gradient for simplicity
+    eps = 1e-6
+    g = np.zeros_like(x)
+    for i in range(len(x)):
+        x_plus = x.copy(); x_plus[i] += eps
+        g[i] = (f(x_plus) - f(x)) / eps
+    return g
+
 def run_comparison():
-x_sgd = np.array([-1.5, -1.5]) # Start near sharp minimum
-x_sam = np.array([-1.5, -1.5])
-    
-eta = 0.1
-rho = 0.5
-    
-path_sgd = [x_sgd.copy()]
-path_sam = [x_sam.copy()]
-    
-for _ in range(100):
-    # SGD
-    g_sgd = grad(x_sgd)
-    x_sgd -= eta * g_sgd
-    path_sgd.append(x_sgd.copy())
-        
-    # SAM
-    g_curr = grad(x_sam)
-    epsilon = rho * g_curr / (np.linalg.norm(g_curr) + 1e-8)
-    g_sam = grad(x_sam + epsilon)
-    x_sam -= eta * g_sam
-    path_sam.append(x_sam.copy())
-        
-path_sgd = np.array(path_sgd)
-path_sam = np.array(path_sam)
-    
-# Plotting
-x_grid = np.linspace(-4, 4, 100)
-y_grid = np.linspace(-4, 4, 100)
-X, Y = np.meshgrid(x_grid, y_grid)
-Z = np.zeros_like(X)
-for i in range(100):
-    for j in range(100):
-        Z[i,j] = f(np.array([X[i,j], Y[i,j]]))
-            
-plt.figure(figsize=(10, 8))
-plt.contourf(X, Y, Z, levels=30, cmap='viridis')
-plt.plot(path_sgd[:,0], path_sgd[:,1], 'r-o', label='SGD Path', markersize=4)
-plt.plot(path_sam[:,0], path_sam[:,1], 'b-o', label='SAM Path', markersize=4)
-plt.title("SAM vs SGD: Escaping Sharp Minima")
-plt.legend()
-plt.show()
-    
+    x_sgd = np.array([-1.5, -1.5]) # Start near sharp minimum
+    x_sam = np.array([-1.5, -1.5])
+
+    eta = 0.1
+    rho = 0.5
+
+    path_sgd = [x_sgd.copy()]
+    path_sam = [x_sam.copy()]
+
+    for _ in range(100):
+        # SGD
+        g_sgd = grad(x_sgd)
+        x_sgd = x_sgd - eta * g_sgd
+        path_sgd.append(x_sgd.copy())
+
+        # SAM
+        g_curr = grad(x_sam)
+        epsilon = rho * g_curr / (np.linalg.norm(g_curr) + 1e-8)
+        g_sam = grad(x_sam + epsilon)
+        x_sam = x_sam - eta * g_sam
+        path_sam.append(x_sam.copy())
+
+    path_sgd = np.array(path_sgd)
+    path_sam = np.array(path_sam)
+
+    # Plotting
+    x_grid = np.linspace(-4, 4, 100)
+    y_grid = np.linspace(-4, 4, 100)
+    X, Y = np.meshgrid(x_grid, y_grid)
+    Z = np.zeros_like(X)
+    for i in range(100):
+        for j in range(100):
+            Z[i,j] = f(np.array([X[i,j], Y[i,j]]))
+
+    plt.figure(figsize=(10, 8))
+    plt.contourf(X, Y, Z, levels=30, cmap='viridis')
+    plt.plot(path_sgd[:,0], path_sgd[:,1], 'r-o', label='SGD Path', markersize=4)
+    plt.plot(path_sam[:,0], path_sam[:,1], 'b-o', label='SAM Path', markersize=4)
+    plt.title("SAM vs SGD: Escaping Sharp Minima")
+    plt.legend()
+    plt.savefig('figures/01-5-demo2.png', dpi=150, bbox_inches='tight')
+    plt.close()
+
 run_comparison()
 ```
+
+![Figure](figures/01-5-demo2.png)
     
 This concludes our journey through the modern frontiers of optimization. You now understand how the Edge of Stability regulates training, how the implicit bias of algorithms helps generalize in overparameterized regimes, and how SAM explicitly targets flat, robust minima. These are the tools of the modern deep learning practitioner.
 

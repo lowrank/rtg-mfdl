@@ -135,6 +135,8 @@ If an image of a digit '3' is slightly warped, its scattering coefficients $S(f)
 ### Demo 6.1: Visualizing Spectral Bias
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
@@ -147,26 +149,38 @@ opt = torch.optim.Adam(model.parameters(), lr=0.01)
 
 plt.figure(figsize=(10, 5))
 for i in range(1001):
-opt.zero_grad()
-loss = nn.MSELoss()(model(x), y)
-loss.backward()
-opt.step()
-if i in [10, 100, 1000]:
-    plt.plot(x, model(x).detach(), label=f'Epoch {i}')
+    opt.zero_grad()
+    loss = nn.MSELoss()(model(x), y)
+    loss.backward()
+    opt.step()
+    if i in [10, 100, 1000]:
+        plt.plot(x.detach().numpy(), model(x).detach().numpy(), label=f'Epoch {i}')
 
-plt.plot(x, y, 'k--', label='Target')
+plt.plot(x.detach().numpy(), y.detach().numpy(), 'k--', label='Target')
 plt.title("Spectral Bias: Learning low freq first")
-plt.legend(); plt.show()
+plt.legend()
+plt.savefig('figures/02-3-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/02-3-demo1.png)
 
 ### Demo 6.2: Fourier Features to Bypass Bias
 By mapping inputs to $[\sin(\omega x), \cos(\omega x)]$, we can manually shift the eigenvalues and learn high frequencies.
 
 ```python
+import torch
+
 # Fourier Feature mapping
+x = torch.linspace(-1, 1, 1000).view(-1, 1)
 B = torch.randn(1, 128) * 10.0
 x_proj = torch.cat([torch.sin(x @ B), torch.cos(x @ B)], dim=-1)
 # Training on x_proj learns the 10Hz signal instantly.
+print(f"Fourier feature map shape: {x_proj.shape}")
+```
+
+```
+Fourier feature map shape: torch.Size([1000, 256])
 ```
 
 ---

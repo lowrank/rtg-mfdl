@@ -201,6 +201,8 @@ Using a Laplace prior $P \propto e^{-\alpha \|w\|_1}$ leads to a KL term that pe
 ### Demo 1: Visualizing the Gibbs Posterior
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -212,16 +214,23 @@ plt.figure(figsize=(10, 5))
 for n in [1, 5, 20]:
     # Gibbs posterior Q ~ P * exp(-n * loss)
     posterior = prior * np.exp(-n * loss)
-    posterior /= np.trapz(posterior, x)
+    posterior /= np.trapezoid(posterior, x)
     plt.plot(x, posterior, label=f"Posterior (n={n})")
 
-plt.plot(x, prior / np.trapz(prior, x), '--', label="Prior")
-plt.legend(); plt.title("The Gibbs Posterior: The Theoretical Optimum"); plt.show()
+plt.plot(x, prior / np.trapezoid(prior, x), '--', label="Prior")
+plt.legend()
+plt.title("The Gibbs Posterior: The Theoretical Optimum")
+plt.savefig('figures/03-3-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/03-3-demo1.png)
 
 ### Demo 2: PAC-Bayes Bound Sensitivity to Sharpness
 
 ```python
+import numpy as np
+
 def get_pac_bound(emp_risk, sigma_q, d=10000, n=5000):
     # Simplified KL for sigma_p = 1, w = 0
     kl = 0.5 * (d * np.log(1/sigma_q**2) + d*sigma_q**2 - d)
@@ -231,6 +240,11 @@ def get_pac_bound(emp_risk, sigma_q, d=10000, n=5000):
 print(f"Sharp Bound: {get_pac_bound(0.01, 0.001):.4f}")
 # Flat minimum: large sigma_q possible
 print(f"Flat Bound: {get_pac_bound(0.02, 0.1):.4f}")
+```
+
+```
+Sharp Bound: 2.5416
+Flat Bound: 1.3648
 ```
 
 PAC-Bayes theory represents the definitive synthesis of information theory, Bayesian inference, and frequentist concentration, providing the most accurate language we have for the generalization of modern AI systems.

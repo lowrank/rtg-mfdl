@@ -247,124 +247,134 @@ This is a constant lower bound independent of the dimension, confirming that fir
 This demo visualizes the trajectories of GD and NAG on a poorly conditioned quadratic surface (a "narrow valley"). It clearly shows the characteristic "oscillations" of GD and how NAG uses momentum to "dampen" these and accelerate towards the minimum.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-    
+
 def f(x):
-# f(x,y) = 0.5 * (x^2 + 10*y^2)
-return 0.5 * (x[0]**2 + 10*x[1]**2)
-    
+    # f(x,y) = 0.5 * (x^2 + 10*y^2)
+    return 0.5 * (x[0]**2 + 10*x[1]**2)
+
 def grad_f(x):
-return np.array([x[0], 10*x[1]])
-    
+    return np.array([x[0], 10*x[1]])
+
 def run_gd(x0, eta, steps):
-path = [x0]
-x = x0
-for _ in range(steps):
-    x = x - eta * grad_f(x)
-    path.append(x)
-return np.array(path)
-    
+    path = [x0]
+    x = x0
+    for _ in range(steps):
+        x = x - eta * grad_f(x)
+        path.append(x)
+    return np.array(path)
+
 def run_nesterov(x0, eta, steps):
-path = [x0]
-x = x0
-y = x0
-for k in range(1, steps + 1):
-    x_next = y - eta * grad_f(y)
-    beta = (k - 1) / (k + 2)
-    y = x_next + beta * (x_next - x)
-    x = x_next
-    path.append(x)
-return np.array(path)
-    
+    path = [x0]
+    x = x0.copy()
+    y = x0.copy()
+    for k in range(1, steps + 1):
+        x_next = y - eta * grad_f(y)
+        beta = (k - 1) / (k + 2)
+        y = x_next + beta * (x_next - x)
+        x = x_next
+        path.append(x.copy())
+    return np.array(path)
+
 # Parameters
 x0 = np.array([4.0, 1.0])
 eta = 0.15 # Slightly high for GD to show oscillations
 steps = 50
-    
+
 path_gd = run_gd(x0, eta, steps)
 path_nag = run_nesterov(x0, eta, steps)
-    
+
 # Plotting
 plt.figure(figsize=(10, 6))
 x_grid = np.linspace(-5, 5, 100)
 y_grid = np.linspace(-2, 2, 100)
 X, Y = np.meshgrid(x_grid, y_grid)
 Z = 0.5 * (X**2 + 10*Y**2)
-    
+
 plt.contour(X, Y, Z, levels=20, cmap='gray', alpha=0.5)
 plt.plot(path_gd[:,0], path_gd[:,1], 'r-o', label='Gradient Descent', markersize=4)
 plt.plot(path_nag[:,0], path_nag[:,1], 'b-o', label='Nesterov Acceleration', markersize=4)
 plt.title("GD vs NAG on a Narrow Valley")
 plt.legend()
-plt.show()
+plt.savefig('figures/01-2-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/01-2-demo1.png)
     
 **Demo 2: Empirical Convergence Rates Comparison**
     
 This script rigorously evaluates the convergence rates of GD and NAG on a large-scale random convex quadratic problem, plotting the loss $f(x_k) - f(x^*)$ on a log-scale to verify the $1/k$ and $1/k^2$ theoretical predictions.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-    
+
 def simulate_convergence_rates():
-n = 500
-# Generate a random smooth convex function (Quadratic)
-# f(x) = 1/2 x^T A x
-# We control L and mu by eigenvalues of A
-L = 10.0
-mu = 0.1
-eigenvalues = np.linspace(mu, L, n)
-Q, _ = np.linalg.qr(np.random.randn(n, n))
-A = Q @ np.diag(eigenvalues) @ Q.T
-    
-x_star = np.zeros(n)
-f_star = 0.0
-    
-def get_f(x): return 0.5 * x.T @ A @ x
-def get_grad(x): return A @ x
-    
-x0 = np.random.randn(n)
-steps = 200
-    
-# Run GD
-eta = 1/L
-losses_gd = []
-x = x0.copy()
-for _ in range(steps):
-    losses_gd.append(get_f(x) - f_star)
-    x = x - eta * get_grad(x)
-        
-# Run NAG
-losses_nag = []
-x = x0.copy()
-y = x0.copy()
-for k in range(1, steps + 1):
-    losses_nag.append(get_f(x) - f_star)
-    x_next = y - eta * get_grad(y)
-    y = x_next + (k-1)/(k+2) * (x_next - x)
-    x = x_next
-    
-# Plot
-plt.figure(figsize=(10, 6))
-plt.semilogy(losses_gd, 'r', label='Gradient Descent (Theoretical $O(1/k)$)')
-plt.semilogy(losses_nag, 'b', label='Nesterov Accelerated (Theoretical $O(1/k^2)$)')
-    
-# Add reference lines
-k = np.arange(1, steps)
-plt.semilogy(k, losses_gd[0] / k, 'r--', alpha=0.5, label='1/k reference')
-plt.semilogy(k, losses_nag[0] / (k**2), 'b--', alpha=0.5, label='1/k^2 reference')
-    
-plt.xlabel('Iteration $k$')
-plt.ylabel('$f(x_k) - f(x^*)$')
-plt.title("Empirical Verification of Convergence Rates")
-plt.grid(True, which="both", ls="-", alpha=0.2)
-plt.legend()
-plt.show()
-    
+    n = 500
+    # Generate a random smooth convex function (Quadratic)
+    # f(x) = 1/2 x^T A x
+    # We control L and mu by eigenvalues of A
+    L = 10.0
+    mu = 0.1
+    eigenvalues = np.linspace(mu, L, n)
+    Q, _ = np.linalg.qr(np.random.randn(n, n))
+    A = Q @ np.diag(eigenvalues) @ Q.T
+
+    x_star = np.zeros(n)
+    f_star = 0.0
+
+    def get_f(x): return 0.5 * x.T @ A @ x
+    def get_grad(x): return A @ x
+
+    x0 = np.random.randn(n)
+    steps = 200
+
+    # Run GD
+    eta = 1/L
+    losses_gd = []
+    x = x0.copy()
+    for _ in range(steps):
+        losses_gd.append(get_f(x) - f_star)
+        x = x - eta * get_grad(x)
+
+    # Run NAG
+    losses_nag = []
+    x = x0.copy()
+    y = x0.copy()
+    for k in range(1, steps + 1):
+        losses_nag.append(get_f(x) - f_star)
+        x_next = y - eta * get_grad(y)
+        y = x_next + (k-1)/(k+2) * (x_next - x)
+        x = x_next
+
+    # Plot
+    plt.figure(figsize=(10, 6))
+    plt.semilogy(losses_gd, 'r', label='Gradient Descent (Theoretical $O(1/k)$)')
+    plt.semilogy(losses_nag, 'b', label='Nesterov Accelerated (Theoretical $O(1/k^2)$)')
+
+    # Add reference lines
+    k = np.arange(1, steps)
+    plt.semilogy(k, losses_gd[0] / k, 'r--', alpha=0.5, label='1/k reference')
+    plt.semilogy(k, losses_nag[0] / (k**2), 'b--', alpha=0.5, label='1/k^2 reference')
+
+    plt.xlabel('Iteration $k$')
+    plt.ylabel('$f(x_k) - f(x^*)$')
+    plt.title("Empirical Verification of Convergence Rates")
+    plt.grid(True, which="both", ls="-", alpha=0.2)
+    plt.legend()
+    plt.savefig('figures/01-2-demo2.png', dpi=150, bbox_inches='tight')
+    plt.close()
+
 simulate_convergence_rates()
 ```
+
+![Figure](figures/01-2-demo2.png)
     
 This conclude our rigorous study of convergence rates. You have seen how Nesterov acceleration achieves the theoretical limit of first-order optimization and how specific geometric properties like the PL inequality can guarantee global convergence even in non-convex settings.
 

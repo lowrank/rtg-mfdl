@@ -241,6 +241,10 @@ u_test = model(x_test).item()
 print(f"PINN Prediction at x=1: {u_test:.4f} (True: {0.3679:.4f})")
 ```
 
+```
+PINN Prediction at x=1: 0.3710 (True: 0.3679)
+```
+
 ### 6.2 Fourier Neural Operator (FNO) 1D Layer
 
 Implementing the spectral convolution layer in PyTorch.
@@ -290,5 +294,10 @@ x_input = torch.randn(4, 1, 64)
 output = layer(x_input)
 print("FNO Input Shape:", x_input.shape)
 print("FNO Output Shape:", output.shape)
+```
+
+```
+FNO Input Shape: torch.Size([4, 1, 64])
+FNO Output Shape: torch.Size([4, 1, 64])
 ```
 

@@ -172,20 +172,25 @@ y_pred_gd = x_test @ w_new
 
 # 3. Method B: Linear Attention
 # We define weights that extract x and y
-# q = x_test, k = x_i, v = -eta * y_i
-# output = sum( (q.T k) * v ) = sum( (x_test.T x_i) * -eta * y_i )
-# = -eta * x_test.T * (sum x_i y_i)
-# Note: Since w_init = 0, grad = -sum(x_i y_i)
+# q = x_test, k = x_i, v = eta * y_i
+# output = sum( (q.T k) * v ) = sum( (x_test.T x_i) * eta * y_i )
+# = eta * x_test.T * (sum x_i y_i)
+# Note: Since w_init = 0, grad = -sum(x_i y_i), so w_new = eta * sum(x_i y_i)
 
 q = x_test # 1 x d
 K = X      # k x d
-V = -eta * Y # k x 1
+V = eta * Y # k x 1
 
 y_pred_attn = q @ (K.T @ V)
 
 print(f"GD Prediction: {y_pred_gd.item():.6f}")
 print(f"Attn Prediction: {y_pred_attn.item():.6f}")
 assert torch.allclose(y_pred_gd, y_pred_attn)
+```
+
+```
+GD Prediction: 1.858976
+Attn Prediction: 1.858976
 ```
 
 ### Coding Demo 2: Bayes-Optimal ICL via Power Series
@@ -232,6 +237,11 @@ approx = transformer_icl_approx(X, Y, x_t, layers=10)
 
 print(f"Exact Bayes: {exact.item():.6f}")
 print(f"Approx ICL:  {approx.item():.6f}")
+```
+
+```
+Exact Bayes: 1.076042
+Approx ICL:  0.505947
 ```
 
 In summary, the ICL capabilities of Transformers are not an accident but a direct consequence of the attention mechanism's ability to simulate iterative optimization and Bayesian inference over the provided context.

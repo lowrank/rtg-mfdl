@@ -116,28 +116,81 @@ For $x_1, x_2 \in \{0, 1\}$, $x_1 \oplus x_2$ can be represented as $\sin^2(\fra
 ### Demo 7.1: Visualizing a Learnable Spline Edge
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Simplified B-spline implementation
-def b_spline(x, c, G=10):
-# This is a placeholder for the actual recursive logic
-return torch.sin(x) * c.mean() 
+# Simplified B-spline implementation using piecewise linear basis
+def b_spline_basis(x, knots):
+    """Piecewise linear B-spline basis over given knots."""
+    n = len(knots) - 2
+    bases = []
+    for i in range(n):
+        t0, t1, t2 = knots[i], knots[i+1], knots[i+2]
+        left  = torch.clamp((x - t0) / (t1 - t0 + 1e-8), 0.0, 1.0)
+        right = torch.clamp((t2 - x) / (t2 - t1 + 1e-8), 0.0, 1.0)
+        bases.append(torch.min(left, right))
+    return torch.stack(bases, dim=-1)  # shape: (N, n)
 
 class KANLayer(nn.Module):
-def __init__(self, in_dim, out_dim):
-    super().__init__()
-    self.phi = nn.Parameter(torch.randn(in_dim, out_dim, 20)) # 20 control points
-    
-def forward(self, x):
-    # Apply splines to each edge
-    return torch.stack([b_spline(x[:, i], self.phi[i]) for i in range(x.shape[1])]).sum(0)
+    def __init__(self, in_dim, out_dim, G=10):
+        super().__init__()
+        self.in_dim = in_dim
+        self.out_dim = out_dim
+        self.G = G
+        # Learnable control points: one set per (in, out) pair
+        self.phi = nn.Parameter(torch.randn(in_dim, out_dim, G))
+        knots_raw = torch.linspace(-2, 2, G + 2)
+        self.register_buffer('knots', knots_raw)
+
+    def forward(self, x):
+        # x: (batch, in_dim)
+        outs = []
+        for i in range(self.in_dim):
+            xi = x[:, i]  # (batch,)
+            basis = b_spline_basis(xi, self.knots)  # (batch, G)
+            # For each output dimension, compute weighted sum
+            col = (basis.unsqueeze(1) * self.phi[i].unsqueeze(0)).sum(-1)  # (batch, out_dim)
+            outs.append(col)
+        return torch.stack(outs, dim=0).sum(0)  # (batch, out_dim)
 
 # Instantiate and visualize
-# ...
+torch.manual_seed(42)
+layer = KANLayer(in_dim=1, out_dim=1, G=10)
+
+# Train to approximate sin(x) on [-2, 2]
+x_train = torch.linspace(-2, 2, 200).unsqueeze(1)
+y_train = torch.sin(x_train)
+
+opt = torch.optim.Adam(layer.parameters(), lr=0.05)
+for _ in range(1000):
+    opt.zero_grad()
+    loss = nn.MSELoss()(layer(x_train), y_train)
+    loss.backward()
+    opt.step()
+
+print(f"Final MSE: {loss.item():.6f}")
+
+# Visualize the learned edge function
+x_vis = torch.linspace(-2, 2, 300).unsqueeze(1)
+with torch.no_grad():
+    y_pred = layer(x_vis).squeeze().numpy()
+    y_true = torch.sin(x_vis).squeeze().numpy()
+
+plt.figure(figsize=(8, 5))
+plt.plot(x_vis.squeeze().numpy(), y_true, 'k--', linewidth=2, label='Target: sin(x)')
+plt.plot(x_vis.squeeze().numpy(), y_pred, 'r-', linewidth=2, label='KAN Spline Edge')
+plt.title("KAN: Visualizing a Learnable Spline Edge Function")
+plt.xlabel("x"); plt.ylabel("phi(x)")
+plt.legend(); plt.grid(True)
+plt.savefig('figures/02-4-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/02-4-demo1.png)
 
 ### Demo 7.2: Symbolic Regression with pykan
 (Note: Requires `pykan` library)

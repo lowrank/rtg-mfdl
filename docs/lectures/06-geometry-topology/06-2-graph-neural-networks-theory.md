@@ -223,6 +223,10 @@ layer = GINLayer(3, 8)
 print("Output shape:", layer(x, adj).shape)
 ```
 
+```
+Output shape: torch.Size([3, 8])
+```
+
 ### Demo 2: Chebyshev Spectral Convolution
 
 ```python
@@ -256,6 +260,13 @@ x = torch.randn(3, 4)
 theta = torch.randn(5) # 4th order polynomial
 y = chebyshev_conv(x, L, theta, 5)
 print("Cheby-filtered signal:\n", y)
+```
+
+```
+Cheby-filtered signal:
+ tensor([[ 1.3605, -1.0962, -3.7441,  0.3547],
+        [ 1.4876, -2.5949, -1.1164,  1.1059],
+        [ 0.7037,  1.3417, -4.1509, -0.3740]])
 ```
 
 ## 6. Advanced Theoretical Topic: The $k$-WL vs. MPNN Gap

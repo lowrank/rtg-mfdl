@@ -180,6 +180,8 @@ Deep networks are physically possible where shallow ones are not.
 ### Demo 7.1: The Sawtooth Explosion
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import torch
 import matplotlib.pyplot as plt
 
@@ -190,15 +192,23 @@ f1 = g(x)
 f2 = g(f1)
 f4 = g(g(f2))
 
-plt.plot(x, f1, label='L=1 (2 segments)')
-plt.plot(x, f2, label='L=2 (4 segments)')
-plt.plot(x, f4, label='L=4 (16 segments)')
-plt.legend(); plt.show()
+plt.figure(figsize=(10, 5))
+plt.plot(x.numpy(), f1.numpy(), label='L=1 (2 segments)')
+plt.plot(x.numpy(), f2.numpy(), label='L=2 (4 segments)')
+plt.plot(x.numpy(), f4.numpy(), label='L=4 (16 segments)')
+plt.title("Sawtooth Explosion: Deep vs Shallow Segments")
+plt.legend()
+plt.savefig('figures/02-2-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/02-2-demo1.png)
 
 ### Demo 7.2: Empirical Training Comparison
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -211,14 +221,15 @@ def shallow_net(x, m=50):
     w = np.random.randn(m) * 2
     b = np.random.randn(m)
     v = np.random.randn(m) * 0.1
-    return v @ np.maximum(0, w * x.reshape(-1, 1) + b)
+    return v @ np.maximum(0, w * x.reshape(-1, 1) + b).T
 
 L = 5
 x = np.linspace(0, 1, 1000)
-y_deep = sawtooth(x, L)
+y_deep = sawtooth(x.copy(), L)
 
 mse_values = []
 widths = [10, 50, 200]
+plt.figure(figsize=(10, 5))
 for m in widths:
     y_shallow = shallow_net(x, m)
     mse_values.append(np.mean((y_deep - y_shallow)**2))
@@ -226,9 +237,13 @@ for m in widths:
 
 plt.plot(x, y_deep, 'k--', linewidth=2, label=f'Deep (L={L}, 2^L={2**L} segments)')
 plt.xlabel('x'); plt.ylabel('f(x)')
-plt.title(f'Depth Separation: Deep sawtooth vs shallow networks\nMSE: {mse_values}')
+plt.title(f'Depth Separation: Deep sawtooth vs shallow networks\nMSE: {[round(v,4) for v in mse_values]}')
 plt.legend(); plt.grid(True)
+plt.savefig('figures/02-2-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/02-2-demo2.png)
 
 ---
 

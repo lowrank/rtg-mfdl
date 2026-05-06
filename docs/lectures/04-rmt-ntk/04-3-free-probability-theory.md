@@ -79,8 +79,10 @@ If $H$ is a deterministic matrix with known spectrum and $W$ is a Wigner matrix,
 
 **Demo 1: Empirical Free Additive Convolution**
 ```python
-import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 
 N = 2000
 # Generate Wigner Semicircle
@@ -97,13 +99,18 @@ eigenvalues = np.linalg.eigvalsh(C)
 
 plt.hist(eigenvalues, bins=60, density=True, alpha=0.7)
 plt.title("Free Additive Convolution: Semicircle + Marchenko-Pastur")
-plt.show()
+plt.savefig('figures/04-3-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/04-3-demo1.png)
 
 **Demo 2: Dynamical Isometry in Deep Networks**
 ```python
-import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy.stats import ortho_group
 
 N, L = 500, 10
@@ -126,6 +133,9 @@ plt.hist(sv_gauss, bins=50, alpha=0.5, label='Gaussian (Exploding/Vanishing)')
 plt.hist(sv_ortho, bins=50, alpha=0.5, label='Orthogonal (Isometry)')
 plt.legend()
 plt.title("Jacobian Singular Values depth=10")
-plt.show()
+plt.savefig('figures/04-3-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/04-3-demo2.png)
 

@@ -98,8 +98,15 @@ print(f"Max expansion: {np.max(ratio):.3f} (Allowed: {1+epsilon})")
 print(f"Min contraction: {np.min(ratio):.3f} (Allowed: {1-epsilon})")
 ```
 
+```
+Max expansion: 1.160 (Allowed: 1.2)
+Min contraction: 0.839 (Allowed: 0.8)
+```
+
 **Demo 2: Gaussian Shell Concentration**
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -118,6 +125,9 @@ for d in dims:
 plt.title("Concentration of Gaussian Measure on a Shell")
 plt.xlabel("||X|| / sqrt(d)")
 plt.legend()
-plt.show()
+plt.savefig('figures/04-1-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/04-1-demo2.png)
 

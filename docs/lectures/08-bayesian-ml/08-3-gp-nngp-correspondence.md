@@ -450,6 +450,8 @@ This proves that stacking linear layers, even infinitely wide ones, does not inc
 This demo shows how to construct the exact NNGP kernel for a deep ReLU network and use it for Gaussian Process regression.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -530,14 +532,18 @@ plt.plot(X_test, np.sin(X_test), 'r--', label='True Function')
 plt.title(f"Exact Bayesian Inference with Infinite Width MLP (Depth={depth})")
 plt.legend()
 plt.grid(True, alpha=0.3)
-# plt.show() # Uncomment to view plot
+plt.savefig('figures/08-3-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/08-3-demo1.png)
 
 ### 7.2 Coding Demo 2: Empirical Verification of Neal's Limit
 
 This demo proves empirically that as a finite neural network becomes wider, its finite sample covariance matrix approaches the analytical NNGP matrix computed in Demo 1.
 
 ```python
+import numpy as np
 import torch
 import torch.nn as nn
 
@@ -574,12 +580,32 @@ print("Analytical Matrix (Depth=1):")
 K_exact = compute_relu_nngp_kernel(X_sample, X_sample, depth=1, var_w=1.0, var_b=0.0)
 print(K_exact)
 
+np.random.seed(42)
 for w in [10, 100, 10000]:
     print(f"\nEmpirical Matrix (Width={w}, 1000 samples):")
     K_emp = empirical_covariance(X_sample, w)
     print(K_emp)
     
 # The output will show that K_emp converges tightly to K_exact as w -> 10000.
+```
+
+```
+--- Empirical vs Analytical NNGP ---
+Analytical Matrix (Depth=1):
+[[0.5 1. ]
+ [1.  2. ]]
+
+Empirical Matrix (Width=10, 1000 samples):
+[[0.44464968 0.88929937]
+ [0.88929937 1.77859873]]
+
+Empirical Matrix (Width=100, 1000 samples):
+[[0.44775889 0.89551778]
+ [0.89551778 1.79103556]]
+
+Empirical Matrix (Width=10000, 1000 samples):
+[[0.47661985 0.95323971]
+ [0.95323971 1.90647943]]
 ```
 
 ## 8. Philosophical Implications and the NTK

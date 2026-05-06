@@ -219,56 +219,61 @@ Notice that AdamW's update size depends heavily on the ratio of momentum to vari
 This demo compares GD and NGD on a simple "plateau" function (like the sigmoid likelihood). It demonstrates how NGD navigates the flat regions significantly faster than standard GD.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-    
+
 def sigmoid(w):
-return 1 / (1 + np.exp(-w))
-    
+    return 1 / (1 + np.exp(-np.clip(w, -500, 500)))
+
 def loss(w, y):
-p = sigmoid(w)
-return - (y * np.log(p) + (1-y) * np.log(1-p))
-    
+    p = sigmoid(w)
+    return - (y * np.log(p + 1e-12) + (1-y) * np.log(1-p + 1e-12))
+
 def grad(w, y):
-return sigmoid(w) - y
-    
+    return sigmoid(w) - y
+
 def fisher(w):
-p = sigmoid(w)
-return p * (1 - p)
-    
+    p = sigmoid(w)
+    return p * (1 - p)
+
 def run_optimization():
-w_gd = 10.0 # Start in saturated region
-w_ngd = 10.0
-y = 0.0 # Target is 0
-    
-eta_gd = 0.5
-eta_ngd = 0.1
-    
-history_gd = [w_gd]
-history_ngd = [w_ngd]
-    
-for _ in range(100):
-    # GD
-    w_gd = w_gd - eta_gd * grad(w_gd, y)
-    history_gd.append(w_gd)
-        
-    # NGD
-    # Add epsilon to Fisher for stability
-    w_ngd = w_ngd - eta_ngd * (1.0 / (fisher(w_ngd) + 1e-5)) * grad(w_ngd, y)
-    history_ngd.append(w_ngd)
-        
-plt.figure(figsize=(10, 6))
-plt.plot(history_gd, label='Gradient Descent', color='red')
-plt.plot(history_ngd, label='Natural Gradient', color='blue')
-plt.axhline(0, color='black', linestyle='--')
-plt.title("GD vs NGD on a Saturated Sigmoid (The Plateau Problem)")
-plt.xlabel("Iteration")
-plt.ylabel("Weight $w$")
-plt.legend()
-plt.show()
-    
+    w_gd = 10.0 # Start in saturated region
+    w_ngd = 10.0
+    y = 0.0 # Target is 0
+
+    eta_gd = 0.5
+    eta_ngd = 0.1
+
+    history_gd = [w_gd]
+    history_ngd = [w_ngd]
+
+    for _ in range(100):
+        # GD
+        w_gd = w_gd - eta_gd * grad(w_gd, y)
+        history_gd.append(w_gd)
+
+        # NGD
+        # Add epsilon to Fisher for stability
+        w_ngd = w_ngd - eta_ngd * (1.0 / (fisher(w_ngd) + 1e-5)) * grad(w_ngd, y)
+        history_ngd.append(w_ngd)
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(history_gd, label='Gradient Descent', color='red')
+    plt.plot(history_ngd, label='Natural Gradient', color='blue')
+    plt.axhline(0, color='black', linestyle='--')
+    plt.title("GD vs NGD on a Saturated Sigmoid (The Plateau Problem)")
+    plt.xlabel("Iteration")
+    plt.ylabel("Weight $w$")
+    plt.legend()
+    plt.savefig('figures/01-4-demo1.png', dpi=150, bbox_inches='tight')
+    plt.close()
+
 run_optimization()
 ```
+
+![Figure](figures/01-4-demo1.png)
     
 **Demo 2: Implementing a simplified K-FAC step**
     
@@ -277,62 +282,66 @@ This demo implements the Kronecker-factorization logic for a single linear layer
 ```python
 import torch
 import torch.nn as nn
-    
+
 class KFACLinear(nn.Module):
-def __init__(self, in_features, out_features):
-    super().__init__()
-    self.linear = nn.Linear(in_features, out_features, bias=False)
-    self.A = torch.eye(in_features)
-    self.G = torch.eye(out_features)
-    self.alpha = 0.9 # Smoothing factor
-        
-def forward(self, x):
-    # Cache activation for K-FAC
-    self.last_x = x.detach()
-    return self.linear(x)
-    
-def update_curvature(self, grad_output):
-    # grad_output is the gradient w.r.t the output of this layer
-    # A = E[x x^T]
-    A_curr = self.last_x.t() @ self.last_x / self.last_x.size(0)
-    self.A = self.alpha * self.A + (1 - self.alpha) * A_curr
-        
-    # G = E[delta delta^T]
-    G_curr = grad_output.t() @ grad_output / grad_output.size(0)
-    self.G = self.alpha * self.G + (1 - self.alpha) * G_curr
-    
-def kfac_step(self, lr):
-    # Precondition gradient: dW_kfac = G^-1 * dW * A^-1
-    # Use pseudo-inverse for stability
-    A_inv = torch.inverse(self.A + 1e-3 * torch.eye(self.A.size(0)))
-    G_inv = torch.inverse(self.G + 1e-3 * torch.eye(self.G.size(0)))
-        
-    dW = self.linear.weight.grad
-    dW_kfac = G_inv @ dW @ A_inv
-        
-    # Update weights
-    self.linear.weight.data -= lr * dW_kfac
-    
+    def __init__(self, in_features, out_features):
+        super().__init__()
+        self.linear = nn.Linear(in_features, out_features, bias=False)
+        self.A = torch.eye(in_features)
+        self.G = torch.eye(out_features)
+        self.alpha = 0.9 # Smoothing factor
+
+    def forward(self, x):
+        # Cache activation for K-FAC
+        self.last_x = x.detach()
+        return self.linear(x)
+
+    def update_curvature(self, grad_output):
+        # grad_output is the gradient w.r.t the output of this layer
+        # A = E[x x^T]
+        A_curr = self.last_x.t() @ self.last_x / self.last_x.size(0)
+        self.A = self.alpha * self.A + (1 - self.alpha) * A_curr
+
+        # G = E[delta delta^T]
+        G_curr = grad_output.t() @ grad_output / grad_output.size(0)
+        self.G = self.alpha * self.G + (1 - self.alpha) * G_curr
+
+    def kfac_step(self, lr):
+        # Precondition gradient: dW_kfac = G^-1 * dW * A^-1
+        # Use pseudo-inverse for stability
+        A_inv = torch.inverse(self.A + 1e-3 * torch.eye(self.A.size(0)))
+        G_inv = torch.inverse(self.G + 1e-3 * torch.eye(self.G.size(0)))
+
+        dW = self.linear.weight.grad
+        dW_kfac = G_inv @ dW @ A_inv
+
+        # Update weights
+        self.linear.weight.data -= lr * dW_kfac
+
 # Example Usage
 model = KFACLinear(10, 5)
 x = torch.randn(32, 10)
 y_target = torch.randn(32, 5)
-    
+
 # Forward
 y = model(x)
 loss = torch.mean((y - y_target)**2)
-    
+
 # Backward
 loss.backward()
-    
+
 # K-FAC Logic (This would normally be in a hook or optimizer)
 # Here we simulate the grad_output for the layer
 grad_output = (y - y_target).detach()
 model.update_curvature(grad_output)
 model.kfac_step(lr=0.1)
-    
+
 print("K-FAC step completed successfully.")
 ```
-    
+
+```
+K-FAC step completed successfully.
+```
+
 This concludes our deep dive into adaptive and second-order methods. You have seen how information geometry provides a fundamental perspective on optimization, how K-FAC makes this tractable for deep networks, and how modern optimizers like Lion continue to evolve the state-of-the-art.
 

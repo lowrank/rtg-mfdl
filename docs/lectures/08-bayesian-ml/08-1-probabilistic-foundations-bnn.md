@@ -360,6 +360,8 @@ We provide two implementation demonstrations. The first shows an exact analytica
 This code demonstrates how the posterior uncertainty shrinks as more data points are observed.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -412,8 +414,11 @@ plt.fill_between(X_test,
 plt.plot(X_test, true_w0 + true_w1*X_test, 'k--', label='True function')
 plt.title("Exact Bayesian Linear Regression")
 plt.legend()
-plt.show()
+plt.savefig('figures/08-1-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/08-1-demo1.png)
 
 ### 4.2 Coding Demo 2: Variational Bayesian Linear Layer in PyTorch
 
@@ -475,13 +480,13 @@ class BayesianLinear(nn.Module):
         
         # KL for weights
         kl_weight = 0.5 * torch.sum(
-            2 * torch.log(self.prior_sigma / weight_sigma) +
+            2 * torch.log(torch.tensor(self.prior_sigma) / weight_sigma) +
             (weight_sigma**2 + self.weight_mu**2) / (self.prior_sigma**2) - 1
         )
         
         # KL for biases
         kl_bias = 0.5 * torch.sum(
-            2 * torch.log(self.prior_sigma / bias_sigma) +
+            2 * torch.log(torch.tensor(self.prior_sigma) / bias_sigma) +
             (bias_sigma**2 + self.bias_mu**2) / (self.prior_sigma**2) - 1
         )
         
@@ -491,10 +496,17 @@ class BayesianLinear(nn.Module):
 layer = BayesianLinear(in_features=10, out_features=5)
 x = torch.randn(32, 10) # Batch of 32
 output = layer(x)
+print(f"Output shape: {output.shape}")
+print(f"KL Divergence: {layer.kl_divergence().item():.4f}")
 
 # To train, the loss function is the Evidence Lower Bound (ELBO):
 # Loss = NLL(data) + KL_Divergence
 # loss = F.mse_loss(output, target) + (1.0/batch_size) * layer.kl_divergence()
+```
+
+```
+Output shape: torch.Size([32, 5])
+KL Divergence: 218.5908
 ```
 
 This variational approach is a cornerstone of modern probabilistic deep learning, circumventing the intractable integrals highlighted in the logistic regression example. In subsequent lectures, we will systematically dissect advanced inference techniques (MCMC and Variational Inference) to scale these foundational principles to profound depths.

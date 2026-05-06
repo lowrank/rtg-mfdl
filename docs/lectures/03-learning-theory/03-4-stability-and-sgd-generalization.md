@@ -133,9 +133,12 @@ Using a learning rate $\alpha_t = 1/t$ ensures that $\sum \alpha_t \sim \log T$.
 ### Demo 1: Empirical Weight Divergence
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
+np.random.seed(0)
 n, d, steps = 100, 20, 500
 alpha = 0.02
 X = np.random.randn(n, d)
@@ -153,12 +156,23 @@ for t in range(steps):
     w2 -= alpha * (w2 @ X_alt[idx] - y[idx]) * X_alt[idx]
     dists.append(np.linalg.norm(w1 - w2))
 
-plt.plot(dists); plt.title("SGD Stability Over Time"); plt.show()
+plt.figure(figsize=(8, 4))
+plt.plot(dists)
+plt.title("SGD Stability Over Time")
+plt.xlabel("Step")
+plt.ylabel(r"$\|w_1 - w_2\|$")
+plt.grid(True)
+plt.savefig('figures/03-4-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/03-4-demo1.png)
 
 ### Demo 2: Regularization vs. Stability
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -175,7 +189,7 @@ def sgd_stability(lmbda=0.0, steps=200, eta=0.01):
         i = np.random.randint(n)
         xi, yi = X[i:i+1], y[i:i+1]
         grad = 2 * xi.T @ (xi @ w - yi) + 2 * lmbda * w
-        w = w - eta * grad
+        w = w - eta * grad.ravel()
         if t % 10 == 0:
             history.append(np.linalg.norm(w - w_true))
     return history
@@ -187,7 +201,11 @@ for lam, label in zip([0, 0.01, 0.1], ['No reg', 'L2=0.01', 'L2=0.1']):
 plt.xlabel('Steps (x10)'); plt.ylabel('Distance to w*')
 plt.title('Regularization Improves Stability')
 plt.legend(); plt.grid(True)
+plt.savefig('figures/03-4-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/03-4-demo2.png)
 
 Stability theory proves that generalization is not a static property of the model's architecture, but a dynamic property of how the optimizer traverses the landscape.
 

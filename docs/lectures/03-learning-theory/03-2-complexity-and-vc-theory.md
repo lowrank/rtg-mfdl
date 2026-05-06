@@ -309,6 +309,8 @@ The internal integral evaluates strictly to a converging finite universal consta
 This Python script visually executes the Sauer-Shelah combinatorial bound, isolating the exact threshold where infinite complexity transitions dynamically into constrained polynomial growth.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 import math
@@ -337,14 +339,19 @@ plt.ylabel('Maximum Binary Dichotomies')
 plt.title('Sauer-Shelah Lemma: The Combinatorial Phase Transition')
 plt.legend()
 plt.grid(True, which='both', linestyle='--', alpha=0.5)
-# plt.show() # Uncomment execution
+plt.savefig('figures/03-2-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/03-2-demo1.png)
 
 ### Demo 2: Monte Carlo Simulation of $L_1$ Rademacher Scaling
 
 This demonstration computes the empirical Rademacher complexity of an $L_1$-bounded hypothesis class across exponentially expanding dimensions, validating the slow logarithmic scaling derived in our geometric proofs.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -386,8 +393,11 @@ plt.ylabel('Empirical Rademacher Complexity Magnitude')
 plt.title('Validation of Logarithmic Scaling in L1-Regularized Metric Spaces')
 plt.legend()
 plt.grid(True, which='both', linestyle=':', alpha=0.8)
-# plt.show() # Uncomment execution
+plt.savefig('figures/03-2-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/03-2-demo2.png)
 
 These rigorous programmatic models empirically reflect the absolute exactness of the mathematical complexities and bounding principles strictly established throughout the theoretical sections of this chapter.
 

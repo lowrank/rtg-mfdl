@@ -97,10 +97,16 @@ empirical_ntk = np.dot(grad_1, grad_2)
 print(f"Empirical NTK: {empirical_ntk:.4f}")
 ```
 
+```
+Empirical NTK: 2.4473
+```
+
 **Demo 2: Lazy Training Dynamics**
 ```python
-import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy.linalg import expm
 
 N = 20 # data points
@@ -125,6 +131,9 @@ plt.yscale('log')
 plt.title("Exponential Convergence of NTK Dynamics")
 plt.xlabel("Time")
 plt.ylabel("MSE Loss")
-plt.show()
+plt.savefig('figures/04-4-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/04-4-demo2.png)
 

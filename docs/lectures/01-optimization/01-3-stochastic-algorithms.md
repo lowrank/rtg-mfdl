@@ -260,58 +260,60 @@ The true variance is 1. The discretization bias in the variance is $O(\eta)$, wh
 This demo compares the convergence of SGD with constant step size, SGD with decaying step size, and SVRG on a logistic regression problem. It highlights how SVRG achieves linear convergence without needing to decay the step size to zero.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-    
+
 def sigmoid(z):
-return 1 / (1 + np.exp(-z))
-    
+    return 1 / (1 + np.exp(-np.clip(z, -500, 500)))
+
 def log_loss(w, X, y):
-n = X.shape[0]
-z = X @ w
-return -np.mean(y * np.log(sigmoid(z)) + (1-y) * np.log(1 - sigmoid(z)))
-    
+    n = X.shape[0]
+    z = X @ w
+    return -np.mean(y * np.log(sigmoid(z) + 1e-12) + (1-y) * np.log(1 - sigmoid(z) + 1e-12))
+
 def grad_log_loss(w, X, y):
-n = X.shape[0]
-return X.T @ (sigmoid(X @ w) - y) / n
-    
+    n = X.shape[0]
+    return X.T @ (sigmoid(X @ w) - y) / n
+
 def run_svrg(X, y, w0, eta, epochs, m):
-n = X.shape[0]
-w = w0.copy()
-history = [log_loss(w, X, y)]
-    
-for s in range(epochs):
-    full_grad = grad_log_loss(w, X, y)
-    w_tilde = w.copy()
-    w_curr = w.copy()
-        
-    for t in range(m):
-        i = np.random.randint(0, n)
-        xi, yi = X[i:i+1], y[i:i+1]
-            
-        g_curr = xi.T @ (sigmoid(xi @ w_curr) - yi)
-        g_tilde = xi.T @ (sigmoid(xi @ w_tilde) - yi)
-            
-        v = g_curr - g_tilde + full_grad
-        w_curr = w_curr - eta * v
-            
-    w = w_curr # Simplified: use last iterate
-    history.append(log_loss(w, X, y))
-return np.array(history)
-    
+    n = X.shape[0]
+    w = w0.copy()
+    history = [log_loss(w, X, y)]
+
+    for s in range(epochs):
+        full_grad = grad_log_loss(w, X, y)
+        w_tilde = w.copy()
+        w_curr = w.copy()
+
+        for t in range(m):
+            i = np.random.randint(0, n)
+            xi, yi = X[i:i+1], y[i:i+1]
+
+            g_curr = xi.T @ (sigmoid(xi @ w_curr) - yi)
+            g_tilde = xi.T @ (sigmoid(xi @ w_tilde) - yi)
+
+            v = g_curr - g_tilde + full_grad
+            w_curr = w_curr - eta * v
+
+        w = w_curr # Simplified: use last iterate
+        history.append(log_loss(w, X, y))
+    return np.array(history)
+
 # Generate synthetic data
 n, d = 1000, 20
 X = np.random.randn(n, d)
 w_true = np.random.randn(d)
 y = (sigmoid(X @ w_true) > 0.5).astype(float)
-    
+
 w0 = np.zeros(d)
 eta = 0.1
 epochs = 50
-    
+
 # SVRG
 history_svrg = run_svrg(X, y, w0, eta, epochs, m=n)
-    
+
 # SGD (constant eta)
 history_sgd = [log_loss(w0, X, y)]
 w_sgd = w0.copy()
@@ -320,8 +322,8 @@ for s in range(epochs):
         i = np.random.randint(0, n)
         xi, yi = X[i:i+1], y[i:i+1]
         w_sgd = w_sgd - eta * (xi.T @ (sigmoid(xi @ w_sgd) - yi))
-history_sgd.append(log_loss(w_sgd, X, y))
-    
+    history_sgd.append(log_loss(w_sgd, X, y))
+
 plt.figure(figsize=(10, 6))
 plt.semilogy(history_sgd, label='SGD (Constant Step Size)')
 plt.semilogy(history_svrg, label='SVRG')
@@ -329,50 +331,55 @@ plt.xlabel('Epochs')
 plt.ylabel('Log Loss')
 plt.title('SGD vs SVRG Convergence')
 plt.legend()
-plt.show()
+plt.savefig('figures/01-3-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/01-3-demo1.png)
     
 **Demo 2: SGLD for Bayesian Posterior Sampling**
     
 This script demonstrates SGLD sampling from a 2D non-convex potential (a mixture of Gaussians). It visualizes the particles' trajectory and their final distribution, illustrating the discretization bias and the effect of noise.
     
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
-    
+
 def potential(w):
-# Mixture of two Gaussians
-# U(w) = -log( exp(-0.5*|w-a|^2) + exp(-0.5*|w-b|^2) )
-a = np.array([-2, -2])
-b = np.array([2, 2])
-val1 = np.exp(-0.5 * np.sum((w - a)**2))
-val2 = np.exp(-0.5 * np.sum((w - b)**2))
-return -np.log(val1 + val2)
-    
+    # Mixture of two Gaussians
+    # U(w) = -log( exp(-0.5*|w-a|^2) + exp(-0.5*|w-b|^2) )
+    a = np.array([-2, -2])
+    b = np.array([2, 2])
+    val1 = np.exp(-0.5 * np.sum((w - a)**2))
+    val2 = np.exp(-0.5 * np.sum((w - b)**2))
+    return -np.log(val1 + val2)
+
 def grad_potential(w):
-a = np.array([-2, -2])
-b = np.array([2, 2])
-d1 = w - a
-d2 = w - b
-val1 = np.exp(-0.5 * np.sum(d1**2))
-val2 = np.exp(-0.5 * np.sum(d2**2))
-return (val1 * d1 + val2 * d2) / (val1 + val2)
-    
+    a = np.array([-2, -2])
+    b = np.array([2, 2])
+    d1 = w - a
+    d2 = w - b
+    val1 = np.exp(-0.5 * np.sum(d1**2))
+    val2 = np.exp(-0.5 * np.sum(d2**2))
+    return (val1 * d1 + val2 * d2) / (val1 + val2)
+
 def run_sgld(w0, eta, steps):
-w = w0.copy()
-samples = [w.copy()]
-for k in range(steps):
-    noise = np.random.randn(2) * np.sqrt(2 * eta)
-    w = w - eta * grad_potential(w) + noise
-    samples.append(w.copy())
-return np.array(samples)
-    
+    w = w0.copy()
+    samples = [w.copy()]
+    for k in range(steps):
+        noise = np.random.randn(2) * np.sqrt(2 * eta)
+        w = w - eta * grad_potential(w) + noise
+        samples.append(w.copy())
+    return np.array(samples)
+
 # Simulation
 w0 = np.array([0.0, 0.0])
 eta = 0.05
 steps = 5000
 samples = run_sgld(w0, eta, steps)
-    
+
 # Visualization
 plt.figure(figsize=(10, 8))
 x_grid = np.linspace(-5, 5, 100)
@@ -380,15 +387,18 @@ y_grid = np.linspace(-5, 5, 100)
 X, Y = np.meshgrid(x_grid, y_grid)
 Z = np.zeros_like(X)
 for i in range(100):
-for j in range(100):
-    Z[i,j] = np.exp(-potential(np.array([X[i,j], Y[i,j]])))
-    
+    for j in range(100):
+        Z[i,j] = np.exp(-potential(np.array([X[i,j], Y[i,j]])))
+
 plt.contourf(X, Y, Z, levels=20, cmap='Blues', alpha=0.5)
 plt.plot(samples[:,0], samples[:,1], 'r.', markersize=1, alpha=0.3, label='SGLD Samples')
 plt.title("SGLD Sampling from a Bimodal Posterior")
 plt.legend()
-plt.show()
+plt.savefig('figures/01-3-demo2.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/01-3-demo2.png)
     
 This concludes our exploration of stochastic algorithms. You have seen how to analyze the convergence of SGD from a martingale perspective, how variance reduction bridges the gap to linear convergence, and how SGLD allows for rigorous Bayesian inference in high dimensions.
 

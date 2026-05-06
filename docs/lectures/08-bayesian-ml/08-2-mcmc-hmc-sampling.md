@@ -210,6 +210,8 @@ The log-acceptance probability involves the change in energy. For a random walk,
 ### 7.1 Coding Demo 1: Manual Metropolis-Hastings
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -218,7 +220,7 @@ def target(x):
     return 0.3 * np.exp(-0.5 * (x+2)**2) + 0.7 * np.exp(-0.5 * (x-2)**2)
 
 def metropolis(n_iter, sigma):
-    x = 0
+    x = 0.0
     samples = []
     for _ in range(n_iter):
         x_new = x + np.random.normal(0, sigma)
@@ -228,24 +230,68 @@ def metropolis(n_iter, sigma):
         samples.append(x)
     return np.array(samples)
 
+np.random.seed(42)
 samples = metropolis(10000, 1.0)
-plt.hist(samples, bins=50, density=True)
-plt.show()
+
+x_range = np.linspace(-6, 6, 300)
+true_density = target(x_range)
+# Normalize for comparison
+true_density /= np.trapezoid(true_density, x_range)
+
+plt.figure(figsize=(8, 5))
+plt.hist(samples, bins=50, density=True, alpha=0.6, color='steelblue', label='MH Samples')
+plt.plot(x_range, true_density, 'r-', lw=2, label='True Target (normalized)')
+plt.title("Metropolis-Hastings Sampling: Mixture of Gaussians")
+plt.xlabel("x")
+plt.ylabel("Density")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.savefig('figures/08-2-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/08-2-demo1.png)
 
 ### 7.2 Coding Demo 2: Convergence Diagnostics with ArviZ
 
 ```python
-import arviz as az
 import numpy as np
 
+# Implement R-hat (Gelman-Rubin diagnostic) from scratch without arviz
+def compute_rhat(chains):
+    """
+    Compute the Gelman-Rubin R-hat statistic for convergence diagnostics.
+    chains: list of 1D arrays, each representing one chain.
+    """
+    m = len(chains)  # number of chains
+    n = len(chains[0])  # length of each chain
+
+    chain_means = np.array([np.mean(c) for c in chains])
+    grand_mean = np.mean(chain_means)
+
+    # Between-chain variance
+    B = n / (m - 1) * np.sum((chain_means - grand_mean) ** 2)
+
+    # Within-chain variance
+    W = np.mean([np.var(c, ddof=1) for c in chains])
+
+    # Pooled variance estimate
+    var_plus = (n - 1) / n * W + B / n
+
+    R_hat = np.sqrt(var_plus / W)
+    return R_hat
+
+np.random.seed(42)
 # Simulate two chains
 chain1 = np.random.normal(0, 1, 1000)
 chain2 = np.random.normal(0.1, 1, 1000)
 
-dataset = az.convert_to_dataset({"w": [chain1, chain2]})
-rhat = az.rhat(dataset)
-print(f"R-hat: {rhat.w.values}") # Should be near 1.0
+rhat = compute_rhat([chain1, chain2])
+print(f"R-hat: {rhat:.4f}  (Should be near 1.0 for converged chains)")
+```
+
+```
+R-hat: 1.0054  (Should be near 1.0 for converged chains)
 ```
 
 ## 8. Summary and Outlook

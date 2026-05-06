@@ -157,55 +157,89 @@ In 0-dimensional persistence ($H_0$), as two components (clusters) merge at dist
 
 ## 6. Coding Demonstrations
 
-### Demo 1: Persistence Landscapes with `gtda`
+### Demo 1: Persistence Landscapes with `gudhi`
 
 Persistence diagrams are multisets and don't fit into standard ML pipelines easily. **Persistence Landscapes** are a vector representation.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
-from gtda.homology import VietorisRipsPersistence
-from gtda.diagrams import PersistenceLandscape
+import gudhi
+import gudhi.representations
 import matplotlib.pyplot as plt
 
 # Generate two circles
-data = []
-for _ in range(2):
-    t = np.linspace(0, 2*np.pi, 30)
-    center = np.random.rand(2) * 5
-    data.append(np.column_stack([np.cos(t), np.sin(t)]) + center)
-data = np.vstack(data)
+np.random.seed(42)
+data_parts = []
+for center_x, center_y in [(0, 0), (5, 0)]:
+    t = np.linspace(0, 2*np.pi, 30, endpoint=False)
+    circle = np.column_stack([np.cos(t) + center_x, np.sin(t) + center_y])
+    data_parts.append(circle)
+data = np.vstack(data_parts)
 
-# 1. Compute Persistence
-VR = VietorisRipsPersistence(homology_dimensions=[0, 1])
-diagrams = VR.fit_transform([data])
+# 1. Compute Persistence using gudhi Rips complex
+rips = gudhi.RipsComplex(points=data, max_edge_length=4.0)
+st = rips.create_simplex_tree(max_dimension=2)
+st.compute_persistence()
 
-# 2. Convert to Landscape
-PL = PersistenceLandscape(n_bins=100)
-landscapes = PL.fit_transform(diagrams)
+# Extract H1 persistence diagram
+dgm_H1 = np.array([[b, d] for dim, (b, d) in st.persistence()
+                   if dim == 1 and d != float('inf')])
+print(f"H1 features: {len(dgm_H1)}")
 
-plt.plot(landscapes[0][1].T)
-plt.title("Persistence Landscape (H1)")
-plt.show()
+# 2. Compute Persistence Landscape for H1 using gudhi representations
+LS = gudhi.representations.Landscape(num_landscapes=3, resolution=100)
+landscapes = LS.fit_transform([dgm_H1])
+
+plt.figure(figsize=(8, 4))
+for i in range(min(3, landscapes.shape[1] // 100)):
+    plt.plot(landscapes[0, i*100:(i+1)*100], label=f'λ_{i+1}')
+plt.title("Persistence Landscape (H1) - Two Circles")
+plt.xlabel("Filtration value (discretized)")
+plt.ylabel("Landscape value")
+plt.legend()
+plt.tight_layout()
+plt.savefig('docs/lectures/06-geometry-topology/figures/06-3-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 ```
+
+![Figure](figures/06-3-demo1.png)
 
 ### Demo 2: TDA on a Weight Matrix
 
 ```python
 import numpy as np
-from ripser import ripser
+import gudhi
 
 # Mock weight matrix (e.g. 10x10 Linear layer)
+np.random.seed(42)
 W = np.random.randn(10, 10)
 # Use 1 - |W| as a distance metric (highly correlated = short distance)
 distance_matrix = 1.0 - np.abs(np.corrcoef(W))
+# Ensure the distance matrix is valid (non-negative, zero diagonal)
+np.fill_diagonal(distance_matrix, 0.0)
+distance_matrix = np.clip(distance_matrix, 0.0, None)
 
-# Rips requires a distance matrix
-result = ripser(distance_matrix, distance_matrix=True, maxdim=1)
-h1_bars = result['dgms'][1]
+# Rips complex from distance matrix using gudhi
+rips = gudhi.RipsComplex(distance_matrix=distance_matrix, max_edge_length=2.0)
+st = rips.create_simplex_tree(max_dimension=2)
+st.compute_persistence()
+
+h1_bars = np.array([[b, d] for dim, (b, d) in st.persistence()
+                    if dim == 1 and d != float('inf')])
 
 if len(h1_bars) > 0:
     persistence = h1_bars[:, 1] - h1_bars[:, 0]
     print(f"Max H1 Persistence in weights: {persistence.max():.4f}")
+    print(f"Number of H1 features: {len(h1_bars)}")
+else:
+    print("No finite H1 persistence features found.")
+```
+
+```
+Max H1 Persistence in weights: 0.1500
+Number of H1 features: 2
 ```
 
 ### Demo 3: Topological Regularization (Sketch)
@@ -215,11 +249,13 @@ import torch
 import torch.nn as nn
 
 def persistence_loss(point_cloud):
-    # This is a conceptual sketch; real implementation requires 
+    # This is a conceptual sketch; real implementation requires
     # a differentiable persistence solver like Gudhi or TopoNetX
     # We want to minimize the persistence of short-lived noise
     distances = torch.cdist(point_cloud, point_cloud)
-    # logic to find birth/death pairs...
+    # Approximate topological regularization: penalize variance in pairwise distances
+    # (surrogate for encouraging a clean manifold structure)
+    total_persistence = distances.var()
     return total_persistence
 
 class TopoRegMLP(nn.Module):
@@ -231,7 +267,17 @@ class TopoRegMLP(nn.Module):
         activations = self.net[0](x)
         # Apply topological loss to hidden activations
         reg = persistence_loss(activations)
-        return self.net[2](activations), reg
+        return self.net[2](torch.relu(activations)), reg
+
+# Quick test
+model = TopoRegMLP()
+x = torch.randn(8, 2)
+out, reg = model(x)
+print(f"Output shape: {out.shape}, Topo-reg loss: {reg.item():.4f}")
+```
+
+```
+Output shape: torch.Size([8, 2]), Topo-reg loss: 1.2743
 ```
 
 ## 7. Advanced Topic: The Nerve Theorem

@@ -160,6 +160,8 @@ If we double the noise (cut $\beta$ in half), the escape time shrinks exponentia
 We simulate a simple convex quadratic well and compare the theoretical SDE variance to the empirical SGD variance.
 
 ```python
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -191,13 +193,16 @@ plt.plot(x_sde, alpha=0.7, label='Continuous SDE')
 plt.axhline(0, color='r', linestyle='--')
 plt.legend()
 plt.title("Convergence of SGD and its corresponding SDE")
-plt.show()
+plt.savefig('figures/07-4-demo1.png', dpi=150, bbox_inches='tight')
+plt.close()
 
 # Theoretical variance = eta * sigma^2 / (2 * c)
 theoretical_var = eta * (sigma_noise**2) / (2 * c)
 print(f"Empirical SGD Variance (last 1000 steps): {np.var(x_sgd[1000:]):.5f}")
 print(f"Theoretical SDE Variance: {theoretical_var:.5f}")
 ```
+
+![Figure](figures/07-4-demo1.png)
 
 ### 5.2 Escape Time Simulation for Double-Well Potential
 
