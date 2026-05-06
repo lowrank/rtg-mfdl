@@ -230,8 +230,8 @@ Zhang and Jiang (arXiv:2410.12395, Fudan, 2024) proposed a unified **concatenati
 
 ### 2.6 Open Questions
 
-!!! question "Open Problem 2.1 — Silver Schedule for Non-Separable Non-Quadratic"
-    The Arcsine random stepsize schedule achieves full acceleration only for **separable** convex functions. Does there exist a stepsize schedule (deterministic or randomized) that achieves $O(\kappa^{1/2})$ without momentum for *all* convex functions? The Silver schedule gives partial acceleration $\kappa^{\log_\rho 2} \approx \kappa^{0.7864}$ — can this exponent be improved to $0.5$?
+!!! question "Open Problem 2.1 — Optimality of the Silver Ratio for Momentum-Free GD"
+    Altschuler & Parrilo conjecture that the Silver ratio $\rho = 1+\sqrt{2}$ gives the optimal acceleration achievable by gradient descent **without momentum**, i.e., by step size variation alone. This would mean the exponent $\log_\rho 2 \approx 0.7864$ is the best possible for any deterministic step size schedule. Can this conjecture be proven? Or can a counterexample with a better exponent be found?
 
 !!! question "Open Problem 2.2 — Stochastic and Non-Convex Settings"
     Can stepsize hedging be extended to stochastic mini-batch settings or non-convex landscapes? The Silver schedule relies on worst-case analysis over quadratics — for neural network loss landscapes, can we prove that variable step size schedules outperform fixed step sizes?
