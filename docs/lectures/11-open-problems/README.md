@@ -1,4 +1,4 @@
-# Chapter 11: Open Problems — Research Frontiers
+# Chapter 11: Open Problems
 
 > This chapter collects concrete, research-level open problems that arise naturally from the mathematics developed in the preceding chapters. Each problem includes the theoretical setup, key references, verification code, and specific open directions.
 
