@@ -201,6 +201,8 @@ $$
 \|w_k - w^*\| \leq \left(\frac{\kappa - 1}{\kappa + 1}\right)^k \|w_0 - w^*\|, \qquad \kappa = \frac{L}{\mu}
 $$
 
+For merely convex $L$-smooth functions (no strong convexity), a fundamental lower bound applies: **no first-order method can converge faster than $O(1/T^2)$**. This is achieved optimally by Nesterov's accelerated gradient descent [Nesterov, 1983], while standard GD achieves only $O(1/T)$. Variable-step GD with Chebyshev scheduling bridges this gap — for quadratics it recovers the accelerated rate, and for general convex functions it can approach the $O(1/T^2)$ barrier without momentum.
+
 The key observation of **variable step size GD** is: by choosing a deterministic step size sequence $\{\eta_k\}_{k=0}^{K-1}$ *before* running the algorithm (not adaptively from gradient information), one can dramatically outperform fixed step size. No momentum term is used — the update remains pure gradient descent:
 
 $$
@@ -337,6 +339,8 @@ plt.grid(True)
 - Polyak, B. T. (1964). Some methods of speeding up the convergence of iteration methods. *USSR Computational Mathematics and Mathematical Physics*, 4(5), 1–17.
 - Polyak, B. T. (1987). *Introduction to Optimization*. Optimization Software, Inc.
 - Nesterov, Y. (1983). A method for solving the convex programming problem with convergence rate $O(1/k^2)$. *Doklady AN SSSR*, 269, 543–547.
+- Nemirovski, A., & Yudin, D. (1983). *Problem Complexity and Method Efficiency in Optimization*. Wiley.
+- Nesterov, Y. (2004). *Introductory Lectures on Convex Optimization*. Springer.
 
 ---
 
