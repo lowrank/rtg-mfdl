@@ -48,7 +48,7 @@ Standard Message Passing Neural Networks (MPNNs) use an aggregation function to 
 !!! success "Theorem (MPNN Expressivity Limit)"
     Any MPNN with continuous aggregation and update functions is at most as expressive as the 1-WL test in terms of distinguishing non-isomorphic graphs.
 
-**Rigorous Proof:**
+**Proof:**
 We proceed by induction on the iteration number $t$. Let $h_v^{(t)}$ be the embedding of node $v$ in an MPNN and $c_v^{(t)}$ be its color in 1-WL.
 
 **Inductive Hypothesis:** If $c_u^{(t)} = c_v^{(t)}$, then $h_u^{(t)} = h_v^{(t)}$ for any nodes $u, v$ in any graphs $G, G'$.

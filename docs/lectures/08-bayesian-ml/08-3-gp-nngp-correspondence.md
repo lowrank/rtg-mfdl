@@ -169,7 +169,7 @@ We assign independent Gaussian priors to all parameters:
 3. **Output weights:** $v_j \sim \mathcal{N}(0, \sigma_v^2)$
 4. **Output bias:** $b \sim \mathcal{N}(0, \sigma_{b,out}^2)$
 
-### 3.2 Rigorous Proof of the Infinite-Width Limit
+### 3.2 Proof of the Infinite-Width Limit
 
 !!! success "Theorem 3.1 (Neal's Limit)"
     As the hidden layer width $H \to \infty$, the stochastic process defined by the neural network $f(x)$ converges in distribution to a Gaussian Process with mean zero and covariance function $K(x, x')$.

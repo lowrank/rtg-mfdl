@@ -44,7 +44,7 @@ If the VC dimension is finite, say $d$, the growth function does not just drop s
 
     For $n \ge d$, this sum is tightly bounded by $(\frac{en}{d})^d$.
 
-**Rigorous Proof:**
+**Proof:**
 We utilize induction on the parameters $n$ and $d$. Let the upper bound function be defined as $g(n, d) = \sum_{i=0}^d \binom{n}{i}$. A fundamental identity of binomial coefficients (Pascal's Triangle) is $g(n, d) = g(n-1, d) + g(n-1, d-1)$.
 
 *Base cases:*
@@ -138,7 +138,7 @@ While the VC dimension perfectly characterizes binary classifiers, it collapses 
     \sup_{f \in \mathcal{F}} (\mathbb{E}[f] - \hat{\mathbb{E}}_S[f]) \le 2 \mathcal{R}_n(\mathcal{F}) + \sqrt{\frac{\log(1/\delta)}{2n}}
     $$
 
-**Rigorous Proof:**
+**Proof:**
 We begin by defining the exact worst-case uniform deviation random variable:
 
 $$
@@ -202,7 +202,7 @@ Calculating Rademacher complexity directly is difficult because taking a supremu
     \hat{\mathcal{R}}_S(\mathcal{F}) \le \frac{12}{\sqrt{n}} \int_0^\infty \sqrt{\log \mathcal{N}(\epsilon, \mathcal{F}, L_2(P_n))} \, d\epsilon
     $$
 
-**Rigorous Proof:**
+**Proof:**
 Without loss of generality, assume the zero function $0 \in \mathcal{F}$. Let $D$ represent the geometric diameter of the class under the empirical norm.
 We dynamically construct an infinite sequence of covers $C_0, C_1, C_2, \dots$ at exponentially decaying granularities. Let $\epsilon_k = 2^{-k} D$. Define $C_k$ to be the minimal $\epsilon_k$-cover of $\mathcal{F}$. The number of elements in $C_k$ is precisely $\mathcal{N}(\epsilon_k)$.
 For any specific target function $f \in \mathcal{F}$, define its projection $f_k \in C_k$ as the element in the $k$-th cover minimizing distance to $f$. By definition, $\|f - f_k\|_n \le \epsilon_k$.

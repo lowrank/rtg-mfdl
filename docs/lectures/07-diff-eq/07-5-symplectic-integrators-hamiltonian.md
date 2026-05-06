@@ -33,7 +33,7 @@ A fundamental property of Hamiltonian systems is that their time-evolution (the 
     M^T J M = J
     $$
 
-### 2.2 Rigorous Proof
+### 2.2 Proof
 
 **Step 1: Time Derivative of the Symplectic Condition**
 

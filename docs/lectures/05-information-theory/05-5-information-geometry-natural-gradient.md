@@ -19,7 +19,7 @@ Why use the Fisher Information Matrix? Why not some other positive definite matr
 
 !!! success "Theorem 2.1 (Chentsov's Theorem (1982))"
     Up to a scalar multiple, the Fisher Information metric is the unique Riemannian metric on a statistical manifold that is invariant under congruent Markov morphisms (i.e., data transformations that preserve sufficient statistics).
-**Rigorous Proof Sketch (for discrete distributions):**
+**Proof Sketch (for discrete distributions):**
 Consider the probability simplex for $n$ states: $S_n = \{ p \in \mathbb{R}^n : p_i > 0, \sum p_i = 1 \}$. 
 A Markov morphism $M$ maps $S_n$ to $S_m$ via a stochastic matrix $W \in \mathbb{R}^{m \times n}$ where $W_{ji} = P(Y=j | X=i)$. A mapping is congruent if there exists a backward stochastic matrix preserving the information.
 Let $g$ be a Riemannian metric tensor on $S_n$. For $g$ to be invariant, the length of any tangent vector $v$ at $p$ must equal the length of the pushed-forward vector $Wv$ at $Wp$.
@@ -51,7 +51,7 @@ This assumes the steepest direction in parameter space. But as established, para
     \tilde{\nabla}_\theta \mathcal{L}(\theta) = F(\theta)^{-1} \nabla_\theta \mathcal{L}(\theta)
     $$
 
-**Rigorous Proof:**
+**Proof:**
 Steepest descent asks: what direction $d\theta$ minimizes $\mathcal{L}(\theta + d\theta)$ subject to a constraint on the step size?
 In Euclidean space, the constraint is $||d\theta||^2 = \epsilon^2$. 
 In distribution space, the constraint is that the KL divergence between $p_\theta$ and $p_{\theta+d\theta}$ is fixed: $D_{KL}(p_\theta || p_{\theta+d\theta}) = \epsilon^2$.

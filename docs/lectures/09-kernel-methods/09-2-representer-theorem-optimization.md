@@ -27,7 +27,7 @@ The **Representer Theorem** bridges this gap. It guarantees that the optimal sol
 
     for some coefficients $\alpha_1, \dots, \alpha_n \in \mathbb{R}$.
 
-**Rigorous Proof:**
+**Proof:**
 
 1. **Orthogonal Decomposition:** 
    Let $\mathcal{H}_S = \text{span}\{k(\cdot, x_1), \dots, k(\cdot, x_n)\} \subset \mathcal{H}$ be the subspace spanned by the kernel evaluations at the training data.

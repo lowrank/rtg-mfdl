@@ -63,7 +63,7 @@ The Bobkov-Götze theorem is a fundamental result demonstrating that satisfying 
     \int_X e^{\lambda (f(x) - \mathbb{E}_\mu[f])} \, d\mu(x) \leq e^{C \lambda^2 / 2}
     $$
 
-**Rigorous Proof:**
+**Proof:**
     
 We will prove the implication that $T_1$ implies sub-Gaussianity. Let $f \in \text{Lip}_1(X)$ be a 1-Lipschitz function. We assume, without loss of generality, that $\mathbb{E}_\mu[f] = \int f d\mu = 0$.
     
@@ -200,7 +200,7 @@ The convex distance is zero if and only if $x \in A$. If $A$ is a convex set in 
 
     This remarkable inequality implies that if a set $A$ has probability at least $1/2$, then the probability of being at a convex distance $t$ away from $A$ decays as $e^{-t^2/4}$, independent of the dimension $n$.
     
-### 2.3 Rigorous Proof of Talagrand's Inequality
+### 2.3 Proof of Talagrand's Inequality
     
 The proof is a sophisticated application of mathematical induction over the dimension $n$, employing a specialized measure-theoretic construction on the hypercube.
     
@@ -301,7 +301,7 @@ $$
     \mathbb{P}\left( \lambda_{\max}\left(\sum_{i=1}^n X_i\right) \geq t \right) \leq d \cdot \exp\left( \frac{-t^2 / 2}{\sigma^2 + Rt/3} \right)
     $$
 
-**Rigorous Proof:**
+**Proof:**
     
 Let $S = \sum_{i=1}^n X_i$. We employ the matrix Laplace transform method. For any $\theta > 0$, we have the event equivalence:
     

@@ -15,8 +15,7 @@ Hilbert's 13th problem conjectured that functions of three variables could not b
 
 ### 2.2 Theorem Statement
 
-!!! success "Theorem 2.2"
-    1 (Kolmogorov-Arnold, 1957)
+!!! success "Theorem 2.2.1 (Kolmogorov-Arnold, 1957)"
 
     For any continuous function $f: [0, 1]^n \to \mathbb{R}$, there exist $2n+1$ continuous functions $\Phi_q: \mathbb{R} \to \mathbb{R}$ and $n(2n+1)$ continuous univariate functions $\psi_{q,p}: [0, 1] \to \mathbb{R}$ such that:
 
@@ -74,8 +73,7 @@ $$
 
 ### 4.2 Grid Extension Theorem
 
-!!! success "Theorem 4.2"
-    1
+!!! success "Theorem 4.2.1"
 
     A KAN can be refined post-training by increasing the number of grid points $G$. The error decays as $O(G^{-(k+1)})$.
 

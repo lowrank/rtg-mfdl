@@ -10,7 +10,7 @@ This curriculum provides an exhaustive, 10-hour deep-dive into the information-t
 *The Calculus of Uncertainty.*
 
 - **Core Concepts:** Shannon Entropy, Differential Entropy, and the quantization limit.
-- **Rigorous Proofs:** Entropy Power Inequality (Stam-Blachman-Dembo), Concentration of Surprisal in high-dim Gaussians, and the AWGN Channel Coding Theorem.
+- **Proofs:** Entropy Power Inequality (Stam-Blachman-Dembo), Concentration of Surprisal in high-dim Gaussians, and the AWGN Channel Coding Theorem.
 - **Key Insight:** Information is a physical quantity. Learning is the process of selective forgetting (DPI).
 - **Practical Engineering:** Handling estimation bias and normalization in high-dimensional representations.
 

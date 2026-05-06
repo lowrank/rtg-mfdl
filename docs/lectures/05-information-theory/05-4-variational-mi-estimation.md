@@ -22,7 +22,7 @@ The NWJ bound (also known as the MINE-f bound) utilizes the $f$-divergence formu
     I(X; Y) \ge \sup_{\theta} \mathbb{E}_{p(x,y)}[T_\theta(X, Y)] - e^{-1} \mathbb{E}_{p(x)p(y)}[e^{T_\theta(X, Y)}]
     $$
 
-**Rigorous Proof:**
+**Proof:**
 Mutual information is the KL divergence between the joint distribution $P = p(x,y)$ and the product of marginals $Q = p(x)p(y)$: $I(X; Y) = D_{KL}(P || Q)$.
 The KL divergence can be expressed using its variational dual representation (the Donsker-Varadhan representation). For any function $T$:
 
@@ -62,7 +62,7 @@ The InfoNCE (Noise-Contrastive Estimation) bound is the backbone of modern Self-
     \mathcal{L}_{InfoNCE} = - \mathbb{E}\left[ \log \frac{e^{f(x_i, y_i)}}{e^{f(x_i, y_i)} + \sum_{j=1}^{K-1} e^{f(x_i, y_j)}} \right]
     $$
 
-**Rigorous Proof:**
+**Proof:**
 Consider a set of $K$ pairs, where exactly one pair is drawn from the joint distribution $p(x,y)$, and the remaining $K-1$ pairs are drawn from the marginal product $p(x)p(y)$. Let the index of the true pair be $I \in \{1, \dots, K\}$.
 Given the set of $K$ samples $S = \{(x, y_1), \dots, (x, y_K)\}$, we want to predict $I$.
 The optimal Bayesian classifier computes the posterior probability:

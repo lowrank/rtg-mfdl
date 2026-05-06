@@ -38,7 +38,7 @@ The landmark work of Bartlett et al. (2020) characterized exactly when a minimum
 
     where $k^*$ is a critical index and $R_k(\Sigma) = \frac{(\sum_{i > k} \lambda_i)^2}{\sum_{i > k} \lambda_i^2}$ is the **Effective Rank**.
 
-**Rigorous Proof Insight:**
+**Proof Insight:**
 The risk decomposes into Bias and Variance.
 
 - **Bias:** In high dimensions, the component of $w^*$ that falls into the null space of $X$ determines the bias. If the signal is concentrated in the top $k$ eigenvalues and $n > k$, the bias remains small.

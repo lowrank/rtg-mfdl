@@ -19,7 +19,7 @@ Computing $R(D)$ analytically is often impossible. The Blahut-Arimoto algorithm 
 
 !!! success "Theorem 2.1 (Convergence of Blahut-Arimoto)"
     The Blahut-Arimoto algorithm converges monotonically to the global minimum $R(D)$.
-**Rigorous Proof:**
+**Proof:**
 The problem is to minimize $I(X; \hat{X})$ subject to $\sum_{x, \hat{x}} p(x) p(\hat{x}|x) d(x, \hat{x}) \le D$.
 Using a Lagrange multiplier $\beta > 0$, we minimize the unconstrained functional:
 
@@ -67,7 +67,7 @@ $$
 
 !!! success "Theorem 3.1 (ELBO and Rate-Distortion Equivalence)"
     Maximizing the VAE ELBO is mathematically equivalent to optimizing the Rate-Distortion trade-off.
-**Rigorous Proof:**
+**Proof:**
 Let us analyze the terms of the ELBO.
 
 1. **Reconstruction Term:** $\mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)]$. 

@@ -56,7 +56,7 @@ Maschke's Theorem is the cornerstone of the decomposition of representations.
 !!! success "Theorem (Maschke's Theorem)"
     Let $G$ be a finite group and $\rho: G \to GL(V)$ be a representation of $G$ on a finite-dimensional vector space $V$ over a field $F$. If the characteristic of $F$ does not divide the order of the group $|G|$, and $W$ is a $G$-invariant subspace of $V$, then there exists a $G$-invariant complement $U$ such that $V = W \oplus U$.
 
-**Rigorous Proof:**
+**Proof:**
 The strategy is to take an arbitrary projection onto $W$ and "average" it over the group to force equivariance.
 
 1.  **Construct an initial projection:** Let $W$ be a $G$-invariant subspace. Let $\pi_0: V \to W$ be any linear projection such that $\pi_0(w) = w$ for all $w \in W$ and $\text{im}(\pi_0) = W$. Such a projection always exists by basic linear algebra.

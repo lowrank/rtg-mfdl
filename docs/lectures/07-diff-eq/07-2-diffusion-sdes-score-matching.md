@@ -124,7 +124,7 @@ In diffusion models, we are deeply concerned with mapping between a complex data
 
     is a standard Brownian motion.
 
-### 3.2 Rigorous Proof (Sketch using Itô Calculus)
+### 3.2 Proof (Sketch using Itô Calculus)
 
 A full proof requires deep martingale theory, but we provide the core Itô calculus machinery demonstrating that $Z_t$ is a martingale, which is the cornerstone of the theorem.
 

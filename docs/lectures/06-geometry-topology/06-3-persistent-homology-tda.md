@@ -105,7 +105,7 @@ where $\gamma$ is a bijection that can match points in $D_i$ to the diagonal $\D
     W_\infty(D(f), D(g)) \leq \|f - g\|_\infty
     $$
 
-**Rigorous Proof:**
+**Proof:**
 The proof involves **Interleaving Distance**.
 
 1. Let $F_t = f^{-1}((-\infty, t])$ and $G_t = g^{-1}((-\infty, t])$ be the sublevel sets.

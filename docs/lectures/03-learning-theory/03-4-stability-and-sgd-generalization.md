@@ -82,7 +82,7 @@ A mapping $G: \mathbb{R}^d \to \mathbb{R}^d$ is non-expansive if $\|G(w) - G(w')
     \beta \le \frac{2 L^2}{n} \sum_{t=1}^T \alpha_t
     $$
 
-**Rigorous Proof:**
+**Proof:**
 Consider two datasets $S$ and $S'$ differing at index $i$. Let $w_t$ and $w_t'$ be the SGD iterates on $S$ and $S'$. Define the expected distance $\Delta_t = \mathbb{E}\|w_t - w_t'\|$.
 At each step, SGD selects a random index $j \in \{1, \dots, n\}$.
 

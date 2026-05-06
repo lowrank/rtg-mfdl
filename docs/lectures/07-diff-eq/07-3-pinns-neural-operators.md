@@ -33,7 +33,7 @@ A well-known challenge in training PINNs is their difficulty in learning high-fr
 !!! success "Theorem (Spectral Bias of Neural Networks)"
     In the infinite-width limit, the training dynamics of a neural network under Gradient Descent follow a linear differential equation governed by the integral operator induced by the Neural Tangent Kernel $\Theta(x, x')$. If the kernel is positive-definite and isotropic, the network learns the eigenfunctions of $\Theta$ at a rate proportional to their corresponding eigenvalues. Since the eigenvalues of standard networks (like ReLU MLPs) decay polynomially with frequency, high-frequency target components converge exponentially slower than low-frequency components.
 
-### 2.2 Rigorous Proof
+### 2.2 Proof
 
 **Step 1: NTK Formulation**
 

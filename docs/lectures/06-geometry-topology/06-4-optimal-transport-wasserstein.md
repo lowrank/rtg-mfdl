@@ -65,7 +65,7 @@ For the quadratic cost $c(x, y) = \frac{1}{2}\|x - y\|^2$ in $\mathbb{R}^d$, the
     2. This plan is induced by a map $T$, i.e., $\pi = (Id \times T)_{\#} \mu$.
     3. There exists a convex function $\varphi: \mathbb{R}^d \to \mathbb{R}$ such that $T(x) = \nabla \varphi(x)$ for $\mu$-almost all $x$.
 
-**Rigorous Proof:**
+**Proof:**
 
 **1. Dual Potentials:** From the duality theorem, the optimal potentials $\varphi, \psi$ satisfy $\varphi(x) + \psi(y) \leq \frac{1}{2}\|x-y\|^2$.
 

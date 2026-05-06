@@ -93,7 +93,7 @@ Analysis of RGD depends on the manifold's curvature and **geodesic convexity**.
     f(x_T) - f(x^*) \leq \frac{d^2(x_0, x^*)}{2\eta T}
     $$
 
-**Rigorous Proof:**
+**Proof:**
 We use the **Riemannian Hinge Triangle Inequality**. For a manifold with curvature $K \leq 0$, the distance between $x_{k+1} = \exp_{x_k}(v)$ and $x^*$ satisfies:
 
 $$

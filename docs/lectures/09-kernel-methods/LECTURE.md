@@ -15,7 +15,7 @@ This module is structured into five high-density, rigorously proved lectures.
 ### [09-1: RKHS Foundations & The Moore-Aronszajn Theorem](./09-1-rkhs-foundations.md)
 *Focus: Functional Analysis Backbone.*
 
-- **Rigorous Proof**: The Moore-Aronszajn Theorem (Existence, uniqueness, and pre-Hilbert completion).
+- **Proof**: The Moore-Aronszajn Theorem (Existence, uniqueness, and pre-Hilbert completion).
 - **The Reproducing Property**: Proofs of Cauchy-Schwarz in RKHS and implications for uniform continuity.
 - **Kernel Algebra**: Schur Product Theorem and positive-definite tensor mapping proofs.
 - **Demos**: Definiteness checks, Gram heatmaps, and GP prior sampling.
@@ -23,7 +23,7 @@ This module is structured into five high-density, rigorously proved lectures.
 ### [09-2: The Representer Theorem & Kernel Optimization](./09-2-representer-theorem-optimization.md)
 *Focus: Infinite-to-Finite Dimensional Reduction.*
 
-- **Rigorous Proof**: The Generalized Representer Theorem (via projection theorems, accommodating non-convex losses).
+- **Proof**: The Generalized Representer Theorem (via projection theorems, accommodating non-convex losses).
 - **Algorithms**: Exact derivations for Kernel Ridge Regression and the rigorous KKT derivation of the SVM Dual.
 - **Geometric Margins**: Proving the relation between the dual quadratic form and the RKHS margin.
 - **Demos**: Regularization path dynamics and exact SVM Dual solving via CVXOPT.
@@ -32,14 +32,14 @@ This module is structured into five high-density, rigorously proved lectures.
 *Focus: The "Inside" of a kernel and Operator Theory.*
 
 - **Integral Operators**: Compactness, self-adjointness, and strictly positive operators in $L^2(\mu)$.
-- **Rigorous Proof**: Mercer’s Theorem (Spectral decomposition, absolute/uniform convergence via Dini's theorem).
+- **Proof**: Mercer’s Theorem (Spectral decomposition, absolute/uniform convergence via Dini's theorem).
 - **Eigen-expansion**: Spectral decay rates (Exponential RBF vs Polynomial Matérn) and their control over RKHS smoothness.
 - **Demos**: Numerical eigen-decomposition and visual extraction of Hermite-like Mercer eigenfunctions.
 
 ### [09-4: Large-Scale Kernels: RFF & Nyström](./09-4-large-scale-kernels-rff.md)
 *Focus: Scaling $O(n^3)$ to Millions of Points.*
 
-- **Rigorous Proof**: Bochner’s Theorem (Characterization of shift-invariant kernels via Fourier measures).
+- **Proof**: Bochner’s Theorem (Characterization of shift-invariant kernels via Fourier measures).
 - **Approximations**: Derivation of Random Fourier Features (RFF) and Hoeffding uniform convergence bounds.
 - **Variance Control**: Mathematical proof of variance reduction in Orthogonal Random Features (ORF).
 - **Demos**: Benchmarking RFF vs Exact RBF and Nyström explicit rank approximations.

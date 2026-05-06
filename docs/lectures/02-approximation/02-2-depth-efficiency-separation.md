@@ -18,17 +18,15 @@ Most modern deep networks utilize the Rectified Linear Unit (ReLU) activation fu
 
 To compare shallow and deep networks, we need a rigorous metric for "complexity." For CPW functions, this is the number of linear regions.
 
-!!! info "Definition 2.1"
-    1 (Number of Segments)
+!!! info "Definition 2.1.1 (Number of Segments)"
 
     For a function $f: \mathbb{R} \to \mathbb{R}$, let $S(f)$ be the number of linear segments in its graph.
 
-!!! success "Theorem 2.1"
-    2 (Shallow Limit)
+!!! success "Theorem 2.1.2 (Shallow Limit)"
 
     A neural network with a single hidden layer of $m$ ReLU neurons computes a CPW function with at most $m+1$ linear segments.
 
-**Rigorous Proof:**
+**Proof:**
 
 1. A single neuron $\sigma(wx + b)$ has a single "kink" at $x = -b/w$. To the left of this point, the function is constant (0); to the right, it is a line ($wx+b$).
 2. A shallow network is a linear combination of $m$ such functions: $N(x) = \sum_{j=1}^m v_j \sigma(w_j x + b_j) + c$.
@@ -41,12 +39,11 @@ To compare shallow and deep networks, we need a rigorous metric for "complexity.
 
 The fundamental operation of a deep network is function composition: $f(g(x))$.
 
-!!! success "Theorem 2.1"
-    3 (Compositional Complexity)
+!!! success "Theorem 2.1.3 (Compositional Complexity)"
 
     If $f$ and $g$ are CPW functions with $S_f$ and $S_g$ segments respectively, then the composition $h = f \circ g$ has at most $S_f \cdot S_g$ segments.
 
-**Rigorous Proof:**
+**Proof:**
 
 1. Let the segments of $g$ be $J_1, \dots, J_{S_g}$. On each $J_k$, $g(x)$ is linear.
 2. The image $g(J_k)$ is an interval in the domain of $f$.
@@ -65,8 +62,7 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
 
 ### 3.1 Constructing the Iterated Sawtooth
 
-!!! info "Definition 3.1"
-    1 (The Base Sawtooth)
+!!! info "Definition 3.1.1 (The Base Sawtooth)"
 
     Define $g: [0, 1] \to [0, 1]$ as:
 
@@ -79,8 +75,7 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
 
     This can be implemented by a 2-layer ReLU network with 3 hidden units: $g(x) = \sigma(2x) - 2\sigma(2x - 1) + \sigma(2x - 2)$.
 
-!!! info "Definition 3.1"
-    2 (The Iterated Map)
+!!! info "Definition 3.1.2 (The Iterated Map)"
 
     We define $f_L(x)$ as the $L$-th iteration of $g$:
 
@@ -90,12 +85,11 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
 
 ### 3.2 Complexity of the Deep Sawtooth
 
-!!! success "Theorem 3.2"
-    1 (The Exponential Explosion)
+!!! success "Theorem 3.2.1 (The Exponential Explosion)"
 
     $f_L(x)$ has exactly $2^L$ linear segments.
 
-**Rigorous Proof by Induction:**
+**Proof by Induction:**
 
 - **Base Case ($L=1$):** $f_1 = g$ has 2 segments.
 - **Inductive Step:** Assume $f_{L-1}$ has $2^{L-1}$ segments, each mapping a sub-interval $[a, b]$ bijectively to $[0, 1]$.
@@ -104,8 +98,7 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
 
 ### 3.3 The Separation Result
 
-!!! success "Theorem 3.3"
-    1 (Telgarsky's Theorem)
+!!! success "Theorem 3.3.1 (Telgarsky's Theorem)"
 
     For any $L \in \mathbb{N}$, there exists a function $f_L$ computable by a ReLU network of depth $2L$ and width 3 such that any shallow network with $m \le 2^{L-2}$ neurons satisfies:
 
@@ -113,7 +106,7 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
     \int_0^1 |f_L(x) - S(x)| dx \ge \frac{1}{32}
     $$
 
-**Rigorous Proof Sketch:**
+**Proof Sketch:**
 
 1. $f_L$ has $2^L$ "teeth."
 2. $S(x)$ has at most $2^{L-2}+1$ segments.
@@ -131,8 +124,7 @@ Telgarsky's proof relies on oscillations. Eldan and Shamir (2016) proved a separ
 
 A shallow 2-layer network in $\mathbb{R}^d$ computes: $N(x) = \sum a_i \sigma(w_i^T x + b_i)$. Each term is a **ridge function**, which is constant in $d-1$ directions. To approximate a radial "ball" or a localized bump, a shallow network must use an enormous number of ridge functions to "mask out" the infinite extent of each ridge.
 
-!!! success "Theorem 4.1"
-    1 (Eldan-Shamir)
+!!! success "Theorem 4.1.1 (Eldan-Shamir)"
 
     There exists a radial function $f(x) = \phi(\|x\|)$ in $\mathbb{R}^d$ that can be approximated to error $\epsilon$ by a 3-layer network with $\operatorname{poly}(d)$ neurons, but requires $\exp(d)$ neurons for any 2-layer network.
 

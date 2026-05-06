@@ -1,4 +1,4 @@
-# Chapter 2.1: The Universal Approximation Theorem: Foundations and Rigorous Proofs
+# Chapter 2.1: The Universal Approximation Theorem: Foundations and Proofs
 
 ## 1. Introduction and Historical Context
 
@@ -20,8 +20,7 @@ Before delving into the proofs, we must rigorously define the functional spaces,
 
 ### 2.1 Function Spaces and Topologies
 
-!!! info "Definition 2.1"
-    1 (The Space of Continuous Functions)
+!!! info "Definition 2.1.1 (The Space of Continuous Functions)"
 
     Let $K \subset \mathbb{R}^n$ be a compact set (closed and bounded in Euclidean space). We denote the space of all continuous, real-valued functions on $K$ as $C(K)$.
 
@@ -33,8 +32,7 @@ Before delving into the proofs, we must rigorously define the functional spaces,
 
     Under this norm, $C(K)$ forms a **Banach space**—a complete normed vector space where every Cauchy sequence converges to a limit within the space. When we say a neural network "approximates" a function $f \in C(K)$ to precision $\epsilon$, we mean we find a network function $N(x)$ such that $\|f - N\|_\infty < \epsilon$. This guarantees that the worst-case error across the entire domain $K$ is bounded by $\epsilon$.
 
-!!! info "Definition 2.1"
-    2 (The $L^p$ Spaces)
+!!! info "Definition 2.1.2 (The $L^p$ Spaces)"
 
     Let $(X, \mathcal{M}, \mu)$ be a measure space. For $1 \le p < \infty$, the space $L^p(X, \mu)$ consists of all measurable functions $f: X \to \mathbb{R}$ such that the $L^p$ norm is finite:
 
@@ -48,13 +46,11 @@ Before delving into the proofs, we must rigorously define the functional spaces,
 
 To analyze $C(K)$, we must understand its dual space—the space of all continuous linear mappings from $C(K)$ to $\mathbb{R}$. 
 
-!!! info "Definition 2.1"
-    3 (Finite Signed Borel Measure)
+!!! info "Definition 2.1.3 (Finite Signed Borel Measure)"
 
     Let $\mathcal{B}(K)$ be the Borel $\sigma$-algebra on $K$. A finite signed Borel measure $\mu$ is a countably additive set function $\mu: \mathcal{B}(K) \to \mathbb{R}$ that can take negative values, but whose total variation $|\mu|(K)$ is finite.
 
-!!! success "Theorem 2.1"
-    4 (The Riesz Representation Theorem)
+!!! success "Theorem 2.1.4 (The Riesz Representation Theorem)"
 
     Let $K$ be a compact Hausdorff space. For every bounded linear functional $L$ on $C(K)$, there exists a unique regular finite signed Borel measure $\mu$ on $K$ such that for all $f \in C(K)$:
 
@@ -68,8 +64,7 @@ To analyze $C(K)$, we must understand its dual space—the space of all continuo
 
 The Hahn-Banach Theorem is the cornerstone of functional analysis, guaranteeing the existence of "enough" continuous linear functionals to distinguish between distinct elements or subspaces. We will rely on its geometric consequence, often called the Separating Hyperplane Theorem for Banach spaces.
 
-!!! success "Theorem 2.1"
-    5 (Hahn-Banach Separation Theorem - Subspace Corollary)
+!!! success "Theorem 2.1.5 (Hahn-Banach Separation Theorem - Subspace Corollary)"
 
     Let $X$ be a real Banach space and $S \subset X$ be a linear subspace. Let $\overline{S}$ denote the topological closure of $S$. If $S$ is not dense in $X$ (i.e., $\overline{S} \neq X$), then there exists a non-zero bounded linear functional $L \in X^*$ such that $L(x) = 0$ for all $x \in S$.
 
@@ -83,8 +78,7 @@ George Cybenko's 1989 paper utilized the functional analysis machinery outlined 
 
 ### 3.1 Rigorous Definitions
 
-!!! info "Definition 3.1"
-    1 (Feedforward Neural Network Function)
+!!! info "Definition 3.1.1 (Feedforward Neural Network Function)"
 
     Let $\sigma: \mathbb{R} \to \mathbb{R}$ be an activation function. A single-hidden-layer feedforward neural network with $N$ hidden units computes functions of the form:
 
@@ -94,8 +88,7 @@ George Cybenko's 1989 paper utilized the functional analysis machinery outlined 
 
     where $x \in \mathbb{R}^n$ is the input, $w_i \in \mathbb{R}^n$ are the input weights, $b_i \in \mathbb{R}$ are the biases, and $\alpha_i \in \mathbb{R}$ are the output weights. We denote the set of all such functions for all possible choices of $N, \alpha_i, w_i, b_i$ as $S_\sigma \subset C(K)$. Note that $S_\sigma$ is a linear subspace.
 
-!!! info "Definition 3.1"
-    2 (Sigmoidal Function)
+!!! info "Definition 3.1.2 (Sigmoidal Function)"
 
     A function $\sigma: \mathbb{R} \to \mathbb{R}$ is sigmoidal if it is measurable and satisfies:
 
@@ -103,8 +96,7 @@ George Cybenko's 1989 paper utilized the functional analysis machinery outlined 
     \lim_{t \to \infty} \sigma(t) = 1 \quad \text{and} \quad \lim_{t \to -\infty} \sigma(t) = 0
     $$
 
-!!! info "Definition 3.1"
-    3 (Discriminatory Function)
+!!! info "Definition 3.1.3 (Discriminatory Function)"
 
     A function $\sigma: \mathbb{R} \to \mathbb{R}$ is said to be discriminatory if for any finite signed Borel measure $\mu$ on $K \subset \mathbb{R}^n$, the condition:
 
@@ -116,8 +108,7 @@ George Cybenko's 1989 paper utilized the functional analysis machinery outlined 
 
 ### 3.2 The Core Theorem and Proof
 
-!!! success "Theorem 3.2"
-    1 (Cybenko's Universal Approximation Theorem)
+!!! success "Theorem 3.2.1 (Cybenko's Universal Approximation Theorem)"
 
     Let $\sigma$ be any continuous discriminatory function. Then for any compact set $K \subset \mathbb{R}^n$, the space of neural network functions $S_\sigma$ is dense in $C(K)$. That is, for any $f \in C(K)$ and any $\epsilon > 0$, there exists a $G \in S_\sigma$ such that $\|f - G\|_\infty < \epsilon$.
 
@@ -148,8 +139,7 @@ $$
 
 The elegance of Cybenko's theorem rests on shifting the burden of proof to showing that specific activation functions are discriminatory. We now prove this for sigmoidal functions.
 
-!!! success "Lemma 3.3"
-    1
+!!! success "Lemma 3.3.1"
 
     Any bounded, measurable sigmoidal function $\sigma$ is discriminatory.
 
@@ -215,8 +205,7 @@ $$
 
 While Cybenko proved that sigmoids are universal, a natural question emerged: what is the minimal structural requirement for an activation function to be a universal approximator? In 1993, Leshno, Lin, Pinkus, and Schocken provided a stunningly clean answer: an activation function is universal if and only if it is not a polynomial.
 
-!!! success "Theorem 4"
-    1 (Leshno's Theorem)
+!!! success "Theorem 4.1 (Leshno's Theorem)"
 
     Let $\sigma \in C(\mathbb{R})$. The subspace $S_\sigma = \text{span}\{\sigma(w^T x + b)\}$ is dense in $C(K)$ for all compact $K \subset \mathbb{R}^n$ if and only if $\sigma$ is not a polynomial.
 
@@ -254,8 +243,7 @@ $$
 
 While uniform approximation ($C(K)$) is powerful, machine learning inherently optimizes the expected loss over probability distributions. This necessitates understanding approximation in $L^p$ spaces.
 
-!!! success "Theorem 5"
-    1 (Hornik's $L^p$ Approximation)
+!!! success "Theorem 5.1 (Hornik's $L^p$ Approximation)"
 
     Let $\mu$ be a finite Borel measure on $\mathbb{R}^n$. If $\sigma: \mathbb{R} \to \mathbb{R}$ is bounded, continuous, and non-constant, then the neural network span $S_\sigma$ is dense in $L^p(\mathbb{R}^n, \mu)$ for $1 \le p < \infty$.
 

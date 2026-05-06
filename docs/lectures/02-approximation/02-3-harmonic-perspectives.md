@@ -14,8 +14,7 @@ In 1993, Andrew Barron proved that for functions with "simple" Fourier transform
 
 ### 2.1 The Barron Norm
 
-!!! info "Definition 2.1"
-    1 (Barron Norm)
+!!! info "Definition 2.1.1 (Barron Norm)"
 
     For a function $f: \mathbb{R}^d \to \mathbb{R}$, define the Barron norm $C_f$ as the first moment of its Fourier magnitude:
 
@@ -27,8 +26,7 @@ In 1993, Andrew Barron proved that for functions with "simple" Fourier transform
 
 ### 2.2 Barron's Theorem
 
-!!! success "Theorem 2.2"
-    1 (Barron, 1993)
+!!! success "Theorem 2.2.1 (Barron, 1993)"
 
     For any function $f$ with $C_f < \infty$, there exists a single-hidden-layer neural network $f_n$ with $n$ neurons such that the $L_2$ error on a ball of radius $r$ is:
 
@@ -36,7 +34,7 @@ In 1993, Andrew Barron proved that for functions with "simple" Fourier transform
     \int_{\|x\| \le r} |f(x) - f_n(x)|^2 d\mu(x) \le \frac{(2r C_f)^2}{n}
     $$
 
-**Rigorous Proof of Theorem 2.2.1:**
+**Proof of Theorem 2.2.1:**
 
 1. **Fourier Representation:** Express $f(x)$ using the inverse Fourier transform. By shifting $f$ such that $f(0)=0$:
 
@@ -69,8 +67,7 @@ $$
 
 ### 3.2 Eigen-Decay and Learning Rates
 
-!!! success "Theorem 3.2"
-    1 (Spectral Bias)
+!!! success "Theorem 3.2.1 (Spectral Bias)"
 
     The eigenvalues $\lambda_k$ of the NTK for a ReLU network decay as $k^{-(d+1)}$ for frequency $k$. The error $E_k(t)$ at frequency $k$ decays as:
 
@@ -90,8 +87,7 @@ $$
 
 Convolutional Neural Networks (CNNs) are robust to translations and small deformations. Stéphane Mallat provided the mathematical justification via the Scattering Transform.
 
-!!! info "Definition 4"
-    1 (Scattering Transform)
+!!! info "Definition 4.1 (Scattering Transform)"
 
     A cascade of wavelet transforms $W$ and modulus non-linearities $| \cdot |$:
 
@@ -99,8 +95,7 @@ Convolutional Neural Networks (CNNs) are robust to translations and small deform
     S(f) = | \dots | f \ast \psi_{j_1} | \ast \psi_{j_2} | \dots \ast \phi_J
     $$
 
-!!! success "Theorem 4"
-    2 (Stability)
+!!! success "Theorem 4.2 (Stability)"
 
     The scattering transform is Lipschitz continuous to diffeomorphisms $\tau$:
 

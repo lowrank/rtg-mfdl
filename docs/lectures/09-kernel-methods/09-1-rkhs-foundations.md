@@ -133,7 +133,7 @@ The **Moore-Aronszajn Theorem** answers this with a resounding yes.
 !!! success "Theorem (Moore-Aronszajn, 1950)"
     Let $\mathcal{X}$ be a set, and let $k: \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ be a symmetric, positive semi-definite kernel. Then there exists a unique reproducing kernel Hilbert space $\mathcal{H} \subset \mathbb{R}^{\mathcal{X}}$ with $k$ as its reproducing kernel.
 
-**Rigorous Proof:**
+**Proof:**
 The proof proceeds by explicitly constructing the space $\mathcal{H}$ from the kernel $k$.
 
 **Step 1: Constructing the pre-Hilbert space $\mathcal{H}_0$.**

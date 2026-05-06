@@ -47,7 +47,7 @@ Before training a Neural ODE, we must ensure that the forward pass (solving the 
 
     Then, there exists some $\delta > 0$ such that there is a unique continuous and differentiable function $z(t)$ defined on $[t_0 - \delta, t_0 + \delta]$ that satisfies the initial value problem.
 
-### 2.2 Rigorous Proof
+### 2.2 Proof
 
 The proof relies on converting the ODE into an integral equation and applying the Banach Fixed-Point Theorem.
 

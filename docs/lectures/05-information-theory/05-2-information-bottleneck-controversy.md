@@ -64,7 +64,7 @@ In 2018, Saxe et al. countered this claim, initiating a massive controversy in t
 
 !!! success "Theorem 3.1 (Infinite Mutual Information for Deterministic Continuous Maps)"
     Let $X$ be a continuous random variable with a smooth, strictly positive PDF. Let $f: \mathbb{R}^d \to \mathbb{R}^d$ be a deterministic, invertible, differentiable function (e.g., a bijective layer in a neural network). Let $T = f(X)$. Then the mutual information $I(X; T) \to \infty$.
-**Rigorous Proof:**
+**Proof:**
 By definition, mutual information for continuous variables is:
 
 $$

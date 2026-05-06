@@ -41,7 +41,7 @@ $$
 
     where $\lambda_n > 0$ are the strictly positive eigenvalues of the integral operator $T_k$, and $e_n$ are the corresponding continuous, $L_2(\mu)$-orthonormal eigenfunctions.
 
-**Rigorous Proof Sketch:**
+**Proof Sketch:**
 A full proof of Mercer's theorem requires deep functional analysis (specifically Dini's theorem and Mercer's original work). We outline the crucial structural steps:
 
 1. **Existence of Eigendecomposition:**
