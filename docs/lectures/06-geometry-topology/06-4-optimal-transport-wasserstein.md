@@ -1,132 +1,212 @@
 # 6.4 Optimal Transport and Wasserstein Metrics
 
-Optimal Transport (OT) provides a principled geometric framework for comparing probability distributions. Unlike Kullback-Leibler (KL) divergence, OT distances incorporate the underlying metric geometry of the space, preventing vanishing gradients when distributions have disjoint supports.
+Optimal Transport (OT) has revolutionized machine learning by providing a geometrically grounded framework for comparing probability distributions. Unlike the Kullback-Leibler (KL) divergence, which treats distributions as point-masses in an abstract space of measures, the Wasserstein distance (induced by OT) accounts for the underlying geometry of the sample space. This makes it particularly effective for tasks where the support of distributions may not overlap, such as generative modeling and domain adaptation.
 
-## 1. Monge and Kantorovich Formulations
+## 1. Mathematical Formulations of Optimal Transport
 
-Given two probability measures $\mu$ on $\mathcal{X}$ and $\nu$ on $\mathcal{Y}$, and a cost function $c(x,y)$.
+Optimal transport asks: "What is the most efficient way to transform one distribution of mass into another, given a cost of movement?"
 
-**Monge Formulation:**
-Find a mapping $T: \mathcal{X} \to \mathcal{Y}$ such that $T_{\#} \mu = \nu$ (the pushforward of $\mu$ is $\nu$) minimizing:
+### 1.1 The Monge Formulation (1781)
 
-$$
-\inf_{T_{\#} \mu = \nu} \int_{\mathcal{X}} c(x, T(x)) d\mu(x)
-$$
+Given two probability measures $\mu$ on $\mathcal{X}$ and $\nu$ on $\mathcal{Y}$, and a cost function $c(x, y): \mathcal{X} \times \mathcal{Y} \to \mathbb{R}_{\geq 0}$, Monge's problem seeks a transport map $T: \mathcal{X} \to \mathcal{Y}$ that minimizes the total cost while preserving mass.
 
-**Kantorovich Formulation:**
-Monge's problem may have no solution if $\mu$ is discrete and $\nu$ is continuous. Kantorovich relaxed this by looking for a joint coupling $\pi \in \Pi(\mu, \nu)$ (marginals are $\mu$ and $\nu$):
+Mass preservation is expressed through the **pushforward** operator $T_{\#} \mu = \nu$, defined as:
+$$ \nu(B) = \mu(T^{-1}(B)) \quad \text{for all Borel sets } B \subseteq \mathcal{Y} $$
 
-$$
-\inf_{\pi \in \Pi(\mu, \nu)} \int_{\mathcal{X} \times \mathcal{Y}} c(x, y) d\pi(x, y)
-$$
+The optimization problem is:
+$$ \min_{T_{\#} \mu = \nu} \int_{\mathcal{X}} c(x, T(x)) d\mu(x) $$
 
-When $c(x,y) = ||x - y||^p$, the $p$-th root of the cost is the $p$-Wasserstein distance $W_p(\mu, \nu)$.
+**Limitation:** If $\mu$ is a Dirac mass and $\nu$ is a sum of two Dirac masses, no map $T$ can satisfy $T_{\#} \mu = \nu$ because a single point cannot be split.
 
-## 2. Brenier's Theorem
+### 1.2 The Kantorovich Relaxation (1942)
 
-A cornerstone of OT in $\mathbb{R}^d$ for quadratic costs ($p=2$) is Brenier's Theorem, which establishes that the optimal transport map is the gradient of a convex function.
+Kantorovich generalized the problem by searching for a **coupling** (or transport plan) $\pi \in \Pi(\mu, \nu)$, where $\Pi(\mu, \nu)$ is the set of joint probability measures on $\mathcal{X} \times \mathcal{Y}$ whose marginals are $\mu$ and $\nu$.
 
+$$ \min_{\pi \in \Pi(\mu, \nu)} \int_{\mathcal{X} \times \mathcal{Y}} c(x, y) d\pi(x, y) $$
+
+This is a linear program in the space of measures. If $c(x, y) = \|x - y\|^p$, the $p$-th root of the optimal value is the **$p$-Wasserstein distance**, denoted $W_p(\mu, \nu)$.
+
+## 2. Duality and Potentials
+
+The Kantorovich problem is a constrained optimization. Its dual provides deep insights into the geometry of transport.
+
+### 2.1 Kantorovich Duality
+
+!!! success "Theorem (Kantorovich Duality)"
+    For any lower semi-continuous cost $c$, the following duality holds:
+    $$ \min_{\pi \in \Pi(\mu, \nu)} \int c d\pi = \sup_{(\varphi, \psi) \in \Phi_c} \int_{\mathcal{X}} \varphi(x) d\mu(x) + \int_{\mathcal{Y}} \psi(y) d\nu(y) $$
+    where $\Phi_c = \{ (\varphi, \psi) \in L_1(d\mu) \times L_1(d\nu) : \varphi(x) + \psi(y) \leq c(x, y) \}$.
+
+For a given $\varphi$, the best $\psi$ is given by the **$c$-transform**:
+$$ \varphi^c(y) = \inf_{x \in \mathcal{X}} \{ c(x, y) - \varphi(x) \} $$
+
+## 3. Brenier's Theorem: The Geometry of Quadratic Transport
+
+For the quadratic cost $c(x, y) = \frac{1}{2}\|x - y\|^2$ in $\mathbb{R}^d$, the optimal transport map has an extraordinary structure.
 
 !!! success "Theorem (Brenier's Theorem)"
-    Let $\mu, \nu$ be probability measures on $\mathbb{R}^d$ with finite second moments. Suppose $\mu$ is absolutely continuous with respect to the Lebesgue measure (it has a density). Then for the quadratic cost $c(x,y) = \frac{1}{2}||x - y||^2$:
-    
-    
+    Let $\mu, \nu$ be probability measures on $\mathbb{R}^d$ with finite second moments. If $\mu$ has a density with respect to the Lebesgue measure, then:
     1. There exists a unique optimal transport plan $\pi$.
-    2. This plan is deterministic, induced by a unique transport map $T$, meaning $\pi = (Id \times T)_{\#} \mu$.
-    3. $T = \nabla \varphi$ for some convex function $\varphi : \mathbb{R}^d \to \mathbb{R} \cup \{+\infty\}$.
+    2. This plan is induced by a map $T$, i.e., $\pi = (Id \times T)_{\#} \mu$.
+    3. There exists a convex function $\varphi: \mathbb{R}^d \to \mathbb{R}$ such that $T(x) = \nabla \varphi(x)$ for $\mu$-almost all $x$.
+
+**Rigorous Proof:**
+1.  **Dual Potentials:** From the duality theorem, the optimal potentials $\varphi, \psi$ satisfy $\varphi(x) + \psi(y) \leq \frac{1}{2}\|x-y\|^2$.
+2.  **Rearrangement:** Let $\tilde{\varphi}(x) = \frac{1}{2}\|x\|^2 - \varphi(x)$. Substituting this into the inequality:
+    $$ (\frac{1}{2}\|x\|^2 - \tilde{\varphi}(x)) + \psi(y) \leq \frac{1}{2}\|x\|^2 + \frac{1}{2}\|y\|^2 - x \cdot y $$
+    $$ \tilde{\varphi}(x) + (\frac{1}{2}\|y\|^2 - \psi(y)) \geq x \cdot y $$
+    Let $\tilde{\psi}(y) = \frac{1}{2}\|y\|^2 - \psi(y)$. Then $\tilde{\varphi}(x) + \tilde{\psi}(y) \geq x \cdot y$.
+3.  **Convexity:** At optimality, $\tilde{\psi}$ must be the Legendre-Fenchel conjugate of $\tilde{\varphi}$: $\tilde{\psi}(y) = \tilde{\varphi}^*(y) = \sup_x (x \cdot y - \tilde{\varphi}(x))$.
+4.  **Complementary Slackness:** The optimal plan $\pi$ must be supported on the set where the dual constraint is tight: $\tilde{\varphi}(x) + \tilde{\varphi}^*(y) = x \cdot y$.
+5.  **Differentiability:** For convex functions, the equality $\tilde{\varphi}(x) + \tilde{\varphi}^*(y) = x \cdot y$ implies $y \in \partial \tilde{\varphi}(x)$, where $\partial$ is the subdifferential. Since $\mu$ is absolutely continuous, Rademacher's theorem implies $\tilde{\varphi}$ is differentiable $\mu$-a.e. Thus $y = \nabla \tilde{\varphi}(x)$ is uniquely determined for almost all $x$. $\blacksquare$
+
+### 3.2 The Monge-Ampère Equation
+
+The condition $T_{\#} \mu = \nu$ can be expressed as a partial differential equation. If $\mu$ has density $f$ and $\nu$ has density $g$, then for a smooth $T = \nabla \varphi$:
+$$ f(x) = g(\nabla \varphi(x)) \det(\nabla^2 \varphi(x)) $$
+This is the **elliptic Monge-Ampère equation**, connecting OT to differential geometry.
+
+## 4. Entropic Regularization and the Sinkhorn Algorithm
+
+The standard OT problem is a large-scale linear program, which is slow to solve ($O(N^3)$). Entropic regularization transforms it into a strictly convex problem solvable in $O(N^2)$.
+
+### 4.1 The Regularized Problem
+
+We add a Kullback-Leibler penalty to the objective:
+$$ \min_{\pi \in \Pi(\mu, \nu)} \int c d\pi + \epsilon KL(\pi \| \mu \otimes \nu) $$
+As $\epsilon \to 0$, we recover the original OT cost. For $\epsilon > 0$, the optimal coupling has the form:
+$$ \pi_{ij} = a_i K_{ij} b_j $$
+where $K_{ij} = \exp(-C_{ij}/\epsilon)$ is the Gibbs kernel and $a, b$ are scaling vectors.
+
+### 4.2 The Sinkhorn Scaling Algorithm
+
+The marginal constraints $\pi \mathbf{1} = \mu$ and $\pi^T \mathbf{1} = \nu$ lead to the iterations:
+1.  $a \leftarrow \mu / (K b)$
+2.  $b \leftarrow \nu / (K^T a)$
+This converges linearly to the optimal vectors $a, b$. In practice, this is highly parallelizable on GPUs.
+
+## 5. Gromov-Wasserstein (GW) Distance
+
+When comparing distributions across different spaces (e.g., aligning a 3D point cloud with a 2D graph), the cost function $c(x, y)$ is not well-defined. GW solves this by comparing intra-space distances.
+
+Given $(\mathcal{X}, d_{\mathcal{X}}, \mu)$ and $(\mathcal{Y}, d_{\mathcal{Y}}, \nu)$, the $L_2$-GW distance is:
+$$ GW^2(\mu, \nu) = \inf_{\pi \in \Pi(\mu, \nu)} \int_{\mathcal{X}^2 \times \mathcal{Y}^2} |d_{\mathcal{X}}(x, x') - d_{\mathcal{Y}}(y, y')|^2 d\pi(x, y) d\pi(x', y') $$
+
+This is a **Quadratic Assignment Problem** (QAP), which is NP-hard in general but can be approximated using entropic regularization and alternating minimization.
+
+## 6. Worked Examples
+
+### Example 1: $W_2$ between Gaussians
+Let $\mu = \mathcal{N}(m_1, \Sigma_1)$ and $\nu = \mathcal{N}(m_2, \Sigma_2)$. The 2-Wasserstein distance is:
+$$ W_2^2(\mu, \nu) = \|m_1 - m_2\|^2 + \text{Tr}(\Sigma_1 + \Sigma_2 - 2(\Sigma_1^{1/2} \Sigma_2 \Sigma_1^{1/2})^{1/2}) $$
+If the covariances commute, this simplifies to $\|m_1 - m_2\|^2 + \|\Sigma_1^{1/2} - \Sigma_2^{1/2}\|_F^2$.
+
+### Example 2: Sinkhorn on a $2 \times 2$ Matrix
+Let $\mu = [0.5, 0.5]$, $\nu = [0.1, 0.9]$, $C = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$, $\epsilon = 1$.
+Then $K = \begin{pmatrix} 1 & e^{-1} \\ e^{-1} & 1 \end{pmatrix} \approx \begin{pmatrix} 1 & 0.37 \\ 0.37 & 1 \end{pmatrix}$.
+Iterate $a, b$:
+- Start $b = [1, 1]$.
+- $a = \mu / (Kb) = [0.5/1.37, 0.5/1.37] \approx [0.36, 0.36]$.
+- $b = \nu / (K^T a) = [0.1/(0.36*1.37), 0.9/(0.36*1.37)]$.
+Eventually, the coupling $\pi$ concentrates mass on $(1, 2)$ to satisfy the unbalanced marginals.
+
+### Example 3: 1D Quantile Function
+For $\mu, \nu \in \mathcal{P}(\mathbb{R})$, let $F, G$ be their CDFs. The optimal map is $T(x) = G^{-1}(F(x))$. This is the only increasing map that pushes $\mu$ to $\nu$.
+
+## 7. Coding Demonstrations
+
+### Demo 1: Sinkhorn from Scratch in PyTorch
+
+```python
+import torch
+
+def sinkhorn_normalized(mu, nu, C, eps=0.1, max_iter=100):
+    # mu, nu: [N], [M] marginals
+    # C: [N, M] cost matrix
+    K = torch.exp(-C / eps)
+    b = torch.ones_like(nu)
     
-    
-**Rigorous Proof (Sketch of Kantorovitch Dual argument):**
-The Kantorovich dual problem for cost $c(x,y)$ is:
-    
-$$
-\sup_{\varphi \oplus \psi \leq c} \int \varphi(x) d\mu(x) + \int \psi(y) d\nu(y)
-$$
-    
-For $c(x,y) = \frac{1}{2}||x - y||^2 = \frac{1}{2}||x||^2 + \frac{1}{2}||y||^2 - x \cdot y$, we can absorb the norms into the potentials. Let $\tilde{\varphi}(x) = \frac{1}{2}||x||^2 - \varphi(x)$ and $\tilde{\psi}(y) = \frac{1}{2}||y||^2 - \psi(y)$. The constraint becomes:
-    
-$$
-\tilde{\varphi}(x) + \tilde{\psi}(y) \geq x \cdot y
-$$
-    
-To maximize the dual objective, we choose $\tilde{\varphi}$ and $\tilde{\psi}$ to be as small as possible while satisfying the bound. This dictates that they must be convex conjugates (Legendre-Fenchel transforms) of each other:
-    
-$$
-\tilde{\psi}(y) = \tilde{\varphi}^*(y) = \sup_{x} \{ x \cdot y - \tilde{\varphi}(x) \}
-$$
-    
-Because $\tilde{\varphi}$ is the supremum of affine functions, it is a closed convex function. 
-At optimality, the primal-dual relations (complementary slackness) imply that the optimal coupling $\pi$ is concentrated on the set where the inequality is tight:
-    
-$$
-\tilde{\varphi}(x) + \tilde{\varphi}^*(y) = x \cdot y
-$$
-    
-By the properties of convex analysis, this equality holds if and only if $y \in \partial \tilde{\varphi}(x)$, where $\partial$ denotes the subdifferential.
-Since $\mu$ is absolutely continuous with respect to Lebesgue measure, by Rademacher's theorem, the convex function $\tilde{\varphi}$ is differentiable almost everywhere with respect to $\mu$.
-Thus, the subdifferential is a singleton: $y = \nabla \tilde{\varphi}(x)$ for $\mu$-a.e. $x$.
-    
-This means the support of the optimal coupling $\pi$ is exactly the graph of the function $T = \nabla \tilde{\varphi}$. Because $T$ maps every $x$ to exactly one $y$, the coupling is deterministic, meaning $\pi = (Id \times T)_{\#} \mu$. 
-Since $T$ must push $\mu$ to $\nu$, we have $T = \nabla \tilde{\varphi}$ as the unique optimal transport map, where $\tilde{\varphi}$ is convex. $\blacksquare$
-    
-## 3. Gromov-Wasserstein Distance
-    
-Standard Wasserstein distance requires both distributions to exist in the same metric space. Gromov-Wasserstein (GW) compares distributions across *different* metric spaces by comparing intra-space pairwise distances.
-Given $(\mathcal{X}, d_{\mathcal{X}}, \mu)$ and $(\mathcal{Y}, d_{\mathcal{Y}}, \nu)$:
-    
-$$
-GW_p(\mu, \nu) = \inf_{\pi \in \Pi(\mu, \nu)} \left( \int \int |d_{\mathcal{X}}(x, x') - d_{\mathcal{Y}}(y, y')|^p d\pi(x, y) d\pi(x', y') \right)^{1/p}
-$$
-    
-This is a non-convex Quadratic Assignment Problem, often used to align point clouds of different dimensions or graph structures without predefined correspondence.
-    
-## 4. Worked Examples
-    
-### Example 1: 1D Wasserstein
-For 1D distributions with CDFs $F(x)$ and $G(y)$, the $p$-Wasserstein distance has a closed form:
-    
-$$
-W_p(\mu, \nu) = \left( \int_0^1 |F^{-1}(q) - G^{-1}(q)|^p dq \right)^{1/p}
-$$
-    
-### Example 2: Discrete OT (Sinkhorn)
-Given discrete measures $\mu = \sum u_i \delta_{x_i}$ and $\nu = \sum v_j \delta_{y_j}$, we minimize $\sum_{i,j} P_{ij} C_{ij}$ subject to $P \mathbf{1} = u$, $P^T \mathbf{1} = v$. Adding entropy regularization $\epsilon H(P)$ makes the problem strictly convex, solvable efficiently via Sinkhorn iterations: $P = \text{diag}(a) K \text{diag}(b)$ where $K = \exp(-C/\epsilon)$.
-    
-### Example 3: Gromov-Wasserstein for Graph Alignment
-Two graphs with adjacency matrices $A, B$ can be aligned by setting the intra-distances to shortest paths $D_A, D_B$. GW finds a coupling $\pi$ that maps nodes in $A$ to nodes in $B$ such that the distances are preserved as much as possible, providing a probabilistic graph isomorphism tool.
-    
-## 5. Coding Demonstrations
-    
-### Demo 1: Sinkhorn Transport (POT library)
+    for _ in range(max_iter):
+        a = mu / (torch.matmul(K, b) + 1e-8)
+        b = nu / (torch.matmul(K.t(), a) + 1e-8)
+        
+    P = torch.diag(a) @ K @ torch.diag(b)
+    return P, torch.sum(P * C)
+
+# Test
+n, m = 5, 5
+x = torch.randn(n, 2)
+y = torch.randn(m, 2)
+C = torch.cdist(x, y)**2
+mu = torch.ones(n) / n
+nu = torch.ones(m) / m
+
+plan, dist = sinkhorn_normalized(mu, nu, C)
+print("Wasserstein Distance (Entropic):", dist.item())
+```
+
+### Demo 2: POT Library for Discrete OT and Sinkhorn
+
 ```python
 import numpy as np
 import ot
-    
+
 # Two 1D discrete distributions
 a = np.array([0.5, 0.5])
 b = np.array([0.2, 0.8])
 # Cost matrix (squared distance)
 M = np.array([[0.0, 1.0], [1.0, 0.0]])
-    
+
 # Exact OT
 P_exact = ot.emd(a, b, M)
 print("Exact Transport Plan:\n", P_exact)
-    
+
 # Regularized OT (Sinkhorn)
 P_sinkhorn = ot.sinkhorn(a, b, M, reg=0.1)
 print("Sinkhorn Transport Plan:\n", P_sinkhorn)
 ```
-    
-### Demo 2: 1D Closed Form Wasserstein
+
+### Demo 3: WGAN-GP Loss (Conceptual)
+
+In WGAN, we use the Kantorovich-Rubinstein duality for $W_1$:
+$$ W_1(\mu, \nu) = \sup_{\|f\|_L \leq 1} \mathbb{E}_{x \sim \mu}[f(x)] - \mathbb{E}_{y \sim \nu}[f(y)] $$
+The 1-Lipschitz constraint is enforced via a **Gradient Penalty**.
+
 ```python
-import numpy as np
-from scipy.stats import wasserstein_distance
+def wgan_gp_loss(discriminator, real_data, fake_data, lambda_gp=10.0):
+    # Wasserstein Loss
+    d_real = discriminator(real_data)
+    d_fake = discriminator(fake_data)
+    loss_wd = -torch.mean(d_real) + torch.mean(d_fake)
     
-# Samples from two distributions
-u_samples = np.random.normal(0, 1, 100)
-v_samples = np.random.normal(5, 2, 100)
+    # Gradient Penalty
+    alpha = torch.rand(real_data.size(0), 1)
+    interpolates = alpha * real_data + (1 - alpha) * fake_data
+    interpolates.requires_grad_(True)
+    d_int = discriminator(interpolates)
     
-# Compute 1-Wasserstein via scipy (uses 1D CDF inverse formula)
-w_dist = wasserstein_distance(u_samples, v_samples)
-print(f"1D Wasserstein Distance: {w_dist:.4f}")
+    grads = torch.autograd.grad(outputs=d_int, inputs=interpolates,
+                                grad_outputs=torch.ones_like(d_int),
+                                create_graph=True)[0]
+    gp = lambda_gp * torch.mean((torch.norm(grads, p=2, dim=1) - 1)**2)
+    
+    return loss_wd + gp
 ```
+
+## 8. Summary and Conclusion
+
+Optimal Transport bridges the gap between probability theory and geometry.
+1. **Monge-Kantorovich** defines the ground problem of mass movement.
+2. **Brenier's Theorem** reveals that optimal transport maps are gradients of convex functions, linking OT to potential theory.
+3. **Sinkhorn's Algorithm** makes OT computationally feasible for high-dimensional data.
+4. **Gromov-Wasserstein** extends OT to the comparison of structural information in different spaces.
+
+As a tool, OT allows neural networks to "feel" the metric structure of their data, leading to more robust models and geometrically meaningful latent spaces.
+
+## References
+
+1. Villani, C. (2003). Topics in Optimal Transportation. American Mathematical Society.
+2. Villani, C. (2008). Optimal Transport: Old and New. Springer.
+3. Peyré, G., & Cuturi, M. (2019). Computational Optimal Transport. Foundations and Trends in Machine Learning.
+4. Santambrogio, F. (2015). Optimal Transport for Applied Mathematicians. Birkhäuser.
+5. Arjovsky, M., et al. (2017). Wasserstein Generative Adversarial Networks. ICML.
