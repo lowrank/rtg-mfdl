@@ -190,55 +190,84 @@ plt.grid(True)
 
 ---
 
-## 2. Variable Step Size Acceleration: Chebyshev and Beyond
+## 2. Variable Step Size Acceleration: GD with Deterministic Schedules
 
-### 2.1 The Chebyshev Step Size Schedule
+### 2.1 The Basic Observation
 
-Classical gradient descent with fixed step size $\eta$ converges linearly for smooth strongly convex functions. However, by varying the step size according to a **Chebyshev polynomial schedule**, we can achieve dramatically faster convergence.
+Standard gradient descent with fixed step size $\eta = 1/L$ achieves linear convergence on $L$-smooth $\mu$-strongly convex functions:
 
-!!! success "Theorem 2.1 (Chebyshev Acceleration for Gradient Descent)"
-    Let $f$ be $\mu$-strongly convex and $L$-smooth. Consider the heavy-ball (momentum) method:
+$$
+\|w_k - w^*\| \leq \left(\frac{\kappa - 1}{\kappa + 1}\right)^k \|w_0 - w^*\|, \qquad \kappa = \frac{L}{\mu}
+$$
 
-    $$
-    w_{k+1} = w_k - \alpha_k \nabla f(w_k) + \beta_k (w_k - w_{k-1})
-    $$
+The key observation of **variable step size GD** is: by choosing a deterministic step size sequence $\{\eta_k\}_{k=0}^{K-1}$ *before* running the algorithm (not adaptively from gradient information), one can dramatically outperform fixed step size. No momentum term is used — the update remains pure gradient descent:
 
-    Define the condition number $\kappa = L/\mu$. Using Chebyshev-optimized parameters $\alpha_k, \beta_k$, the iterate error satisfies:
+$$
+w_{k+1} = w_k - \eta_k \nabla f(w_k)
+$$
 
-    $$
-    \|w_k - w^*\| \leq 2 e^{-k / \sqrt{\kappa}} \|w_0 - w^*\|
-    $$
+The step sizes $\eta_k$ depend only on $k$, $L$, $\mu$, and $K$ (the total horizon), not on the gradients encountered.
 
-    This is the **optimal** rate for any first-order method (matching the lower bound of Nesterov). The Chebyshev schedule achieves this without requiring the gradient of the previous iterate — it uses only step size variations.
+### 2.2 Optimal Step Sizes via Chebyshev Polynomials
 
-!!! info "Key Insight"
-    The standard GD rate is $e^{-k/\kappa}$. Chebyshev acceleration achieves $e^{-k/\sqrt{\kappa}}$ — a quadratic improvement. This is the same asymptotic rate as Nesterov's accelerated gradient, but achieved through step size variation alone, without momentum.
+For quadratic objectives $f(w) = \frac{1}{2} w^\top A w - b^\top w$ with $A$ having eigenvalues in $[\mu, L]$, the error after $K$ steps of GD with variable step sizes is:
 
-### 2.2 The Parrilo and JHU Results
+$$
+w_K - w^* = \left[\prod_{k=0}^{K-1} (I - \eta_k A)\right] (w_0 - w^*)
+$$
 
-Recent work has shown that variable step size first-order methods can achieve convergence rates arbitrarily close to second-order methods, without computing Hessians:
+The worst-case error is controlled by minimizing the maximum of the polynomial $p_K(\lambda) = \prod_{k=0}^{K-1} (1 - \eta_k \lambda)$ over $\lambda \in [\mu, L]$:
 
-!!! success "Theorem 2.2 (Parrilo — Polynomial Optimization of Step Sizes)"
-    There exists a sequence of step sizes $\{\eta_k\}$ such that gradient descent with these step sizes converges at a rate:
-
-    $$
-    f(w_k) - f(w^*) \leq \frac{C}{k^{2}} \|w_0 - w^*\|^2
-    $$
-
-    for **non-strongly convex** smooth functions. This rate is optimal for first-order methods and matches Nesterov's accelerated gradient.
-
-The key technique from [Parrilo & collaborators] uses **semidefinite programming (SDP)** to optimize the step size sequence as a polynomial optimization problem, formulating the convergence bound as a sum-of-squares (SOS) feasibility check.
-
-!!! info "Theorem 2.3 (JHU — Variable Step Size Superiority — Lee et al.)"
-    For any fixed step size schedule $\eta_k$, the worst-case convergence of gradient descent on $L$-smooth convex functions is bounded by the solution to a certain Chebyshev polynomial approximation problem. The optimal variable step sizes are the roots of Chebyshev polynomials, yielding:
+!!! success "Theorem 2.1 (Chebyshev-Optimal Step Sizes for GD)"
+    The optimal deterministic step sizes for gradient descent on a quadratic with condition number $\kappa = L/\mu$ are:
 
     $$
-    \min_{\eta_0, \dots, \eta_{k-1}} \max_{\|w_0 - w^*\| \leq R} \|w_k - w^*\| = R \cdot T_k\left(\frac{1 + \kappa}{1 - \kappa}\right)^{-1}
+    \eta_k = \frac{2}{L + \mu - (L - \mu) \cos\left(\frac{2k+1}{2K}\pi\right)}, \qquad k = 0, \dots, K-1
     $$
 
-    where $T_k$ is the $k$-th Chebyshev polynomial. The convergence is **never second-order** (i.e., never $e^{-ck^2}$), but can be made arbitrarily close to a quadratic improvement over GD.
+    These are the roots of the transformed Chebyshev polynomial. The resulting convergence rate is:
 
-### 2.3 Verification Code
+    $$
+    \|w_K - w^*\| \leq 2\left(\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1}\right)^K \|w_0 - w^*\|
+    $$
+
+    This improves on fixed-step GD from $((\kappa-1)/(\kappa+1))^K$ to $((\sqrt{\kappa}-1)/(\sqrt{\kappa}+1))^K$ — a quadratic improvement in the condition number dependence — **without momentum**.
+
+!!! info "Why this matters"
+    This is pure gradient descent with no momentum term and no gradient history. The acceleration comes entirely from the deterministic step size schedule. The method is also known as the **Richardson-Chebyshev iteration** and achieves the same asymptotic rate as conjugate gradient and Nesterov's accelerated method — but with a simpler, predictable schedule.
+
+### 2.3 The Parrilo Result: SDP-Optimized Step Sizes
+
+The Chebyshev schedule is optimal for quadratics, but what about **general convex functions**? Parrilo and collaborators developed a framework using **semidefinite programming (SDP)** and **sum-of-squares (SOS)** optimization to find optimal step size sequences for worst-case convex problems:
+
+!!! success "Theorem 2.2 (Parrilo — SOS-Optimized Step Sizes)"
+    For the class of $L$-smooth convex functions, the optimal step size sequence $\{\eta_k\}_{k=0}^{K-1}$ minimizing the worst-case final error can be computed by solving a semidefinite program. The resulting variable-step GD achieves:
+
+    $$
+    \max_{f \in \mathcal{F}_{L}} \|w_K - w^*\| \leq \rho_K \cdot \|w_0 - w^*\|
+    $$
+
+    where $\rho_K$ is strictly smaller than the fixed-step contraction factor $((\kappa-1)/(\kappa+1))^K$ for all $K \ge 2$. The improvement is **provably optimal** among all deterministic step size sequences.
+
+The technique works by formulating the convergence bound as a polynomial inequality and checking feasibility via SOS. For quadratics, this recovers the Chebyshev schedule. For general convex functions, it produces step sizes that are **nearly Chebyshev-optimal** but with corrections that account for non-quadratic curvature.
+
+!!! info "Key distinction from momentum"
+    This is distinct from the heavy-ball or Nesterov methods. Those algorithms incorporate the **previous iterate** $w_{k-1}$ in the update (momentum). Here, the update is pure GD $w_{k+1} = w_k - \eta_k \nabla f(w_k)$ — only the step size is varied. The acceleration comes from careful pre-selection of the step sizes, not from using past gradient information.
+
+### 2.3 Fundamental Limits of Variable-Step GD
+
+Lee et al. characterized the fundamental limits of what variable step size GD can achieve:
+
+!!! success "Theorem 2.3 (Fundamental Limit of Variable-Step GD — Lee et al.)"
+    For any deterministic step size sequence $\{\eta_k\}$, the worst-case convergence of gradient descent on the class of $L$-smooth $\mu$-strongly convex functions is lower bounded by:
+
+    $$
+    \min_{\eta_0, \dots, \eta_{K-1}} \max_{f} \|w_K - w^*\| \ge \frac{\|w_0 - w^*\|}{T_K(\kappa)}
+    $$
+
+    where $T_K$ is the $K$-th Chebyshev polynomial. This lower bound matches the Chebyshev upper bound up to a constant factor. The convergence is **never second-order** (i.e., never $e^{-cK^2}$), but achieves the optimal first-order rate $((\sqrt{\kappa}-1)/(\sqrt{\kappa}+1))^K$.
+
+### 2.4 Verification Code
 
 ```python
 import numpy as np
@@ -291,7 +320,7 @@ plt.legend()
 plt.grid(True)
 ```
 
-### 2.4 Open Questions
+### 2.5 Open Questions
 
 !!! question "Open Problem 2.1 — Adaptive Chebyshev for Deep Learning"
     Can Chebyshev-optimized step size schedules be applied to stochastic mini-batch settings? The challenge is that the condition number $\kappa$ must be estimated online. Is there an adaptive variant that matches the accelerated rate without knowledge of $L$ and $\mu$?
@@ -505,9 +534,10 @@ plt.tight_layout()
 
 | # | Problem | Chapter Connection | Difficulty |
 |---|---------|-------------------|------------|
-| 1.1 | $2 \times 2$ linear network — diagonal dynamics | Ch. 1 Optimization | Moderate |
-| 1.2 | $2 \times 2$ linear network — complex entries | Ch. 1 Optimization | Hard |
-| 1.3 | $2 \times 2$ linear network — full phase portrait | Ch. 1 Optimization | Very Hard |
+| 1.1 | $2 \times 2$ depth-3 singular vector rotation | Ch. 1 Optimization | Hard |
+| 1.2 | $2 \times 2$ depth-4 periodic orbits and chaos | Ch. 1 Optimization | Very Hard |
+| 1.3 | $2 \times 2$ complex entries at depth $L \ge 3$ | Ch. 1 Optimization | Very Hard |
+| 1.4 | $2 \times 2$ general entries, large depth scaling | Ch. 1 Optimization | Hard |
 | 2.1 | Adaptive Chebyshev for stochastic settings | Ch. 1 Optimization | Hard |
 | 2.2 | Variable step size beyond quadratic losses | Ch. 1 Optimization | Hard |
 | 3.1 | Finite-width implicit bias in ReLU nets | Ch. 3 Learning Theory | Very Hard |
