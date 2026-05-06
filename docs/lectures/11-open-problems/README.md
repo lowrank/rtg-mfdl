@@ -226,13 +226,7 @@ The composition framework explains why both the fractal Silver schedule and the 
 
 Grimmer, Shu, and Wang (arXiv:2403.14045, 2024) used these techniques to construct stepsize sequences achieving $O(N^{-1.2716})$ convergence — the same asymptotic exponent as the Silver schedule (which implies $N \approx \varepsilon^{-\log_\rho 2}$), but with an improved **constant factor**. For the squared gradient norm, this provides an exponent improvement from the prior best $O(N^{-1})$ to $O(N^{-1.2716})$. Their schedules are similar to but differ slightly from the Silver stepsizes, and are claimed to match or beat numerically computed minimax optimal rates.
 
-#### Extensions of the Stepsize Acceleration Paradigm
-
-The core idea has been extended beyond unconstrained smooth optimization:
-
-* **Proximal gradient descent** (arXiv:2412.05497, 2024): Silver stepsizes accelerate composite optimization $\min f(x) + g(x)$, matching the rates $O(\kappa^{\log_\rho 2})$ and $O(\varepsilon^{-\log_\rho 2})$
-* **Riemannian optimization** (arXiv:2506.06160, 2025): Silver schedules apply on manifolds with applications to Wasserstein space, suggesting the principle is geometric
-* **Schedule concatenation** (arXiv:2410.12395, Fudan, 2024): A unified technique for constructing stepsizes with analytic bounds by concatenating shorter optimal schedules
+Zhang and Jiang (arXiv:2410.12395, Fudan, 2024) proposed a unified **concatenation technique** for constructing stepsize schedules: new schedules are built by concatenating two shorter schedules, yielding analytic bounds for an arbitrary number of iterations. Their schedules achieve $O(N^{-\log_2(\sqrt{2}+1)})$ — the same exponent as the Silver schedule — with state-of-the-art constants that match or surpass the best numerically computed schedules.
 
 ### 2.6 Open Questions
 
