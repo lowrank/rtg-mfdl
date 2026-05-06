@@ -5,20 +5,29 @@ window.MathJax = {
     processEscapes: true,
     processEnvironments: true,
     packages: {'[+]': ['boldsymbol']}
+  },
+  startup: {
+    typeset: false
   }
 };
 
-document.addEventListener("DOMContentLoaded", function() {
-  if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
-    MathJax.typesetPromise();
-  }
-});
+(function() {
+  var script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
+  script.async = true;
+  document.head.appendChild(script);
+})();
 
-// Support for MkDocs Material instant loading (SPA-like navigation)
+function typesetMath() {
+  if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(console.error);
+  } else {
+    setTimeout(typesetMath, 100);
+  }
+}
+
 if (typeof document$ !== "undefined") {
   document$.subscribe(function() {
-    if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
-      MathJax.typesetPromise();
-    }
+    typesetMath();
   });
 }
