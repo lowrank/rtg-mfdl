@@ -21,10 +21,17 @@ window.MathJax = {
 function typesetMath() {
   if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
     MathJax.typesetPromise().catch(console.error);
+    setTimeout(function() {
+      MathJax.typesetPromise().catch(console.error);
+    }, 500);
   } else {
     setTimeout(typesetMath, 100);
   }
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+  typesetMath();
+});
 
 if (typeof document$ !== "undefined") {
   document$.subscribe(function() {
