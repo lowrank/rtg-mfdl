@@ -36,7 +36,7 @@ The **Representer Theorem** bridges this gap. It guarantees that the optimal sol
    $$
    f = f_S + f_\perp
    $$
-   
+
    where $f_S \in \mathcal{H}_S$ and $f_\perp \in \mathcal{H}_S^\perp$ (the orthogonal complement). Thus, $\langle f_\perp, k(\cdot, x_i) \rangle_\mathcal{H} = 0$ for all $i=1, \dots, n$.
 
 2. **Evaluating the Data Points:**
@@ -45,13 +45,13 @@ The **Representer Theorem** bridges this gap. It guarantees that the optimal sol
    $$
    f(x_i) = \langle f, k(\cdot, x_i) \rangle_\mathcal{H} = \langle f_S + f_\perp, k(\cdot, x_i) \rangle_\mathcal{H}
    $$
-   
+
    By linearity of the inner product:
    
    $$
    f(x_i) = \langle f_S, k(\cdot, x_i) \rangle_\mathcal{H} + \langle f_\perp, k(\cdot, x_i) \rangle_\mathcal{H} = f_S(x_i) + 0 = f_S(x_i)
    $$
-   
+
    Crucially, the empirical loss depends *only* on the predictions $f(x_1), \dots, f(x_n)$. Since $f(x_i) = f_S(x_i)$, the loss term $L$ is entirely independent of the orthogonal component $f_\perp$.
    
    $$
@@ -64,13 +64,13 @@ The **Representer Theorem** bridges this gap. It guarantees that the optimal sol
    $$
    \|f\|_\mathcal{H}^2 = \|f_S + f_\perp\|_\mathcal{H}^2 = \|f_S\|_\mathcal{H}^2 + \|f_\perp\|_\mathcal{H}^2 \geq \|f_S\|_\mathcal{H}^2
    $$
-   
+
    Since $R(\cdot)$ is strictly monotonically increasing, and $\|f\|_\mathcal{H} \geq \|f_S\|_\mathcal{H}$, it follows that:
    
    $$
    R(\|f\|_\mathcal{H}) \geq R(\|f_S\|_\mathcal{H})
    $$
-   
+
    Equality holds if and only if $\|f_\perp\|_\mathcal{H}^2 = 0$, which implies $f_\perp = 0$.
 
 4. **Conclusion:**
@@ -80,7 +80,7 @@ The **Representer Theorem** bridges this gap. It guarantees that the optimal sol
    $$
    f^* = f_S \implies f^*(x) = \sum_{i=1}^n \alpha_i k(x, x_i)
    $$
-   
+
 $\blacksquare$
 
 ### Implications
@@ -138,7 +138,7 @@ To find the dual, we minimize $\mathcal{L}$ with respect to the primal variables
    $$
    \nabla_f \mathcal{L} = f - \sum_{i=1}^n \lambda_i y_i k(\cdot, x_i) = 0 \implies f = \sum_{i=1}^n \lambda_i y_i k(\cdot, x_i)
    $$
-   
+
    Notice this perfectly mirrors the Representer Theorem with $\alpha_i = \lambda_i y_i$.
 
 2. **Derivative w.r.t $b$**:
@@ -152,7 +152,7 @@ To find the dual, we minimize $\mathcal{L}$ with respect to the primal variables
    $$
    \frac{\partial \mathcal{L}}{\partial \xi_i} = C - \lambda_i - \mu_i = 0
    $$
-   
+
    Since $\mu_i \geq 0$, this implies $0 \leq \lambda_i \leq C$.
 
 Substituting these optimal conditions back into the Lagrangian:

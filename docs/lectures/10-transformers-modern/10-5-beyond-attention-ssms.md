@@ -36,6 +36,7 @@ For an SSM to remember long-range dependencies, the matrix $A$ must be carefully
     $$
     A_{ij} = \begin{cases} -(2i+1)^{1/2}(2j+1)^{1/2} & \text{if } i > j \\ -(i+1) & \text{if } i = j \\ 0 & \text{if } i < j \end{cases}
     $$
+
 **Proof:**
 
 1.  **Polynomial Projection:**
@@ -48,7 +49,7 @@ For an SSM to remember long-range dependencies, the matrix $A$ must be carefully
     $$
     \frac{d}{dt} h_n(t) = x(t) P_n(1) + \int_0^t x(s) \frac{\partial}{\partial t} P_n(s/t) ds
     $$
-    
+
     Since $P_n(1) = 1$, the first term is $x(t)$.
     The second term involves the derivative of the shifted polynomial. Using the property $x P'_n(x) = n P_n(x) + \sum_{k < n} (2k+1) P_k(x)$ (for odd/even cases), we can express the integral back in terms of the coefficients $h_k(t)$.
 
@@ -76,11 +77,11 @@ The main drawback of RNNs is their sequential nature. However, a linear recurren
     $$
     [\mathcal{T}_k \otimes \mathcal{T}_j] \otimes \mathcal{T}_i = (A_k A_j, A_k b_j + b_k) \otimes (A_i, b_i) = (A_k A_j A_i, A_k A_j b_i + A_k b_j + b_k)
     $$
-    
+
     $$
     \mathcal{T}_k \otimes [\mathcal{T}_j \otimes \mathcal{T}_i] = \mathcal{T}_k \otimes (A_j A_i, A_j b_i + b_j) = (A_k A_j A_i, A_k (A_j b_i + b_j) + b_k)
     $$
-    
+
     The results are identical. The operator is associative.
 
 3.  **Parallel Computation:**

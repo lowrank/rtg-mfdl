@@ -51,7 +51,6 @@ Solve the **2D Navier-Stokes equations** for flow over a cylinder using a Physic
     \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} = -\nabla p + \nu \nabla^2 \mathbf{u}
     $$
 
-
 ### Implementation Steps
 
 1. **Network Architecture**: A deep MLP that takes $(x, y, t)$ as input and outputs $(u, v, p)$.

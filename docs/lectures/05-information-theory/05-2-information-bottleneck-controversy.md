@@ -32,7 +32,7 @@ $$
     $$
     T = A X + \xi, \quad \xi \sim \mathcal{N}(0, \Sigma_\xi)
     $$
-    
+
     where $A$ is a projection matrix and $\Sigma_\xi$ is the noise covariance.
 **Proof of the Gaussian IB Solution (Chechik et al.):**
 The optimization problem is over the conditional distribution $p(t|x)$.

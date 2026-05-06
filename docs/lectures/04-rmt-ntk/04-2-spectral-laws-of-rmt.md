@@ -17,6 +17,7 @@ $$
     $$
     \mu([a, b]) = \lim_{\epsilon \to 0^+} \frac{1}{\pi} \int_a^b \text{Im} (m_\mu(x + i\epsilon)) dx
     $$
+
 **Proof:**
 By definition, $\text{Im} (m_\mu(x + i\epsilon)) = \int \frac{\epsilon}{(\lambda - x)^2 + \epsilon^2} d\mu(\lambda)$. This is the convolution of $\mu$ with the Poisson kernel. As $\epsilon \to 0$, the Poisson kernel converges weakly to the Dirac delta function $\delta(x - \lambda)$, thus recovering the density of $\mu$. $\blacksquare$
 
@@ -29,6 +30,7 @@ For an $N \times N$ Wigner matrix $W$ (symmetric, independent zero-mean entries 
     $$
     m(z)^2 + z m(z) + 1 = 0
     $$
+
 **Proof:**
 Let $G(z) = (W - zI)^{-1}$ be the resolvent. By Schur's complement formula, the diagonal entry $G_{ii}(z)$ is given by:
 

@@ -25,43 +25,60 @@ Let $\mathcal{H}$ be a measurable space of hypotheses.
 
 !!! success "Lemma 2.1 (Change of Measure Inequality)"
     For any measurable function $\phi: \mathcal{H} \to \mathbb{R}$ such that $\mathbb{E}_{h \sim P}[e^{\phi(h)}] < \infty$, and for any probability measure $Q$ such that $Q \ll P$, we have the following rigid upper bound:
+
     $$
     \mathbb{E}_{h \sim Q}[\phi(h)] \le D_{KL}(Q || P) + \log \mathbb{E}_{h \sim P}[e^{ \phi(h) }]
     $$
+
     Furthermore, the equality is uniquely achieved (up to $P$-null sets) when $Q$ is the **Gibbs distribution** $G$ defined by:
+
     $$
     \frac{dG}{dP}(h) = \frac{e^{\phi(h)}}{\mathbb{E}_{h' \sim P}[e^{\phi(h')}]}
     $$
 
 **Rigorous and Exhaustive Proof:**
 We begin by invoking the definition of the Kullback-Leibler (KL) divergence between the posterior $Q$ and the Gibbs distribution $G$:
+
 $$
 D_{KL}(Q || G) = \mathbb{E}_{h \sim Q} \left[ \log \frac{dQ}{dG}(h) \right]
 $$
+
 By the Gibbs' Inequality (or the non-negativity property of KL divergence), we know that $D_{KL}(Q || G) \ge 0$ for any valid probability measures $Q$ and $G$. We can expand the term inside the expectation using the chain rule for Radon-Nikodym derivatives:
+
 $$
 \frac{dQ}{dG}(h) = \frac{dQ}{dP}(h) \cdot \frac{dP}{dG}(h)
 $$
+
 Substituting the definition of the Gibbs distribution $dG/dP = e^\phi / Z$, where $Z = \mathbb{E}_P[e^\phi]$ is the partition function:
+
 $$
 \frac{dQ}{dG}(h) = \frac{dQ}{dP}(h) \cdot \frac{Z}{e^{\phi(h)}}
 $$
+
 Taking the logarithm:
+
 $$
 \log \frac{dQ}{dG}(h) = \log \frac{dQ}{dP}(h) + \log Z - \phi(h)
 $$
+
 Now, taking the expectation with respect to $h \sim Q$:
+
 $$
 \mathbb{E}_{h \sim Q} \left[ \log \frac{dQ}{dG}(h) \right] = \mathbb{E}_{h \sim Q} \left[ \log \frac{dQ}{dP}(h) \right] + \log Z - \mathbb{E}_{h \sim Q}[\phi(h)]
 $$
+
 Notice the first term on the right is exactly $D_{KL}(Q || P)$. Thus:
+
 $$
 D_{KL}(Q || G) = D_{KL}(Q || P) + \log \mathbb{E}_{h \sim P}[e^{\phi(h)}] - \mathbb{E}_{h \sim Q}[\phi(h)]
 $$
+
 Since $D_{KL}(Q || G) \ge 0$, we conclude:
+
 $$
 \mathbb{E}_{h \sim Q}[\phi(h)] \le D_{KL}(Q || P) + \log \mathbb{E}_{h \sim P}[e^{\phi(h)}]
 $$
+
 The equality $D_{KL}(Q || G) = 0$ holds if and only if $Q = G$ almost everywhere. This concludes the foundational proof of the Change of Measure inequality. $\blacksquare$
 
 ---
@@ -72,47 +89,66 @@ McAllester's theorem (1999) was the first major result to apply the Change of Me
 
 !!! success "Theorem 3.1 (McAllester's PAC-Bayes Theorem)"
     Let $\mathcal{H}$ be a hypothesis class and $\ell: \mathcal{H} \times \mathcal{Z} \to [0, 1]$ be a bounded loss function. Let $P$ be a prior over $\mathcal{H}$ chosen independently of the training data $S = (z_1, \dots, z_n)$. For any $\delta \in (0, 1)$, with probability at least $1-\delta$ over the draw of $S \sim \mathcal{D}^n$, the following holds for ALL posterior distributions $Q$ simultaneously:
+
     $$
     R(Q) \le \hat{R}(Q) + \sqrt{\frac{D_{KL}(Q || P) + \log(2\sqrt{n} / \delta)}{2n}}
     $$
 
 **Rigorous and Exhaustive Proof:**
 We define a random variable that measures the exponentiated squared deviation between empirical and true risk, integrated over the prior:
+
 $$
 \Phi(S) = \mathbb{E}_{h \sim P} \left[ e^{2n(R(h) - \hat{R}(h))^2} \right]
 $$
+
 Our goal is to bound $\Phi(S)$ with high probability over the sample $S$. By Fubini's Theorem, we can swap the expectations over $S$ and $P$:
+
 $$
 \mathbb{E}_S [\Phi(S)] = \mathbb{E}_S \mathbb{E}_{h \sim P} \left[ e^{2n(R(h) - \hat{R}(h))^2} \right] = \mathbb{E}_{h \sim P} \mathbb{E}_S \left[ e^{2n(R(h) - \hat{R}(h))^2} \right]
 $$
+
 For a fixed hypothesis $h$, the empirical risk $\hat{R}(h)$ is the mean of $n$ i.i.d. variables in $[0,1]$. By a technical refinement of Hoeffding's bound (integrating the tail), it can be shown that:
+
 $$
 \mathbb{E}_S \left[ e^{2n(R(h) - \hat{R}(h))^2} \right] \le 2\sqrt{n}
 $$
+
 Thus, the expectation of our global random variable is $\mathbb{E}_S [\Phi(S)] \le 2\sqrt{n}$. Applying Markov's Inequality to $\Phi(S)$ with confidence level $\delta$:
+
 $$
 \mathbb{P}_S \left( \Phi(S) > \frac{\mathbb{E}_S[\Phi(S)]}{\delta} \right) \le \delta \implies \mathbb{P}_S \left( \Phi(S) > \frac{2\sqrt{n}}{\delta} \right) \le \delta
 $$
+
 This implies that with probability at least $1-\delta$:
+
 $$
 \log \mathbb{E}_{h \sim P} \left[ e^{2n(R(h) - \hat{R}(h))^2} \right] \le \log\left(\frac{2\sqrt{n}}{\delta}\right)
 $$
+
 Now, for any distribution $Q$, we apply the Change of Measure Inequality (Lemma 2.1) using the function $\phi(h) = 2n(R(h) - \hat{R}(h))^2$:
+
 $$
 \mathbb{E}_{h \sim Q} [ 2n(R(h) - \hat{R}(h))^2 ] \le D_{KL}(Q || P) + \log \mathbb{E}_{h \sim P} \left[ e^{2n(R(h) - \hat{R}(h))^2} \right]
 $$
+
 Substituting our high-probability bound:
+
 $$
 \mathbb{E}_{h \sim Q} [ 2n(R(h) - \hat{R}(h))^2 ] \le D_{KL}(Q || P) + \log\left(\frac{2\sqrt{n}}{\delta}\right)
 $$
+
 Finally, by Jensen's Inequality for the convex function $x \mapsto x^2$:
+
 $$
 2n (\mathbb{E}_{h \sim Q} [ R(h) - \hat{R}(h) ])^2 \le \mathbb{E}_{h \sim Q} [ 2n(R(h) - \hat{R}(h))^2 ]
 $$
+
 Taking the square root and rearranging for $R(Q) - \hat{R}(Q)$:
+
 $$
 R(Q) \le \hat{R}(Q) + \sqrt{\frac{D_{KL}(Q || P) + \log(2\sqrt{n}/\delta)}{2n}}
 $$
+
 This concludes the rigorous derivation of McAllester's Theorem. $\blacksquare$
 
 ---
@@ -123,6 +159,7 @@ The McAllester bound scales as $O(1/\sqrt{n})$, which is the standard "slow rate
 
 !!! success "Theorem 4.1 (PAC-Bayes-Bernstein)"
     Assume the loss $\ell \in [0, 1]$. For any $\lambda \in (0, 2n)$, with probability at least $1-\delta$ over $S \sim \mathcal{D}^n$, the following holds for all $Q$:
+
     $$
     R(Q) \le \hat{R}(Q) + \frac{D_{KL}(Q || P) + \log(1/\delta)}{\lambda} + \frac{\lambda \mathbb{E}_{h \sim Q} [ \text{Var}(\ell(h)) ]}{n(2 - \lambda/n)}
     $$

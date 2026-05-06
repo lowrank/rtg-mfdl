@@ -144,6 +144,7 @@ Let $\mu = \mathcal{N}(m_1, \Sigma_1)$ and $\nu = \mathcal{N}(m_2, \Sigma_2)$. T
 $$
 W_2^2(\mu, \nu) = \|m_1 - m_2\|^2 + \text{Tr}(\Sigma_1 + \Sigma_2 - 2(\Sigma_1^{1/2} \Sigma_2 \Sigma_1^{1/2})^{1/2})
 $$
+
 If the covariances commute, this simplifies to $\|m_1 - m_2\|^2 + \|\Sigma_1^{1/2} - \Sigma_2^{1/2}\|_F^2$.
 
 ### Example 2: Sinkhorn on a $2 \times 2$ Matrix

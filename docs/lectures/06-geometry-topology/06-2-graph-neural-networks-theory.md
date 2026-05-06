@@ -57,7 +57,10 @@ Assume the hypothesis holds for $t-1$. Suppose $c_u^{(t)} = c_v^{(t)}$. In the 1
 By the inductive hypothesis:
 1. $h_u^{(t-1)} = h_v^{(t-1)}$
 2. The multiset of embeddings of neighbors must also be identical:
-   $$ \{ \!\! \{ h_i^{(t-1)} : i \in \mathcal{N}(u) \} \!\! \} = \{ \!\! \{ h_j^{(t-1)} : j \in \mathcal{N}(v) \} \!\! \} $$
+
+   $$
+   \{ \!\! \{ h_i^{(t-1)} : i \in \mathcal{N}(u) \} \!\! \} = \{ \!\! \{ h_j^{(t-1)} : j \in \mathcal{N}(v) \} \!\! \}
+   $$
 
 The MPNN update is $h_u^{(t)} = \text{UP}^{(t)}(h_u^{(t-1)}, \text{AGG}^{(t)}(\{ \!\! \{ h_i^{(t-1)} : i \in \mathcal{N}(u) \} \!\! \}))$. Since both inputs to the deterministic functions $\text{UP}$ and $\text{AGG}$ are identical for $u$ and $v$, it must be that $h_u^{(t)} = h_v^{(t)}$.
 
@@ -102,7 +105,11 @@ Let $\tilde{\mathbf{L}} = \mathbf{U} \mathbf{\Lambda} \mathbf{U}^T$ be the eigen
 The **Graph Fourier Transform** of a signal $\mathbf{x}$ is $\hat{\mathbf{x}} = \mathbf{U}^T \mathbf{x}$.
 
 A convolution in the spectral domain is defined as pointwise multiplication in the Fourier domain:
-$$ \mathbf{y} = \mathbf{g}_\theta * \mathbf{x} = \mathbf{U} (\mathbf{U}^T \mathbf{g}_\theta \odot \mathbf{U}^T \mathbf{x}) = \mathbf{U} \mathbf{g}_\theta(\mathbf{\Lambda}) \mathbf{U}^T \mathbf{x} $$
+
+$$
+\mathbf{y} = \mathbf{g}_\theta * \mathbf{x} = \mathbf{U} (\mathbf{U}^T \mathbf{g}_\theta \odot \mathbf{U}^T \mathbf{x}) = \mathbf{U} \mathbf{g}_\theta(\mathbf{\Lambda}) \mathbf{U}^T \mathbf{x}
+$$
+
 where $\mathbf{g}_\theta(\mathbf{\Lambda})$ is a diagonal matrix of filter coefficients.
 
 ### 3.3 Spectral Localization and Chebyshev Polynomials
@@ -113,11 +120,19 @@ A filter is **localized** if its action only depends on a local neighborhood.
     A spectral filter of the form $g(\lambda) = \sum_{k=0}^K \theta_k \lambda^k$ is $K$-localized. That is, $(\mathbf{U} g(\mathbf{\Lambda}) \mathbf{U}^T)_{ij} = 0$ if the distance $d(i, j) > K$.
 
 **Proof:**
-$$ \mathbf{U} \left( \sum_{k=0}^K \theta_k \mathbf{\Lambda}^k \right) \mathbf{U}^T = \sum_{k=0}^K \theta_k (\mathbf{U} \mathbf{\Lambda} \mathbf{U}^T)^k = \sum_{k=0}^K \theta_k \mathbf{L}^k $$
+
+$$
+\mathbf{U} \left( \sum_{k=0}^K \theta_k \mathbf{\Lambda}^k \right) \mathbf{U}^T = \sum_{k=0}^K \theta_k (\mathbf{U} \mathbf{\Lambda} \mathbf{U}^T)^k = \sum_{k=0}^K \theta_k \mathbf{L}^k
+$$
+
 We know $(\mathbf{A}^k)_{ij}$ is the number of paths of length $k$ between $i$ and $j$. Similarly, the $ij$-th entry of $\mathbf{L}^k$ is non-zero only if there is a path of length at most $k$ between $i$ and $j$. Thus, if $d(i, j) > K$, all terms in the sum are zero. $\blacksquare$
 
 To avoid the $O(n^3)$ cost of eigendecomposition, **ChebNet** uses Chebyshev polynomials $T_k(x)$ which can be computed recursively:
-$$ T_k(x) = 2x T_{k-1}(x) - T_{k-2}(x) $$
+
+$$
+T_k(x) = 2x T_{k-1}(x) - T_{k-2}(x)
+$$
+
 This allows computing $\mathbf{L}^k \mathbf{x}$ in $O(k|E|)$ time.
 
 ## 4. Worked Examples
@@ -133,8 +148,15 @@ Thus, at step 1, 1-WL assigns the same new color to all nodes in both graphs. Th
 
 ### Example 2: The Graph Laplacian of a Path Graph $P_3$
 $P_3$ has 3 nodes and edges $(1, 2)$ and $(2, 3)$.
-$$ \mathbf{A} = \begin{pmatrix} 0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0 \end{pmatrix}, \quad \mathbf{D} = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 1 \end{pmatrix} $$
-$$ \mathbf{L} = \mathbf{D} - \mathbf{A} = \begin{pmatrix} 1 & -1 & 0 \\ -1 & 2 & -1 \\ 0 & -1 & 1 \end{pmatrix} $$
+
+$$
+\mathbf{A} = \begin{pmatrix} 0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0 \end{pmatrix}, \quad \mathbf{D} = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 1 \end{pmatrix}
+$$
+
+$$
+\mathbf{L} = \mathbf{D} - \mathbf{A} = \begin{pmatrix} 1 & -1 & 0 \\ -1 & 2 & -1 \\ 0 & -1 & 1 \end{pmatrix}
+$$
+
 Eigenvalues: $0, 1, 3$.
 Eigenvectors:
 - $\lambda=0: \mathbf{u}_0 = \frac{1}{\sqrt{3}}(1, 1, 1)^T$ (DC component)

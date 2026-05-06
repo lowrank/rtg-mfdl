@@ -13,7 +13,7 @@ A Tensor Program is defined by a set of vectors $V$ and a set of random matrices
     $$
     \frac{1}{n} \sum_{i=1}^n \psi(h_i^{(1)}, \dots, h_i^{(L)}) \xrightarrow{n \to \infty} \mathbb{E}_{(Z_1, \dots, Z_L) \sim \mathcal{N}(0, \Sigma)} [\psi(Z_1, \dots, Z_L)]
     $$
-    
+
     where $\Sigma$ is a deterministic covariance matrix determined recursively by the program's structure.
 **Proof:**
 The proof proceeds by induction on the steps of the Tensor Program. For the base case, initial vectors are Gaussian by definition. For the inductive step, applying a random matrix $W$ with i.i.d. Gaussian entries to a vector $x$ yields $h = Wx$. By the central limit theorem, the coordinates of $h$ are Gaussian. The crux of the proof handles the dependencies introduced when $W$ is reused. When $W$ is applied multiple times, $Wx_1$ and $Wx_2$ are jointly Gaussian. The recursive covariance $\Sigma$ captures the exact geometry of the vectors before multiplication. Concentration of measure ensures that empirical averages of continuous functions converge to their Gaussian expectations. $\blacksquare$

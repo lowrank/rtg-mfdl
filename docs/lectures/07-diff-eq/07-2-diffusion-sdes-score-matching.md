@@ -135,6 +135,7 @@ Let $Y_t = \int_0^t \gamma_s^T dW_s - \frac{1}{2} \int_0^t \|\gamma_s\|^2 ds$. T
 $$
 dY_t = -\frac{1}{2} \|\gamma_t\|^2 dt + \gamma_t^T dW_t
 $$
+
 $$
 (dY_t)^2 = \|\gamma_t\|^2 dt
 $$

@@ -31,7 +31,7 @@ Given a fixed compute budget $C$, what are the optimal values of $N$ and $D$ tha
     $$
     N^* \propto C^{\frac{\beta}{\alpha + \beta}}, \quad D^* \propto C^{\frac{\alpha}{\alpha + \beta}}
     $$
-    
+
     If $\alpha \approx \beta$, then $N^*$ and $D^*$ should scale linearly with $\sqrt{C}$.
 **Proof:**
 
@@ -49,7 +49,7 @@ Given a fixed compute budget $C$, what are the optimal values of $N$ and $D$ tha
     $$
     \frac{\partial \mathcal{L}}{\partial N} = -\alpha A N^{-\alpha-1} + 6\lambda D = 0 \implies 6\lambda N D = \alpha A N^{-\alpha}
     $$
-    
+
     $$
     \frac{\partial \mathcal{L}}{\partial D} = -\beta B D^{-\beta-1} + 6\lambda N = 0 \implies 6\lambda N D = \beta B D^{-\beta}
     $$
@@ -60,7 +60,7 @@ Given a fixed compute budget $C$, what are the optimal values of $N$ and $D$ tha
     $$
     \alpha A N^{-\alpha} = \beta B D^{-\beta}
     $$
-    
+
     This implies that the "model-side" reducible loss should be proportional to the "data-side" reducible loss, weighted by their respective power-law exponents.
 
 4.  **Solving for N and D in terms of C:**
@@ -69,17 +69,17 @@ Given a fixed compute budget $C$, what are the optimal values of $N$ and $D$ tha
     $$
     \alpha A N^{-\alpha} = \beta B \left( \frac{C}{6N} \right)^{-\beta} = \beta B 6^\beta C^{-\beta} N^\beta
     $$
-    
+
     Isolating $N$:
     
     $$
     N^{\alpha + \beta} = \frac{\alpha A}{\beta B 6^\beta} C^\beta
     $$
-    
+
     $$
     N^* = \left( \frac{\alpha A}{\beta B 6^\beta} \right)^{\frac{1}{\alpha + \beta}} C^{\frac{\beta}{\alpha + \beta}}
     $$
-    
+
     By symmetry (or substituting $N^*$ back into the constraint):
     
     $$
@@ -93,7 +93,7 @@ Given a fixed compute budget $C$, what are the optimal values of $N$ and $D$ tha
     $$
     N^* \propto C^{0.5}, \quad D^* \propto C^{0.5}
     $$
-    
+
     Thus, for every doubling of the compute budget, both the model size and the number of training tokens should be increased by $\sqrt{2} \approx 41\%$. $\blacksquare$
 
 ## 3. Theorem: Scaling of Loss on a Data Manifold
@@ -106,6 +106,7 @@ Why do these power laws exist? A theoretical explanation comes from the geometry
     $$
     L(N) - E \propto N^{-2/d}
     $$
+
 **Proof:**
 
 1.  **Quantization Perspective:**
@@ -131,7 +132,7 @@ Why do these power laws exist? A theoretical explanation comes from the geometry
     $$
     \alpha = \frac{2}{d}
     $$
-    
+
     This suggests that the scaling exponent $\alpha$ is inversely proportional to the intrinsic dimension of the data manifold. For $\alpha \approx 0.34$, this implies $d \approx 2/0.34 \approx 6$. This surprisingly low dimension suggests that while natural language has a massive vocabulary, its underlying semantic and syntactic structure is highly compressed. $\blacksquare$
 
 ## 4. Worked Examples

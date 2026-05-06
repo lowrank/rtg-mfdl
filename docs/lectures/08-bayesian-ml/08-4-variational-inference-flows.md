@@ -43,11 +43,18 @@ $$
 $$
 
 Leading to the fundamental identity:
-$$ \log p(\mathcal{D}) = \text{ELBO}(q) + D_{KL}(q(\theta) \parallel p(\theta \mid \mathcal{D})) $$
+
+$$
+\log p(\mathcal{D}) = \text{ELBO}(q) + D_{KL}(q(\theta) \parallel p(\theta \mid \mathcal{D}))
+$$
 
 !!! success "Theorem 2.1 (The ELBO Property)"
     Because $D_{KL}(q \parallel p) \geq 0$ for any distribution $q$, it follows that:
-    $$ \text{ELBO}(q) \leq \log p(\mathcal{D}) $$
+
+    $$
+    \text{ELBO}(q) \leq \log p(\mathcal{D})
+    $$
+
     Maximizing the ELBO is mathematically equivalent to minimizing the KL divergence to the posterior. Furthermore, the ELBO provides a lower bound on the "evidence" (marginal likelihood), which is useful for model comparison.
 
 ### 2.2 Functional Forms of the ELBO
@@ -55,11 +62,19 @@ $$ \log p(\mathcal{D}) = \text{ELBO}(q) + D_{KL}(q(\theta) \parallel p(\theta \m
 There are two primary ways to write the ELBO, each offering a different intuition:
 
 1. **The Energy-Entropy View:**
-   $$ \text{ELBO}(q) = \mathbb{E}_{q(\theta)}[\log p(\mathcal{D}, \theta)] + H(q) $$
+
+   $$
+   \text{ELBO}(q) = \mathbb{E}_{q(\theta)}[\log p(\mathcal{D}, \theta)] + H(q)
+   $$
+
    Here, $H(q) = -\mathbb{E}_q[\log q]$ is the entropy. To maximize the ELBO, we want to find a $q$ that assigns high probability to high-joint-probability regions of the model (energy) while remaining as spread out as possible (entropy). This prevents $q$ from collapsing to a single point.
 
 2. **The Likelihood-Prior View:**
-   $$ \text{ELBO}(q) = \mathbb{E}_{q(\theta)}[\log p(\mathcal{D} \mid \theta)] - D_{KL}(q(\theta) \parallel p(\theta)) $$
+
+   $$
+   \text{ELBO}(q) = \mathbb{E}_{q(\theta)}[\log p(\mathcal{D} \mid \theta)] - D_{KL}(q(\theta) \parallel p(\theta))
+   $$
+
    This is the form most common in Variational Autoencoders (VAEs). It highlights a trade-off: maximize the expected log-likelihood of the data (make the model accurate) while keeping the posterior close to our prior beliefs.
 
 ## 3. Mean-Field Variational Inference
@@ -88,14 +103,33 @@ In CAVI, we update one factor $q_j$ at a time while keeping all other factors $q
 **Proof of Theorem 3.1 (Rigorous Derivation):**
 
 Start with the ELBO and isolate terms that depend on $q_j$:
-$$ \text{ELBO}(q_j) = \int \prod_i q_i \log p(\mathcal{D}, \theta) \, d\theta - \int \prod_i q_i \log \prod_i q_i \, d\theta $$
+
+$$
+\text{ELBO}(q_j) = \int \prod_i q_i \log p(\mathcal{D}, \theta) \, d\theta - \int \prod_i q_i \log \prod_i q_i \, d\theta
+$$
+
 Expand the second term (entropy of the product is the sum of entropies):
-$$ \int \prod_i q_i \sum_i \log q_i \, d\theta = \sum_i \int q_i \log q_i \, d\theta_i $$
+
+$$
+\int \prod_i q_i \sum_i \log q_i \, d\theta = \sum_i \int q_i \log q_i \, d\theta_i
+$$
+
 Now isolate $q_j$:
-$$ \text{ELBO}(q_j) = \int q_j \left( \int \prod_{i \neq j} q_i \log p(\mathcal{D}, \theta) \, d\theta_{-j} \right) d\theta_j - \int q_j \log q_j \, d\theta_j + \text{const} $$
+
+$$
+\text{ELBO}(q_j) = \int q_j \left( \int \prod_{i \neq j} q_i \log p(\mathcal{D}, \theta) \, d\theta_{-j} \right) d\theta_j - \int q_j \log q_j \, d\theta_j + \text{const}
+$$
+
 The inner integral is the expectation $\mathbb{E}_{q_{-j}} [\log p(\mathcal{D}, \theta)]$. Let's call this $f_j(\theta_j)$.
-$$ \text{ELBO}(q_j) = \int q_j f_j(\theta_j) \, d\theta_j - \int q_j \log q_j \, d\theta_j $$
-$$ = \int q_j \log \frac{\exp(f_j(\theta_j))}{q_j} \, d\theta_j $$
+
+$$
+\text{ELBO}(q_j) = \int q_j f_j(\theta_j) \, d\theta_j - \int q_j \log q_j \, d\theta_j
+$$
+
+$$
+= \int q_j \log \frac{\exp(f_j(\theta_j))}{q_j} \, d\theta_j
+$$
+
 This expression is the negative KL divergence between $q_j$ and a distribution proportional to $\exp(f_j(\theta_j))$. Since KL divergence is minimized at 0 when the distributions are equal, the optimal $q_j$ is the normalized version of $\exp(f_j(\theta_j))$. $\blacksquare$
 
 ### 3.2 The Compactness Bias of VI
@@ -120,11 +154,17 @@ The main challenge in SVI is computing the gradient of an expectation: $\nabla_\
 
 The **Reparameterization Trick** (Kingma & Welling, 2013) solves this by expressing $\theta$ as a deterministic function of $\phi$ and an auxiliary noise variable $\epsilon \sim p(\epsilon)$:
 
-$$ \theta = g_\phi(\epsilon) $$
+$$
+\theta = g_\phi(\epsilon)
+$$
 
 For a Gaussian $q_\phi(\theta) = \mathcal{N}(\mu, \sigma^2)$, we write $\theta = \mu + \sigma \epsilon$ where $\epsilon \sim \mathcal{N}(0, 1)$.
 Then:
-$$ \nabla_\phi \mathbb{E}_{q_\phi(\theta)} [f(\theta)] = \nabla_\phi \mathbb{E}_{p(\epsilon)} [f(g_\phi(\epsilon))] = \mathbb{E}_{p(\epsilon)} [\nabla_\phi f(g_\phi(\epsilon))] $$
+
+$$
+\nabla_\phi \mathbb{E}_{q_\phi(\theta)} [f(\theta)] = \nabla_\phi \mathbb{E}_{p(\epsilon)} [f(g_\phi(\epsilon))] = \mathbb{E}_{p(\epsilon)} [\nabla_\phi f(g_\phi(\epsilon))]
+$$
+
 We can now compute an unbiased estimate of the gradient by sampling $\epsilon$. This trick is the foundation of the Variational Autoencoder and most modern Bayesian Neural Networks (e.g., "Bayes by Backprop").
 
 ## 5. Normalizing Flows: Expressive Posterior Approximation
@@ -135,11 +175,15 @@ Mean-field VI is limited because it cannot model correlations between parameters
 
 Let $\mathbf{z}_0 \sim q_0(\mathbf{z}_0)$ be a simple base variable (e.g., a standard Gaussian). Let $f$ be an invertible, differentiable mapping $\mathbf{z}_1 = f(\mathbf{z}_0)$. The density of the transformed variable is:
 
-$$ q_1(\mathbf{z}_1) = q_0(\mathbf{z}_0) \left| \det \frac{\partial f}{\partial \mathbf{z}_0} \right|^{-1} $$
+$$
+q_1(\mathbf{z}_1) = q_0(\mathbf{z}_0) \left| \det \frac{\partial f}{\partial \mathbf{z}_0} \right|^{-1}
+$$
 
 For a sequence of $K$ transformations $\mathbf{z}_K = f_K \circ f_{K-1} \circ \dots \circ f_1(\mathbf{z}_0)$, the log-density is:
 
-$$ \log q_K(\mathbf{z}_K) = \log q_0(\mathbf{z}_0) - \sum_{k=1}^K \log \left| \det \frac{\partial f_k}{\partial \mathbf{z}_{k-1}} \right| $$
+$$
+\log q_K(\mathbf{z}_K) = \log q_0(\mathbf{z}_0) - \sum_{k=1}^K \log \left| \det \frac{\partial f_k}{\partial \mathbf{z}_{k-1}} \right|
+$$
 
 ### 5.2 Desiderata for Flows in VI
 
@@ -152,8 +196,15 @@ To use flows in the ELBO objective, we need:
 1. **Planar Flows:** $f(\mathbf{z}) = \mathbf{z} + \mathbf{u} \cdot \sigma(\mathbf{w}^T \mathbf{z} + b)$. The Jacobian determinant can be computed in $O(D)$ using the Matrix Determinant Lemma.
 2. **Sylvester Flows:** A generalization of planar flows that allows for multi-rank updates.
 3. **RealNVP / Glow:** Uses **Affine Coupling Layers**. We split the dimensions of $\mathbf{z}$ into two halves $(A, B)$. We leave $A$ unchanged and transform $B$ using a function of $A$:
-   $$ \mathbf{y}_A = \mathbf{z}_A $$
-   $$ \mathbf{y}_B = \mathbf{z}_B \odot \exp(s(\mathbf{z}_A)) + t(\mathbf{z}_A) $$
+
+   $$
+   \mathbf{y}_A = \mathbf{z}_A
+   $$
+
+   $$
+   \mathbf{y}_B = \mathbf{z}_B \odot \exp(s(\mathbf{z}_A)) + t(\mathbf{z}_A)
+   $$
+
    The Jacobian is lower triangular, so the determinant is simply $\sum s(\mathbf{z}_A)$. This allows for extremely high-dimensional flows.
 
 ## 6. Worked Examples

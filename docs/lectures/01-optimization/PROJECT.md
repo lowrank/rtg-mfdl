@@ -50,11 +50,9 @@ class HousePriceMLP(nn.Module):
 ### Step 3: Custom Gauss-Newton Optimizer
 For a residual vector $\mathbf{r}(w) = \mathbf{y}_{pred} - \mathbf{y}_{true}$, the Gauss-Newton update is:
 
-
 $$
 \Delta w = -(\mathbf{J}^T \mathbf{J})^{-1} \mathbf{J}^T \mathbf{r}
 $$
-
 
 where $\mathbf{J} = \frac{\partial \mathbf{y}_{pred}}{\partial w}$.
 

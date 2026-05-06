@@ -70,6 +70,7 @@ MMD can be equivalently written as a variational problem. Using the definition o
 $$
 \text{MMD}(\mathbb{P}, \mathbb{Q}) = \sup_{f \in \mathcal{H}, \|f\|_\mathcal{H} \leq 1} \langle f, \mu_\mathbb{P} - \mu_\mathbb{Q} \rangle_\mathcal{H}
 $$
+
 $$
 \text{MMD}(\mathbb{P}, \mathbb{Q}) = \sup_{f \in \mathcal{H}, \|f\|_\mathcal{H} \leq 1} \left( \mathbb{E}_{X \sim \mathbb{P}}[f(X)] - \mathbb{E}_{Y \sim \mathbb{Q}}[f(Y)] \right)
 $$
@@ -107,9 +108,17 @@ To set a rejection threshold, we need the asymptotic distribution of $\widehat{\
 !!! success "Theorem (Asymptotics of MMD)"
     Assume $m=n$ for simplicity.
     1. **Under $H_1 (\mathbb{P} \neq \mathbb{Q})$:** $\widehat{\text{MMD}^2}_u$ is asymptotically normal.
-    $$ \sqrt{n}(\widehat{\text{MMD}^2}_u - \text{MMD}^2(\mathbb{P}, \mathbb{Q})) \xrightarrow{d} \mathcal{N}(0, \sigma_{H_1}^2) $$
+
+    $$
+    \sqrt{n}(\widehat{\text{MMD}^2}_u - \text{MMD}^2(\mathbb{P}, \mathbb{Q})) \xrightarrow{d} \mathcal{N}(0, \sigma_{H_1}^2)
+    $$
+
     2. **Under $H_0 (\mathbb{P} = \mathbb{Q})$:** $\widehat{\text{MMD}^2}_u$ is a degenerate U-statistic. Its asymptotic distribution is an infinite mixture of Chi-squared variables.
-    $$ n \widehat{\text{MMD}^2}_u \xrightarrow{d} \sum_{l=1}^\infty \lambda_l (\mathcal{Z}_l^2 - 1) $$
+
+    $$
+    n \widehat{\text{MMD}^2}_u \xrightarrow{d} \sum_{l=1}^\infty \lambda_l (\mathcal{Z}_l^2 - 1)
+    $$
+
     where $\mathcal{Z}_l \sim \mathcal{N}(0,1)$ i.i.d., and $\lambda_l$ are the eigenvalues of the integral operator $\int \tilde{k}(x, y) \psi_l(y) d\mathbb{P}(y) = \lambda_l \psi_l(x)$, with the centered kernel $\tilde{k}(x, y) = k(x,y) - \mathbb{E}_x[k(x,y)] - \mathbb{E}_y[k(x,y)] + \mathbb{E}_{x,y}[k(x,y)]$.
 
     **Proof outline of $H_0$ Asymptotics:**
@@ -123,7 +132,11 @@ To set a rejection threshold, we need the asymptotic distribution of $\widehat{\
 
 ### Example 1: The Witness Function
 The function $f$ that maximizes the discrepancy in the IPM view is called the **witness function**. By taking the Fréchet derivative of the dual norm formulation, it can be shown that the optimal witness function (up to scaling) is exactly the difference of the mean embeddings:
-$$ f_{witness}(x) = \langle k(\cdot, x), \mu_\mathbb{P} - \mu_\mathbb{Q} \rangle_\mathcal{H} = \mu_\mathbb{P}(x) - \mu_\mathbb{Q}(x) = \mathbb{E}_{X}[k(x, X)] - \mathbb{E}_{Y}[k(x, Y)] $$
+
+$$
+f_{witness}(x) = \langle k(\cdot, x), \mu_\mathbb{P} - \mu_\mathbb{Q} \rangle_\mathcal{H} = \mu_\mathbb{P}(x) - \mu_\mathbb{Q}(x) = \mathbb{E}_{X}[k(x, X)] - \mathbb{E}_{Y}[k(x, Y)]
+$$
+
 Where this function is positive, $\mathbb{P}$ has higher density than $\mathbb{Q}$. Where it is negative, $\mathbb{Q}$ has higher density.
 
 ### Example 2: Mean Embedding with Linear Kernel

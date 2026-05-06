@@ -41,7 +41,7 @@ As $m \to \infty$, this change goes to zero. Thus, the kernel is frozen at its i
     $$
     \dot{f}_t(X) = - \Theta_\infty(X, X) (f_t(X) - Y)
     $$
-    
+
     yielding the exact exponential convergence $f_t(X) = (I - e^{-\Theta_\infty(X, X) t}) Y$.
 **Proof:**
 Since $\Theta_t$ is constant $\Theta_\infty$, the differential equation becomes time-invariant and linear. Integrating $\dot{u} = -\Theta u$ for $u = f_t(X) - Y$ gives the matrix exponential solution. As long as the NTK matrix is strictly positive definite, the training loss converges to strictly zero. $\blacksquare$

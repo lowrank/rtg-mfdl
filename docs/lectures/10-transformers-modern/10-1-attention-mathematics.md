@@ -38,7 +38,7 @@ We will prove that without skip connections and Multi-Layer Perceptrons (MLPs), 
     $$
     \mathcal{A}(X) = P(X) X W_V
     $$
-    
+
     where $P(X) = \text{softmax}(X W_Q W_K^T X^T / \sqrt{d_k})$ is the right-stochastic attention matrix.
 !!! success "Theorem 2.2 (Rank Collapse)"
     Let $X^{(l)}$ be the representation of the sequence at layer $l$, where $X^{(l+1)} = P^{(l)} X^{(l)} W_V^{(l)}$. If the weight matrices $W_V^{(l)}$ are non-degenerate, and the attention matrices $P^{(l)}$ are strictly positive right-stochastic matrices, then as $l \to \infty$, the rows of $X^{(l)}$ converge to a single vector. Specifically, $\text{rank}(X^{(l)}) \to 1$ exponentially fast.
@@ -53,14 +53,14 @@ We will prove that without skip connections and Multi-Layer Perceptrons (MLPs), 
     $$
     M^{(L)} = P^{(L)} P^{(L-1)} \cdots P^{(1)}
     $$
-    
+
     This product represents a time-inhomogeneous Markov chain. Because each $P^{(l)}$ has strictly positive entries (greater than some $\epsilon > 0$ due to the boundedness of inputs in finite domains), the transition matrices are uniformly ergodic.
     By Birkhoff's theorem on the contraction of the Hilbert projective metric for positive matrices, the multiplication by a positive stochastic matrix acts as a contraction mapping on the space of rays. Thus, as $L \to \infty$, the product matrix $M^{(L)}$ converges to a rank-1 matrix where all rows are identical:
     
     $$
     \lim_{L \to \infty} M^{(L)} = \mathbf{1} \pi^T
     $$
-    
+
     where $\mathbf{1}$ is the all-ones vector and $\pi$ is some probability distribution over the $n$ tokens.
 
 3.  **Applying to the Representations:**
@@ -69,19 +69,19 @@ We will prove that without skip connections and Multi-Layer Perceptrons (MLPs), 
     $$
     X^{(L)} = \left( \prod_{l=1}^L P^{(l)} \right) X^{(0)} \left( \prod_{l=1}^L W_V^{(l)} \right)
     $$
-    
+
     Let $W_{V, 1:L} = \prod_{l=1}^L W_V^{(l)}$. Substituting the limit of the Markov product:
     
     $$
     \lim_{L \to \infty} X^{(L)} = (\mathbf{1} \pi^T) X^{(0)} W_{V, 1:L}
     $$
-    
+
     The term $\pi^T X^{(0)} W_{V, 1:L}$ is a $1 \times d$ row vector, let's call it $c^T$. Therefore:
     
     $$
     \lim_{L \to \infty} X^{(L)} = \mathbf{1} c^T
     $$
-    
+
     This is a rank-1 matrix where every row $i$ is exactly $c^T$. All tokens have collapsed to the same representation. $\blacksquare$
 
 **Architectural Consequence:** This proof demonstrates *why* Transformers require skip connections ($X + \text{Attn}(X)$) and MLPs. Skip connections provide an alternative path that breaks the stochastic contraction, ensuring the spectrum of the transformation does not degenerate to a single leading eigenvalue.

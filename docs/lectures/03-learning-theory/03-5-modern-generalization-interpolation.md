@@ -31,9 +31,11 @@ The landmark work of Bartlett et al. (2020) characterized exactly when a minimum
 
 !!! success "Theorem 3.1 (Benign Overfitting in Linear Regression)"
     Consider the model $y = X w^* + \epsilon$ where $\epsilon \sim \mathcal{N}(0, \sigma^2 I)$. Let $\Sigma = \mathbb{E}[xx^T]$ have eigenvalues $\lambda_1 \ge \lambda_2 \ge \dots$. The excess risk of the min-norm interpolator $\hat{w} = X^T (X X^T)^{-1} y$ is bounded by:
+
     $$
     R(\hat{w}) - R(w^*) \le C \left( \|w^*\|^2 \sqrt{\frac{\text{tr}(\Sigma)}{n}} + \sigma^2 \left( \frac{k^*}{n} + \frac{n}{R_{k^*}(\Sigma)} \right) \right)
     $$
+
     where $k^*$ is a critical index and $R_k(\Sigma) = \frac{(\sum_{i > k} \lambda_i)^2}{\sum_{i > k} \lambda_i^2}$ is the **Effective Rank**.
 
 **Rigorous Proof Insight:**

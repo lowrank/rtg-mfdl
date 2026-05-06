@@ -52,11 +52,9 @@
 ### 2.1 Solving Lotka-Volterra with Neural ODE
 **Task**: Use `torchdiffeq` to model the predator-prey system:
 
-
 $$
 \dot{x} = \alpha x - \beta xy, \quad \dot{y} = \delta xy - \gamma y
 $$
-
 
 1. Generate synthetic data using a standard ODE solver.
 2. Train a Neural ODE to learn the dynamics from noisy observations.
@@ -65,11 +63,9 @@ $$
 ### 2.2 HMC: Sampling a Banana Distribution
 **Task**: Implement a simple Hamiltonian Monte Carlo (HMC) sampler using the Leapfrog integrator to sample from the "Banana" distribution:
 
-
 $$
 p(x, y) \propto \exp\left( -\left( \frac{x^2}{200} + \frac{(y - 0.1x^2 + 5)^2}{2} \right) \right)
 $$
-
 
 1. Plot the trajectory of the particle in phase space.
 2. Verify that the sampler explores the distribution better than standard Metropolis-Hastings.

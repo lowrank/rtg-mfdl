@@ -18,20 +18,15 @@ Most modern deep networks utilize the Rectified Linear Unit (ReLU) activation fu
 
 To compare shallow and deep networks, we need a rigorous metric for "complexity." For CPW functions, this is the number of linear regions.
 
-
 !!! info "Definition 2.1"
     1 (Number of Segments)
 
     For a function $f: \mathbb{R} \to \mathbb{R}$, let $S(f)$ be the number of linear segments in its graph.
 
-
-
 !!! success "Theorem 2.1"
     2 (Shallow Limit)
 
     A neural network with a single hidden layer of $m$ ReLU neurons computes a CPW function with at most $m+1$ linear segments.
-
-
 
 **Rigorous Proof:**
 1. A single neuron $\sigma(wx + b)$ has a single "kink" at $x = -b/w$. To the left of this point, the function is constant (0); to the right, it is a line ($wx+b$).
@@ -45,13 +40,10 @@ To compare shallow and deep networks, we need a rigorous metric for "complexity.
 
 The fundamental operation of a deep network is function composition: $f(g(x))$.
 
-
 !!! success "Theorem 2.1"
     3 (Compositional Complexity)
 
     If $f$ and $g$ are CPW functions with $S_f$ and $S_g$ segments respectively, then the composition $h = f \circ g$ has at most $S_f \cdot S_g$ segments.
-
-
 
 **Rigorous Proof:**
 1. Let the segments of $g$ be $J_1, \dots, J_{S_g}$. On each $J_k$, $g(x)$ is linear.
@@ -71,13 +63,10 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
 
 ### 3.1 Constructing the Iterated Sawtooth
 
-
 !!! info "Definition 3.1"
     1 (The Base Sawtooth)
 
     Define $g: [0, 1] \to [0, 1]$ as:
-
-
 
     $$
     g(x) = \begin{cases} 
@@ -86,31 +75,23 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
     \end{cases}
     $$
 
-
     This can be implemented by a 2-layer ReLU network with 3 hidden units: $g(x) = \sigma(2x) - 2\sigma(2x - 1) + \sigma(2x - 2)$.
-
 
 !!! info "Definition 3.1"
     2 (The Iterated Map)
 
     We define $f_L(x)$ as the $L$-th iteration of $g$:
 
-
-
     $$
     f_L(x) = (g \circ g \circ \dots \circ g)(x) \quad \text{(L times)}
     $$
 
-
 ### 3.2 Complexity of the Deep Sawtooth
-
 
 !!! success "Theorem 3.2"
     1 (The Exponential Explosion)
 
     $f_L(x)$ has exactly $2^L$ linear segments.
-
-
 
 **Rigorous Proof by Induction:**
 - **Base Case ($L=1$):** $f_1 = g$ has 2 segments.
@@ -120,19 +101,14 @@ In 2016, Matus Telgarsky proved that deep networks can create an exponential num
 
 ### 3.3 The Separation Result
 
-
 !!! success "Theorem 3.3"
     1 (Telgarsky's Theorem)
 
     For any $L \in \mathbb{N}$, there exists a function $f_L$ computable by a ReLU network of depth $2L$ and width 3 such that any shallow network with $m \le 2^{L-2}$ neurons satisfies:
 
-
-
     $$
     \int_0^1 |f_L(x) - S(x)| dx \ge \frac{1}{32}
     $$
-
-
 
 **Rigorous Proof Sketch:**
 1. $f_L$ has $2^L$ "teeth."
@@ -151,12 +127,10 @@ Telgarsky's proof relies on oscillations. Eldan and Shamir (2016) proved a separ
 
 A shallow 2-layer network in $\mathbb{R}^d$ computes: $N(x) = \sum a_i \sigma(w_i^T x + b_i)$. Each term is a **ridge function**, which is constant in $d-1$ directions. To approximate a radial "ball" or a localized bump, a shallow network must use an enormous number of ridge functions to "mask out" the infinite extent of each ridge.
 
-
 !!! success "Theorem 4.1"
     1 (Eldan-Shamir)
 
     There exists a radial function $f(x) = \phi(\|x\|)$ in $\mathbb{R}^d$ that can be approximated to error $\epsilon$ by a 3-layer network with $\operatorname{poly}(d)$ neurons, but requires $\exp(d)$ neurons for any 2-layer network.
-
 
     ---
 
@@ -164,17 +138,13 @@ A shallow 2-layer network in $\mathbb{R}^d$ computes: $N(x) = \sum a_i \sigma(w_
 
 Another way to see the power of depth is through the **Vapnik-Chervonenkis (VC) dimension**.
 
-
 !!! success "Theorem 5.1.1 (Bartlett et al, 2019)"
 
     For a ReLU network with $W$ parameters and $L$ layers, the VC-dimension satisfies:
 
-
-
     $$
     VC = \Theta(W L \log W)
     $$
-
 
     **The Bit-Extraction Argument:**
     Deep networks can perform "bit-extraction." Imagine a weight $w = 0.b_1 b_2 b_3 \dots b_L$ (binary).

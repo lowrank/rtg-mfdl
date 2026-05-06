@@ -32,6 +32,7 @@ If $a < 1$, then $h(X) < 0$. This highlights that differential entropy is not an
     $$
     h(Y) = h(X) + \log |c|
     $$
+
 **Proof:**
 By the change of variables formula for probability densities, if $Y = cX + a$, the density of $Y$ is given by:
 
@@ -77,6 +78,7 @@ This completes the proof. $\blacksquare$
     $$
     - \frac{1}{n} \log p(X_1, \dots, X_n) \to h(X) \quad \text{in probability.}
     $$
+
 **Proof:**
 By the definition of the joint density of i.i.d. variables:
 
@@ -102,28 +104,27 @@ Thus, the result is proven. $\blacksquare$
 
 The Entropy Power Inequality is a fundamental result in information theory, originally stated by Shannon and rigorously proven by Stam. It relates the entropy of a sum of independent random variables to the entropies of the individual variables.
 
-
 !!! info "Definition"
     **Entropy Power**
     The entropy power $N(X)$ of a continuous random variable $X \in \mathbb{R}^d$ is defined as the variance of a Gaussian random variable that has the same differential entropy as $X$. Mathematically:
     
-    
     $$
     N(X) = \frac{1}{2\pi e} \exp\left( \frac{2}{d} h(X) \right)
     $$
-    
+
 !!! success "Theorem 3.1 (Entropy Power Inequality)"
     Let $X$ and $Y$ be independent continuous random variables in $\mathbb{R}^d$. Then:
     
     $$
     N(X + Y) \ge N(X) + N(Y)
     $$
-    
+
     Or equivalently:
     
     $$
     \exp\left( \frac{2}{d} h(X + Y) \right) \ge \exp\left( \frac{2}{d} h(X) \right) + \exp\left( \frac{2}{d} h(Y) \right)
     $$
+
 **Proof of the EPI using de Bruijn's Identity:**
 We will prove the 1-dimensional case ($d=1$). The proof heavily relies on de Bruijn's identity, which relates the derivative of differential entropy under Gaussian noise perturbation to Fisher information.
 
@@ -159,47 +160,48 @@ Gaussian distributions are ubiquitous in information theory because they maximiz
     $$
     h(X) = \frac{1}{2} \log \left( (2\pi e)^d |\Sigma| \right)
     $$
+
 **Proof:**
 The PDF of a multivariate Gaussian is:
     
 $$
 p(x) = \frac{1}{\sqrt{(2\pi)^d |\Sigma|}} \exp\left( -\frac{1}{2} (x - \mu)^T \Sigma^{-1} (x - \mu) \right)
 $$
-    
+
 Taking the natural logarithm:
     
 $$
 \log p(x) = -\frac{1}{2} \log((2\pi)^d |\Sigma|) - \frac{1}{2} (x - \mu)^T \Sigma^{-1} (x - \mu)
 $$
-    
+
 Now, take the expectation of $-\log p(x)$ with respect to $X$:
     
 $$
 h(X) = \mathbb{E}[-\log p(X)] = \frac{1}{2} \log((2\pi)^d |\Sigma|) + \frac{1}{2} \mathbb{E}\left[ (X - \mu)^T \Sigma^{-1} (X - \mu) \right]
 $$
-    
+
 Using the trace trick for the expectation of a quadratic form: $\mathbb{E}[z^T A z] = \text{Tr}(A \mathbb{E}[zz^T])$ where $\mathbb{E}[z]=0$.
     
 $$
 \mathbb{E}\left[ (X - \mu)^T \Sigma^{-1} (X - \mu) \right] = \text{Tr}\left( \Sigma^{-1} \mathbb{E}[(X - \mu)(X - \mu)^T] \right)
 $$
-    
+
 Since $\mathbb{E}[(X - \mu)(X - \mu)^T] = \Sigma$:
     
 $$
 \mathbb{E}\left[ (X - \mu)^T \Sigma^{-1} (X - \mu) \right] = \text{Tr}(\Sigma^{-1} \Sigma) = \text{Tr}(I_d) = d
 $$
-    
+
 Substitute this back into the entropy equation:
     
 $$
 h(X) = \frac{1}{2} \log((2\pi)^d |\Sigma|) + \frac{d}{2}
 $$
-    
+
 $$
 h(X) = \frac{1}{2} \log((2\pi)^d |\Sigma|) + \frac{1}{2} \log(e^d) = \frac{1}{2} \log \left( (2\pi e)^d |\Sigma| \right)
 $$
-    
+
 This completes the proof. $\blacksquare$
     
 !!! success "Theorem 4.2 (Maximum Entropy Principle for Gaussians)"
@@ -210,23 +212,23 @@ Using the relative entropy (Kullback-Leibler divergence) $D(p || \phi_K) \ge 0$:
 $$
 - \int p(x) \log \phi_K(x) dx \ge - \int p(x) \log p(x) dx = h(X)
 $$
-    
+
 Evaluate the left side:
     
 $$
 - \int p(x) \log \phi_K(x) dx = - \int p(x) \left[ -\frac{1}{2} \log((2\pi)^d |K|) - \frac{1}{2} x^T K^{-1} x \right] dx
 $$
-    
+
 $$
 = \frac{1}{2} \log((2\pi)^d |K|) + \frac{1}{2} \text{Tr}\left( K^{-1} \int x x^T p(x) dx \right)
 $$
-    
+
 Since $\int x x^T p(x) dx = K$:
     
 $$
 = \frac{1}{2} \log((2\pi)^d |K|) + \frac{1}{2} \text{Tr}(K^{-1} K) = \frac{1}{2} \log((2\pi e)^d |K|) = h(\phi_K)
 $$
-    
+
 Thus, $h(\phi_K) \ge h(X)$. $\blacksquare$
     
 ## 5. Worked Examples
@@ -239,21 +241,21 @@ Let $X$ be an exponentially distributed random variable with rate parameter $\la
 $$
 h(X) = - \int_0^\infty p(x) \log(\lambda e^{-\lambda x}) dx
 $$
-    
+
 $$
 = - \int_0^\infty p(x) (\log \lambda - \lambda x) dx
 $$
-    
+
 $$
 = - \log \lambda \int_0^\infty p(x) dx + \lambda \int_0^\infty x p(x) dx
 $$
-    
+
 Since the integral of $p(x)$ is 1, and the mean of the exponential distribution is $\mathbb{E}[X] = 1/\lambda$:
     
 $$
 h(X) = - \log \lambda + \lambda \left( \frac{1}{\lambda} \right) = 1 - \log \lambda
 $$
-    
+
 ### Example 2: Sum of Independent Uniform Random Variables
 Let $X_1 \sim \mathcal{U}(0, 1)$ and $X_2 \sim \mathcal{U}(0, 1)$ be independent. We want to find the differential entropy of their sum $Y = X_1 + X_2$.
     
@@ -263,31 +265,31 @@ The PDF of the sum of two independent variables is the convolution of their PDFs
 $$
 p_Y(y) = \begin{cases} y & 0 \le y < 1 \\ 2 - y & 1 \le y \le 2 \\ 0 & \text{otherwise} \end{cases}
 $$
-    
+
 The entropy is:
     
 $$
 h(Y) = - \int_0^1 y \log y dy - \int_1^2 (2-y) \log (2-y) dy
 $$
-    
+
 By symmetry, $\int_1^2 (2-y) \log(2-y) dy = \int_0^1 z \log z dz$. Thus:
     
 $$
 h(Y) = -2 \int_0^1 y \log y dy
 $$
-    
+
 Using integration by parts: let $u = \log y$, $dv = y dy$. Then $du = \frac{1}{y} dy$ and $v = \frac{y^2}{2}$.
     
 $$
 \int y \log y dy = \frac{y^2}{2} \log y - \int \frac{y}{2} dy = \frac{y^2}{2} \log y - \frac{y^2}{4}
 $$
-    
+
 Evaluating from 0 to 1 (using L'Hopital's rule for the limit as $y \to 0$):
     
 $$
 \left[ \frac{y^2}{2} \log y - \frac{y^2}{4} \right]_0^1 = \left( 0 - \frac{1}{4} \right) - (0 - 0) = -\frac{1}{4}
 $$
-    
+
 So, $h(Y) = -2(-\frac{1}{4}) = \frac{1}{2}$ nats.
     
 ### Example 3: Verifying the EPI for Two Gaussians

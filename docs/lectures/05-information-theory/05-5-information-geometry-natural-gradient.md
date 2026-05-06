@@ -28,9 +28,11 @@ Let $g$ be a Riemannian metric tensor on $S_n$. For $g$ to be invariant, the len
 2. **Decomposition:** Any tangent vector $v$ on the simplex satisfies $\sum v_i = 0$. By applying a specific merging of states (e.g., merging state 1 and 2), the invariance requires that the metric must decompose in a specific sum form: $\sum f(p_i) v_i^2$.
 3. **Solving for $f$:** The only function $f(p_i)$ that satisfies the invariance condition for arbitrary splits and merges of probability mass is $f(p_i) = \frac{C}{p_i}$ for some constant $C>0$.
 Thus, the metric must be of the form:
+
 $$
 ||v||_p^2 = C \sum_{i=1}^n \frac{v_i^2}{p_i}
 $$
+
 This is precisely the discrete form of the Fisher Information Matrix, derived from the Hessian of the KL divergence. Therefore, FIM is the unique invariant geometry of probability distributions. $\blacksquare$
 ## 3. The Natural Gradient
 
@@ -48,6 +50,7 @@ This assumes the steepest direction in parameter space. But as established, para
     $$
     \tilde{\nabla}_\theta \mathcal{L}(\theta) = F(\theta)^{-1} \nabla_\theta \mathcal{L}(\theta)
     $$
+
 **Rigorous Proof:**
 Steepest descent asks: what direction $d\theta$ minimizes $\mathcal{L}(\theta + d\theta)$ subject to a constraint on the step size?
 In Euclidean space, the constraint is $||d\theta||^2 = \epsilon^2$. 
@@ -82,6 +85,7 @@ Absorbing the Lagrange multiplier $1/\lambda$ into the learning rate $\alpha$, w
 $$
 \theta_{t+1} = \theta_t - \alpha F(\theta)^{-1} \nabla_\theta \mathcal{L}(\theta)
 $$
+
 This update is invariant to parameterization. If we reparameterize $\theta = \phi(w)$, Natural Gradient Descent path on $w$ will be identical to the path on $\theta$. Standard SGD does not have this property! $\blacksquare$
 
 ## 4. The Wasserstein Natural Gradient
@@ -102,17 +106,21 @@ This is actively researched in generative modeling to avoid mode collapse and ha
 ### Example 1: Fisher Information of a 1D Gaussian
 Let $p(x; \mu, \sigma^2) = \mathcal{N}(\mu, \sigma^2)$. The parameters are $\theta = [\mu, \sigma^2]^T$.
 The log-likelihood is:
+
 $$
 \log p(x) = -\frac{1}{2}\log(2\pi\sigma^2) - \frac{(x-\mu)^2}{2\sigma^2}
 $$
+
 Derivatives:
 $\frac{\partial \log p}{\partial \mu} = \frac{x-\mu}{\sigma^2}$
 $\frac{\partial \log p}{\partial (\sigma^2)} = -\frac{1}{2\sigma^2} + \frac{(x-\mu)^2}{2\sigma^4}$
 
 Computing the expected outer product yields the diagonal FIM:
+
 $$
 F(\theta) = \begin{bmatrix} 1/\sigma^2 & 0 \\ 0 & 1/(2\sigma^4) \end{bmatrix}
 $$
+
 Notice how the metric scales inversely with variance. When variance is small, a small change in $\mu$ causes a massive change in the distribution (huge distance).
 
 ### Example 2: Natural Gradient Update for Gaussian Mean

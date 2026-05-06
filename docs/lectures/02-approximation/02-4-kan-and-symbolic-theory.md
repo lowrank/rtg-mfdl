@@ -15,18 +15,14 @@ Hilbert's 13th problem conjectured that functions of three variables could not b
 
 ### 2.2 Theorem Statement
 
-
 !!! success "Theorem 2.2"
     1 (Kolmogorov-Arnold, 1957)
 
     For any continuous function $f: [0, 1]^n \to \mathbb{R}$, there exist $2n+1$ continuous functions $\Phi_q: \mathbb{R} \to \mathbb{R}$ and $n(2n+1)$ continuous univariate functions $\psi_{q,p}: [0, 1] \to \mathbb{R}$ such that:
 
-
-
     $$
     f(x_1, \dots, x_n) = \sum_{q=0}^{2n} \Phi_q \left( \sum_{p=1}^n \psi_{q,p}(x_p) \right)
     $$
-
 
     **Key Implications:**
     1. Multivariate complexity is reducible to univariate complexity.
@@ -47,11 +43,9 @@ Unlike MLPs, where activations are on nodes, KANs place **learnable non-linear f
 
 Each $\phi_i$ is typically a B-spline:
 
-
 $$
 \phi(x) = \sum_{j} c_j B_j(x)
 $$
-
 
 where $B_j$ are basis functions and $c_j$ are learnable control points.
 
@@ -70,16 +64,13 @@ To make KANs work, we need a stable way to parameterize univariate functions.
 ### 4.1 Cox-de Boor Recursion
 B-splines of degree $k$ are defined over a knot vector $t_i$:
 
-
 $$
 B_{i,0}(x) = \mathbb{I}_{[t_i, t_{i+1})}(x)
 $$
 
-
 $$
 B_{i,k}(x) = \frac{x - t_i}{t_{i+k} - t_i} B_{i,k-1}(x) + \frac{t_{i+k+1} - x}{t_{i+k+1} - t_{i+1}} B_{i+1,k-1}(x)
 $$
-
 
 ### 4.2 Grid Extension Theorem
 

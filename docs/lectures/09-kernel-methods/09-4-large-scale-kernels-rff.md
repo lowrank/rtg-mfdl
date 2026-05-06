@@ -114,7 +114,11 @@ How well does $\hat{\phi}(x)^T \hat{\phi}(y)$ approximate $k(x, y)$? Rahimi and 
     **Proof Structure:**
     The proof leverages empirical process theory and concentration inequalities.
     1. **Pointwise Concentration:** For fixed $x, y$, Hoeffding's Inequality bounds the probability of deviation because each term $\cos(\dots)$ is bounded in $[-1, 1]$.
-    $$ \mathbb{P}\left(| \hat{k}(x,y) - k(x,y) | \geq \epsilon\right) \leq 2 \exp\left(-\frac{D\epsilon^2}{2}\right) $$
+
+    $$
+    \mathbb{P}\left(| \hat{k}(x,y) - k(x,y) | \geq \epsilon\right) \leq 2 \exp\left(-\frac{D\epsilon^2}{2}\right)
+    $$
+
     2. **Lipschitz Continuity:** We show that both the true kernel $k$ and the approximation $\hat{k}$ are Lipschitz continuous with high probability, because their gradients depend on $\omega$, and we can bound $\mathbb{E}[\|\omega\|_2^2]$.
     3. **$\epsilon$-Net Argument (Covering):** We construct an $\epsilon$-net over the compact set $\mathcal{M}$. We apply the union bound over the finite points in the net.
     4. **Generalization to Domain:** Using the Lipschitz property, the pointwise bounds on the net points are extended to the entire continuous domain $\mathcal{M}$, leading to the $O(1/\epsilon^2)$ dependency. $\blacksquare$
@@ -126,7 +130,11 @@ How well does $\hat{\phi}(x)^T \hat{\phi}(y)$ approximate $k(x, y)$? Rahimi and 
 ### Example 1: RFF for the Gaussian Kernel
 The Gaussian kernel is $k(x - y) = \exp\left(-\frac{\|x-y\|^2}{2\sigma^2}\right)$.
 Its Fourier transform is another Gaussian. According to Bochner's theorem, the frequency distribution $p(\omega)$ is:
-$$ p(\omega) = \mathcal{N}\left(0, \frac{1}{\sigma^2} I_d\right) $$
+
+$$
+p(\omega) = \mathcal{N}\left(0, \frac{1}{\sigma^2} I_d\right)
+$$
+
 To construct RFF for the Gaussian kernel:
 1. Draw $\omega_1, \dots, \omega_D \sim \mathcal{N}(0, \frac{1}{\sigma^2} I_d)$.
 2. For any $x$, compute $\cos(\omega_i^T x)$ and $\sin(\omega_i^T x)$.
@@ -139,7 +147,11 @@ $\omega_i \sim \text{Cauchy}(0, \gamma)$.
 
 ### Example 3: RFF alternative formulation (Phase shift)
 Instead of using both $\cos$ and $\sin$, we can use a uniform phase shift.
-$$ \cos(a - b) = \cos(a)\cos(b) + \sin(a)\sin(b) $$
+
+$$
+\cos(a - b) = \cos(a)\cos(b) + \sin(a)\sin(b)
+$$
+
 We can rewrite the kernel as $\mathbb{E}_{\omega \sim p, b \sim U[0, 2\pi]} [2 \cos(\omega^T x + b) \cos(\omega^T y + b)]$.
 Feature map: $\hat{\phi}(x) = \sqrt{\frac{2}{D}} \left[ \cos(\omega_1^T x + b_1), \dots, \cos(\omega_D^T x + b_D) \right]^T$.
 This requires drawing $b_i \sim \text{Uniform}[0, 2\pi]$ but uses half the memory.

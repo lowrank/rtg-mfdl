@@ -10,48 +10,42 @@ This lecture builds the rigorous theoretical framework for analyzing first-order
 
 Let $f: \mathbb{R}^n \to \mathbb{R}$ be a continuously differentiable function.
 
-
 !!! info "Definition 1.1 (L-smoothness)"
     
     $f$ is $L$-smooth (or has $L$-Lipschitz gradients) if for all $x, y \in \mathbb{R}^n$:
     
-    
     $$
     \|\nabla f(x) - \nabla f(y)\| \le L \|x - y\|
     $$
-    
+
     A crucial consequence of $L$-smoothness is the **Descent Lemma**:
     
     $$
     f(y) \le f(x) + \langle \nabla f(x), y - x \rangle + \frac{L}{2} \|y - x\|^2
     $$
-    
-    
+
 !!! info "Definition 1.2 ($\mu$-strong convexity)"
     
     $f$ is $\mu$-strongly convex if for all $x, y \in \mathbb{R}^n$:
     
-    
     $$
     f(y) \ge f(x) + \langle \nabla f(x), y - x \rangle + \frac{\mu}{2} \|y - x\|^2
     $$
-    
+
     Strong convexity implies that the function is at least as curved as a quadratic, ensuring a unique global minimum and preventing the landscape from becoming too flat.
     
 ## 2. Lower Bounds for First-Order Methods
     
 Before we analyze specific algorithms, we must ask: what is the best possible convergence rate any first-order method can achieve? A first-order method is one where the next iterate $x_{k+1}$ is chosen from the linear span of previous gradients: $x_{k+1} \in x_0 + \text{span}\{\nabla f(x_0), \dots, \nabla f(x_k)\}$.
     
-    
 !!! success "Theorem 2.1 (Nesterov's Lower Bound)"
     
     For any $k < \frac{1}{2}(n-1)$, there exists an $L$-smooth convex function $f$ such that for any first-order method:
     
-    
     $$
     f(x_k) - f(x^*) \ge \frac{3L \|x_0 - x^*\|^2}{32(k+1)^2}
     $$
-    
+
 **Proof of Theorem 2.1 (Constructive)**:
     
 The strategy is to construct a "worst-case" function that reveals information about its structure only one dimension at a time per gradient query.
@@ -60,7 +54,7 @@ Consider the quadratic function $f(x) = \frac{L}{8} (x^T A x - 2x_1)$, where $A$
 $$
 A = \begin{pmatrix} 2 & -1 & 0 & \dots \\ -1 & 2 & -1 & \dots \\ 0 & -1 & 2 & \dots \\ \vdots & \vdots & \vdots & \ddots \end{pmatrix}
 $$
-    
+
 *Step 1: Analyze the Gradient.*
 The gradient is $\nabla f(x) = \frac{L}{4}(Ax - e_1)$, where $e_1 = (1, 0, \dots, 0)^T$.
 Note that for any $x$, the $i$-th component of the gradient $[\nabla f(x)]_i$ depends only on $x_{i-1}, x_i, x_{i+1}$ (with $x_0=0$).
@@ -77,16 +71,14 @@ One can solve for the true minimum $x^*$ of this quadratic form. The minimum $f(
     
 Let us analyze standard Gradient Descent (GD): $x_{k+1} = x_k - \eta \nabla f(x_k)$.
     
-    
 !!! success "Theorem 3.1 (GD for Smooth Convex Functions)"
     
     If $f$ is $L$-smooth and convex, and we set $\eta = 1/L$, then:
     
-    
     $$
     f(x_k) - f(x^*) \le \frac{L \|x_0 - x^*\|^2}{2k}
     $$
-    
+
 **Proof of Theorem 3.1**:
     
 From the descent lemma with $y = x_{k+1}$ and $\eta = 1/L$:
@@ -94,7 +86,7 @@ From the descent lemma with $y = x_{k+1}$ and $\eta = 1/L$:
 $$
 f(x_{k+1}) \le f(x_k) - \frac{1}{L} \|\nabla f(x_k)\|^2 + \frac{L}{2} \| \frac{1}{L} \nabla f(x_k) \|^2 = f(x_k) - \frac{1}{2L} \|\nabla f(x_k)\|^2
 $$
-    
+
 By convexity, $f(x_k) \le f(x^*) + \langle \nabla f(x_k), x_k - x^* \rangle$.
 Rearranging: $f(x_k) - f(x^*) \le \langle \nabla f(x_k), x_k - x^* \rangle$.
 Let $\delta_k = f(x_k) - f(x^*)$. Then $\delta_{k+1} \le \delta_k - \frac{1}{2L} \|\nabla f(x_k)\|^2$.
@@ -107,13 +99,13 @@ Dividing by $\delta_k \delta_{k+1}$:
 $$
 \frac{1}{\delta_{k+1}} \ge \frac{1}{\delta_k} + \frac{\delta_k}{2LR^2 \delta_{k+1}} \ge \frac{1}{\delta_k} + \frac{1}{2LR^2}
 $$
-    
+
 Summing from $0$ to $k-1$:
     
 $$
 \frac{1}{\delta_k} \ge \frac{1}{\delta_0} + \frac{k}{2LR^2} \ge \frac{k}{2LR^2} \implies \delta_k \le \frac{2LR^2}{k}
 $$
-    
+
 A slightly tighter constant $1/2k$ is obtained through a more careful telescopic sum of $\|x_k - x^*\|^2$. $\blacksquare$
     
 ## 4. Nesterov Accelerated Gradient (NAG)
@@ -123,21 +115,19 @@ To bridge the gap between GD's $1/k$ and the lower bound's $1/k^2$, Yurii Nester
 $$
 y_{k+1} = x_k - \eta \nabla f(x_k)
 $$
-    
+
 $$
 x_{k+1} = y_{k+1} + \frac{k-1}{k+2} (y_{k+1} - y_k)
 $$
-    
-    
+
 !!! success "Theorem 4.1 (Convergence of NAG)"
     
     If $f$ is $L$-smooth and convex, then NAG with $\eta = 1/L$ satisfies:
     
-    
     $$
     f(y_k) - f(x^*) \le \frac{2L \|x_0 - x^*\|^2}{(k+1)^2}
     $$
-    
+
 **Proof of Theorem 4.1**:
     
 This proof uses a Lyapunov energy function argument, which is more intuitive than the original estimate sequence derivation. Let $A_k = \frac{(k+1)^2}{4}$. We define the energy:
@@ -145,7 +135,7 @@ This proof uses a Lyapunov energy function argument, which is more intuitive tha
 $$
 E_k = A_k (f(y_k) - f(x^*)) + \frac{L}{2} \|v_k - x^*\|^2
 $$
-    
+
 where $v_k$ is an auxiliary variable. The Nesterov iterates can be rewritten as:
 $y_k = (1 - \alpha_k) x_{k-1} + \alpha_k v_{k-1}$
 $v_k = v_{k-1} - \frac{\alpha_k}{L} \nabla f(x_k)$
@@ -169,45 +159,48 @@ Since $A_k \approx k^2/4$, we have $f(y_k) - f(x^*) \le \frac{4 E_0}{k^2}$, yiel
     
 While convexity is a powerful assumption, many neural network loss functions are non-convex. However, they often satisfy properties that allow for global convergence.
     
-    
 !!! info "Definition 5.1 (Polyak-Łojasiewicz Inequality)"
     
     A function $f$ satisfies the PL inequality with constant $\mu > 0$ if for all $x$:
     
-    
     $$
     \frac{1}{2} \|\nabla f(x)\|^2 \ge \mu (f(x) - f(x^*))
     $$
-    
+
     Crucially, PL functions do not have to be convex. Every strongly convex function is a PL function, but not vice versa (e.g., $f(x) = x^2 + 3\sin^2(x)$).
-    
     
 !!! success "Theorem 5.1 (GD for PL Functions)"
     
     If $f$ is $L$-smooth and satisfies the PL inequality with constant $\mu$, then GD with $\eta = 1/L$ converges at a linear rate:
     
-    
     $$
     f(x_k) - f(x^*) \le (1 - \frac{\mu}{L})^k (f(x_0) - f(x^*))
     $$
-    
+
 **Proof of Theorem 5.1**:
     
 Start with the descent lemma:
+
 $$
 f(x_{k+1}) \le f(x_k) - \frac{1}{2L} \|\nabla f(x_k)\|^2
 $$
+
 Subtract $f(x^*)$ from both sides:
+
 $$
 f(x_{k+1}) - f(x^*) \le f(x_k) - f(x^*) - \frac{1}{2L} \|\nabla f(x_k)\|^2
 $$
+
 Apply the PL inequality: $\|\nabla f(x_k)\|^2 \ge 2\mu (f(x_k) - f(x^*))$.
+
 $$
 f(x_{k+1}) - f(x^*) \le f(x_k) - f(x^*) - \frac{2\mu}{2L} (f(x_k) - f(x^*))
 $$
+
 $$
 f(x_{k+1}) - f(x^*) \le (1 - \frac{\mu}{L}) (f(x_k) - f(x^*))
 $$
+
 Iterating this inequality $k$ times yields the linear rate. $\blacksquare$
     
 ## 6. Worked Examples

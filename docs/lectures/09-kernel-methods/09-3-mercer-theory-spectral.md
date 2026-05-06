@@ -59,7 +59,7 @@ A full proof of Mercer's theorem requires deep functional analysis (specifically
    $$
    k(x, x) - \sum_{n=1}^N \lambda_n e_n(x)^2 \geq 0 \implies \sum_{n=1}^N \lambda_n e_n(x)^2 \leq k(x, x)
    $$
-   
+
    Since $k(x,x)$ is bounded (continuous on a compact set), the series of positive continuous functions $\sum \lambda_n e_n(x)^2$ converges monotonically. By Dini's Theorem, pointwise convergence of a monotonic sequence of continuous functions to a continuous function on a compact set implies **uniform convergence**.
    From Cauchy-Schwarz, uniform convergence of the diagonal implies uniform convergence of the off-diagonal $k(x, y)$.
 

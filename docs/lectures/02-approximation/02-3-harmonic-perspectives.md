@@ -19,47 +19,35 @@ In 1993, Andrew Barron proved that for functions with "simple" Fourier transform
 
     For a function $f: \mathbb{R}^d \to \mathbb{R}$, define the Barron norm $C_f$ as the first moment of its Fourier magnitude:
 
-
-
     $$
     C_f = \int_{\mathbb{R}^d} \|\omega\|_2 |\hat{f}(\omega)| d\omega
     $$
 
-
     Functions where $C_f < \infty$ belong to the **Barron Space**. Intuitively, these functions have most of their energy at low frequencies.
 
 ### 2.2 Barron's Theorem
-
 
 !!! success "Theorem 2.2"
     1 (Barron, 1993)
 
     For any function $f$ with $C_f < \infty$, there exists a single-hidden-layer neural network $f_n$ with $n$ neurons such that the $L_2$ error on a ball of radius $r$ is:
 
-
-
     $$
     \int_{\|x\| \le r} |f(x) - f_n(x)|^2 d\mu(x) \le \frac{(2r C_f)^2}{n}
     $$
 
-
-
 **Rigorous Proof of Theorem 2.2.1:**
 1. **Fourier Representation:** Express $f(x)$ using the inverse Fourier transform. By shifting $f$ such that $f(0)=0$:
-
 
 $$
 f(x) = \int_{\mathbb{R}^d} (e^{i \omega^T x} - 1) \hat{f}(\omega) d\omega
 $$
 
-
 2. **Probabilistic Interpretation:** Define a probability measure $\Lambda$ on $\mathbb{R}^d$ such that $d\Lambda(\omega) \propto \|\omega\| |\hat{f}(\omega)| d\omega$. The integral becomes an expectation:
-
 
 $$
 f(x) = C_f \mathbb{E}_{\omega \sim \Lambda} \left[ \frac{e^{i \omega^T x} - 1}{\|\omega\|} e^{i \theta(\omega)} \right]
 $$
-
 
 3. **Maurey's Lemma:** A classic result in functional analysis states that if a function is in the convex hull of a set $G$ (where $\|g\| \le B$), then an average of $n$ elements from $G$ approximates the function with error $\le B^2/n$.
 4. **Bounding the Unit:** The term inside the expectation is a "ridge" function bounded by $r$ (since $|e^{iz}-1| \le |z|$).
@@ -74,26 +62,20 @@ While Barron's theorem proves a good network *exists*, **Spectral Bias** explain
 ### 3.1 The Neural Tangent Kernel (NTK)
 In the infinite-width limit, the evolution of a network $f(x)$ under gradient descent is governed by the NTK:
 
-
 $$
 \frac{\partial f(x, t)}{\partial t} = -\eta \sum_{i=1}^M K(x, x_i) (f(x_i, t) - y_i)
 $$
 
-
 ### 3.2 Eigen-Decay and Learning Rates
-
 
 !!! success "Theorem 3.2"
     1 (Spectral Bias)
 
     The eigenvalues $\lambda_k$ of the NTK for a ReLU network decay as $k^{-(d+1)}$ for frequency $k$. The error $E_k(t)$ at frequency $k$ decays as:
 
-
-
     $$
     E_k(t) = E_k(0) e^{-\eta \lambda_k t}
     $$
-
 
 **Proof Insight:**
 1. High frequencies (large $k$) have very small eigenvalues $\lambda_k$.
@@ -106,31 +88,23 @@ $$
 
 Convolutional Neural Networks (CNNs) are robust to translations and small deformations. Stéphane Mallat provided the mathematical justification via the Scattering Transform.
 
-
 !!! info "Definition 4"
     1 (Scattering Transform)
 
     A cascade of wavelet transforms $W$ and modulus non-linearities $| \cdot |$:
 
-
-
     $$
     S(f) = | \dots | f \ast \psi_{j_1} | \ast \psi_{j_2} | \dots \ast \phi_J
     $$
-
-
 
 !!! success "Theorem 4"
     2 (Stability)
 
     The scattering transform is Lipschitz continuous to diffeomorphisms $\tau$:
 
-
-
     $$
     \|S(L_\tau f) - S(f)\| \le C \|\nabla \tau\|_\infty \|f\|
     $$
-
 
 *Proof:* Wavelets are stable to translations. The modulus non-linearity "demodulates" the signal, shifting high-frequency variations into lower-frequency bands where they are stable under the next layer's filters. $\blacksquare$
 

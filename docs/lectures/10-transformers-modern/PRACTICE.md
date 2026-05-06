@@ -9,11 +9,9 @@ This module focuses on the mathematical derivation of Transformer properties and
 ### Exercise 1.1: Permutation Equivariance
 Prove that the Self-Attention mechanism (without positional embeddings) is **permutation equivariant**. That is, if $\sigma$ is a permutation of $\{1, \dots, n\}$ and $P_\sigma$ is the corresponding permutation matrix, show that:
 
-
 $$
 \text{Attn}(P_\sigma X) = P_\sigma \text{Attn}(X)
 $$
-
 
 **Hint**: Show that the softmax weights $A_{ij}$ simply become $A_{\sigma(i)\sigma(j)}$.
 
@@ -42,12 +40,10 @@ A researcher has a compute budget of $C = 1.2 \times 10^{24}$ FLOPs. Using the C
 ### Exercise 1.6: Positional Encoding Geometry
 In the sinusoidal encoding used in the original Transformer:
 
-
 $$
 PE_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right), \quad
 PE_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
 $$
-
 
 Show that for any fixed offset $k$, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$. What does this imply about the model's ability to attend to relative positions?
 

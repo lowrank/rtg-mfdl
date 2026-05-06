@@ -9,13 +9,17 @@ Second-order methods and their adaptive counterparts aim to solve this by incorp
 ## 2. Newton's Method and its Failures in Deep Learning
 
 Classical Newton's method approximates the function locally by a second-order Taylor expansion:
+
 $$
 \mathcal{L}(w + \Delta w) \approx \mathcal{L}(w) + \nabla \mathcal{L}(w)^T \Delta w + \frac{1}{2} \Delta w^T H(w) \Delta w
 $$
+
 Setting the derivative with respect to $\Delta w$ to zero gives the Newton step:
+
 $$
 w_{k+1} = w_k - H(w_k)^{-1} \nabla \mathcal{L}(w_k)
 $$
+
 Newton's method achieves quadratic convergence ($e^{-e^k}$) for strongly convex functions. However, it fails in deep learning for three reasons:
 
 1. **Computational Cost**: Computing and inverting the Hessian costs $O(d^3)$, which is impossible for millions of parameters.
@@ -28,46 +32,54 @@ Natural Gradient Descent (NGD), introduced by Shun-ichi Amari, treats the parame
 
 In machine learning, we are not just optimizing weights $w$; we are optimizing a probability distribution $p(y | x; w)$. The "distance" between two sets of parameters should be measured by how much the resulting distributions differ, not by the Euclidean distance between the weight vectors.
 
-
 !!! info "Definition 3.1 (Fisher Information Matrix)"
     
     The Fisher Information Matrix (FIM) is defined as:
+
     $$
     F(w) = \mathbb{E}_{x \sim p_{data}, y \sim p(y|x;w)} [ \nabla_w \log p(y|x;w) \nabla_w \log p(y|x;w)^T ]
     $$
+
     Under mild regularity conditions, the FIM is the Hessian of the KL divergence:
+
     $$
     D_{KL}(p(y|x;w) \| p(y|x;w + \Delta w)) \approx \frac{1}{2} \Delta w^T F(w) \Delta w
     $$
-    
-    
-    
+
 !!! success "Theorem 3.1 (Derivation of Natural Gradient)"
     
     The update direction $\Delta w$ that minimizes $\mathcal{L}(w + \Delta w)$ subject to a fixed constraint on the KL divergence $D_{KL}(w \| w + \Delta w) \le \epsilon$ is given by the Natural Gradient:
+
     $$
     \Delta w \propto - F(w)^{-1} \nabla \mathcal{L}(w)
     $$
-    
-    
+
 **Proof of Theorem 3.1**:
     
 We use the method of Lagrange multipliers. We want to solve:
+
 $$
 \min_{\Delta w} \mathcal{L}(w) + \nabla \mathcal{L}(w)^T \Delta w \quad \text{s.t.} \quad \frac{1}{2} \Delta w^T F(w) \Delta w = \epsilon
 $$
+
 The Lagrangian is:
+
 $$
 J(\Delta w, \lambda) = \mathcal{L}(w) + \nabla \mathcal{L}(w)^T \Delta w + \lambda (\frac{1}{2} \Delta w^T F(w) \Delta w - \epsilon)
 $$
+
 Taking the derivative with respect to $\Delta w$:
+
 $$
 \frac{\partial J}{\partial \Delta w} = \nabla \mathcal{L}(w) + \lambda F(w) \Delta w = 0
 $$
+
 Solving for $\Delta w$:
+
 $$
 \Delta w = -\frac{1}{\lambda} F(w)^{-1} \nabla \mathcal{L}(w)
 $$
+
 Absorbing the constant $1/\lambda$ into a step size $\eta$ gives the NGD update. $\blacksquare$
     
 Natural Gradient is invariant to reparameterization. Whether you use polar coordinates or Cartesian coordinates, the NGD trajectory in distribution space is identical.
@@ -79,26 +91,36 @@ While NGD is theoretically elegant, $F(w)^{-1}$ is still too expensive. K-FAC pr
 **The Algebra of K-FAC (for a single linear layer $y = W x$):**
 The gradient with respect to $W$ is $\nabla_W L = \delta x^T$, where $\delta = \nabla_y L$.
 The Fisher block for layer $l$ is:
+
 $$
 F_l = \mathbb{E} [ \text{vec}(\nabla_W L) \text{vec}(\nabla_W L)^T ] = \mathbb{E} [ \text{vec}(\delta x^T) \text{vec}(\delta x^T)^T ]
 $$
+
 Using the identity $\text{vec}(abc^T) = c \otimes a$ (approx), we can write:
+
 $$
 F_l = \mathbb{E} [ (x \otimes \delta) (x^T \otimes \delta^T) ] = \mathbb{E} [ (x x^T) \otimes (\delta \delta^T) ]
 $$
+
 K-FAC makes the **Kronecker Factorization Assumption**:
+
 $$
 \mathbb{E} [ (x x^T) \otimes (\delta \delta^T) ] \approx \mathbb{E} [ x x^T ] \otimes \mathbb{E} [ \delta \delta^T ] = A \otimes G
 $$
+
 where $A$ is the covariance of activations and $G$ is the covariance of "pre-activation" gradients.
 The inverse is then easy to compute:
+
 $$
 F_l^{-1} \approx (A \otimes G)^{-1} = A^{-1} \otimes G^{-1}
 $$
+
 The update $\Delta \text{vec}(W) = - F_l^{-1} \text{vec}(\nabla_W L)$ can be computed as:
+
 $$
 \Delta W = - G^{-1} (\nabla_W L) A^{-1}
 $$
+
 This reduces the inversion cost from $O((n_{in} n_{out})^3)$ to $O(n_{in}^3 + n_{out}^3)$, a massive speedup!
     
 ## 5. Adaptive Step Sizes: From Adam to Lion
@@ -108,17 +130,23 @@ In practice, full second-order or even K-FAC methods are often replaced by diago
 ### 5.1 Adam and the AdamW Fix
     
 Adam (Adaptive Moment Estimation) maintains estimates of the first moment $m_t$ (mean) and second moment $v_t$ (uncentered variance) of the gradients:
+
 $$
 m_t = \beta_1 m_{t-1} + (1 - \beta_1) g_t, \quad v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2
 $$
+
 The update is:
+
 $$
 w_{t+1} = w_t - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}
 $$
+
 However, Adam originally implemented $L_2$ regularization by adding $\lambda w$ to the gradient $g_t$. Ilya Loshchilov showed this is incorrect for adaptive methods. In **AdamW**, the weight decay is decoupled from the gradient update:
+
 $$
 w_{t+1} = (1 - \eta \lambda) w_t - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}
 $$
+
 This ensures the weight decay affects all parameters equally, rather than being scaled by the inverse root-variance.
     
 ### 5.2 The Lion Optimizer (EvoLved Sign Momentum)
@@ -143,13 +171,17 @@ The log-likelihood is $\log p(y; w) = y \log \sigma(w) + (1-y) \log(1 - \sigma(w
 Recall $\sigma'(w) = \sigma(w)(1-\sigma(w))$.
 $\frac{\partial}{\partial w} \log p = y \frac{\sigma'(w)}{\sigma(w)} - (1-y) \frac{\sigma'(w)}{1-\sigma(w)} = y(1-\sigma(w)) - (1-y)\sigma(w) = y - \sigma(w)$.
 The Fisher Information is:
+
 $$
 F(w) = \mathbb{E} [ (y - \sigma(w))^2 ] = \text{Var}(y) = \sigma(w)(1 - \sigma(w))
 $$
+
 The Natural Gradient update is:
+
 $$
 \Delta w = - F(w)^{-1} \nabla \mathcal{L} = - \frac{1}{\sigma(w)(1-\sigma(w))} (y - \sigma(w))
 $$
+
 If we use a standard squared loss $(y - \sigma(w))^2$, the gradient is $2(y - \sigma(w))\sigma'(w)$.
 $\Delta w_{standard} \propto (y - \sigma(w))\sigma(w)(1-\sigma(w))$.
 Notice the difference: at the saturated regions (where $\sigma(w) \to 0$ or $1$), the standard gradient vanishes (plateau). The Natural Gradient, however, cancels out this vanishing term! NGD "flattens" the plateau, preventing the optimization from getting stuck.

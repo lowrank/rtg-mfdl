@@ -103,6 +103,7 @@ For a separable Hamiltonian $H(q, p) = T(p) + V(q)$, the Symplectic Euler method
 $$
 p_{n+1} = p_n - \Delta t \frac{\partial V}{\partial q}(q_n)
 $$
+
 $$
 q_{n+1} = q_n + \Delta t \frac{\partial T}{\partial p}(p_{n+1})
 $$

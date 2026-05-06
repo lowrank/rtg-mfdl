@@ -236,13 +236,13 @@ Consider $f(z, t, \theta) = \theta z$, with $z(0) = z_0 = 1$ and target time $t_
    $$
    \frac{dL}{d\theta} = \int_0^1 a(t) \frac{\partial f}{\partial \theta} dt = \int_0^1 e^{\theta(2-t)} z(t) dt
    $$
-   
+
    Since $z(t) = e^{\theta t}$, we have:
    
    $$
    \frac{dL}{d\theta} = \int_0^1 e^{\theta(2-t)} e^{\theta t} dt = \int_0^1 e^{2\theta} dt = e^{2\theta}
    $$
-   
+
    This matches the analytical gradient exactly.
 
 ### 4.2 Example: Vector-Valued ODE

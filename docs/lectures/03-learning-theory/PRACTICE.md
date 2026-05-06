@@ -7,35 +7,27 @@ Consider the class of linear functions $\mathcal{H} = \{x \mapsto w \cdot x : \|
 
 **Derivation**:
 
-
 $$
 \hat{\mathcal{R}}_S(\mathcal{H}) = \mathbb{E}_\sigma \left[ \sup_{\|w\| \le B} \frac{1}{n} \sum_{i=1}^n \sigma_i (w \cdot x_i) \right] = \frac{1}{n} \mathbb{E}_\sigma \left[ \sup_{\|w\| \le B} w \cdot \left( \sum_{i=1}^n \sigma_i x_i \right) \right]
 $$
 
-
 By the Cauchy-Schwarz inequality, $w \cdot v \le \|w\| \|v\|$. The supremum is attained when $w$ is in the direction of $v = \sum \sigma_i x_i$:
-
 
 $$
 \hat{\mathcal{R}}_S(\mathcal{H}) = \frac{B}{n} \mathbb{E}_\sigma \left\| \sum_{i=1}^n \sigma_i x_i \right\|_2
 $$
 
-
 Using Jensen's Inequality ($\mathbb{E}[X] \le \sqrt{\mathbb{E}[X^2]}$):
-
 
 $$
 \mathbb{E}_\sigma \left\| \sum \sigma_i x_i \right\| \le \sqrt{\mathbb{E}_\sigma \left\| \sum \sigma_i x_i \right\|^2} = \sqrt{\mathbb{E}_\sigma \sum_{i,j} \sigma_i \sigma_j (x_i \cdot x_j)}
 $$
 
-
 Since $\mathbb{E}[\sigma_i \sigma_j] = 0$ for $i \neq j$ and $1$ for $i=j$:
-
 
 $$
 \hat{\mathcal{R}}_S(\mathcal{H}) \le \frac{B}{n} \sqrt{\sum_{i=1}^n \|x_i\|^2} \le \frac{B}{n} \sqrt{nL^2} = \frac{BL}{\sqrt{n}}
 $$
-
 
 **Conclusion**: The complexity of linear models is independent of the input dimension $d$.
 
@@ -80,11 +72,9 @@ Prove that the VC-dimension of linear classifiers in $\mathbb{R}^d$ is $d+1$.
 ### Exercise 7: PAC-Bayes Change of Measure
 Prove the fundamental identity (Donsker-Varadhan representation):
 
-
 $$
 \text{KL}(Q \parallel P) = \sup_{f} \left\{ \mathbb{E}_{Q}[f] - \log \mathbb{E}_{P}[e^{f}] \right\}
 $$
-
 
 *Hint*: Use the definition of KL divergence and Jensen's inequality (or Fenchel duality).
 

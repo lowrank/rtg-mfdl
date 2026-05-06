@@ -18,9 +18,11 @@ Algorithmic stability measures the sensitivity of a learning algorithm $A$ to it
 
 !!! info "Definition 2.1 (Uniform Stability - Bousquet & Elisseeff 2002)"
     A learning algorithm $A$ is $\beta$-uniformly stable if for any two datasets $S$ and $S'$ of size $n$ that differ in exactly one element, the following holds for all possible test points $z \in \mathcal{Z}$:
+
     $$
     \sup_{z \in \mathcal{Z}} | \ell(A(S), z) - \ell(A(S'), z) | \le \beta
     $$
+
     where $\ell(h, z)$ is the loss of model $h$ on sample $z$.
 
 ### 2.2 The Stability-Generalization Theorem
@@ -29,10 +31,13 @@ The power of stability lies in its ability to guarantee generalization without e
 
 !!! success "Theorem 2.2 (Generalization via Stability)"
     If a learning algorithm $A$ is $\beta$-uniformly stable, the expected generalization gap is bounded by $\beta$:
+
     $$
     | \mathbb{E}_S [ R(A(S)) - \hat{R}(A(S)) ] | \le \beta
     $$
+
     Furthermore, if the loss is bounded in $[0, M]$, for any $\delta \in (0, 1)$, with probability at least $1-\delta$:
+
     $$
     R(A(S)) \le \hat{R}(A(S)) + \beta + (2n\beta + M) \sqrt{\frac{\log(1/\delta)}{2n}}
     $$
@@ -43,9 +48,11 @@ The expected empirical risk is $\mathbb{E}_S [\hat{R}(A(S))] = \frac{1}{n} \sum_
 By symmetry, $\mathbb{E}_S [\ell(A(S), z_i)] = \mathbb{E}_{S, z} [\ell(A(S^{(i)}), z)]$, where $S^{(i)}$ is the dataset $S$ with $z_i$ replaced by $z$.
 The expected true risk is $R(A(S)) = \mathbb{E}_{z} [\ell(A(S), z)]$.
 Thus, the expected generalization gap is:
+
 $$
 \mathbb{E}_S [ R(A(S)) - \hat{R}(A(S)) ] = \mathbb{E}_{S, z} \left[ \frac{1}{n} \sum_{i=1}^n (\ell(A(S), z) - \ell(A(S^{(i)}), z)) \right]
 $$
+
 By $\beta$-uniform stability, the term inside the summation is $\le \beta$ for every $i$. The expectation is thus bounded by $\beta$.
 To prove the high-probability bound, we utilize McDiarmid's Inequality. Define the function $\Phi(S) = R(A(S)) - \hat{R}(A(S))$. We must bound the change in $\Phi(S)$ when one sample $z_j$ is replaced by $z_j'$.
 - The true risk $R(A(S))$ changes by at most $\beta$ (by stability).
@@ -69,6 +76,7 @@ A mapping $G: \mathbb{R}^d \to \mathbb{R}^d$ is non-expansive if $\|G(w) - G(w')
 
 !!! success "Theorem 3.2 (Uniform Stability of SGD)"
     Assume the loss function $\ell(w, z)$ is $L$-Lipschitz, $\gamma$-smooth, and convex for all $z$. If we run SGD for $T$ steps with step sizes $\alpha_t \le 2/\gamma$, then SGD is $\beta$-stable with:
+
     $$
     \beta \le \frac{2 L^2}{n} \sum_{t=1}^T \alpha_t
     $$
@@ -81,13 +89,17 @@ At each step, SGD selects a random index $j \in \{1, \dots, n\}$.
   $\|w_{t+1} - w_{t+1}'\| \le \|w_t - w_t'\| + \alpha_t \|\nabla \ell(w_t, z_i) - \nabla \ell(w_t', z_i')\| \le \|w_t - w_t'\| + 2 \alpha_t L$.
 
 Taking the expectation over $j$:
+
 $$
 \Delta_{t+1} \le (1 - 1/n) \Delta_t + \frac{1}{n} (\Delta_t + 2 \alpha_t L) = \Delta_t + \frac{2 \alpha_t L}{n}
 $$
+
 Summing from $t=0$ to $T-1$, and noting $w_0 = w_0'$:
+
 $$
 \Delta_T \le \frac{2 L}{n} \sum_{t=1}^T \alpha_t
 $$
+
 By $L$-Lipschitzness, the stability $\beta$ is bounded by $L \Delta_T$, yielding the final theorem. $\blacksquare$
 
 ---

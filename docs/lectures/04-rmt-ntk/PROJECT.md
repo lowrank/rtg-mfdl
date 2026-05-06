@@ -22,11 +22,9 @@ Kaggle: **Natural Language Processing with Disaster Tweets**
 
 1.  **Kernel Construction**: Implement the analytical NTK for a 2-layer ReLU network:
 
-
 $$
 \Theta(x, z) = \frac{\|x\| \|z\|}{2\pi} \left[ (\sin \phi + (\pi - \phi) \cos \phi) + \cos \phi (\pi - \phi) \right]
 $$
-
 
 where $\cos \phi = x \cdot z / (\|x\| \|z\|)$.
 
@@ -48,7 +46,6 @@ where $\cos \phi = x \cdot z / (\|x\| \|z\|)$.
     $$
     \hat{\Theta}(t) = \nabla_\theta f(X; \theta(t)) \nabla_\theta f(X; \theta(t))^\top
     $$
-
 
 ### Phase 4: Comparative Analysis
 

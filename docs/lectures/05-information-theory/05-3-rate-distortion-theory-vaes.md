@@ -76,7 +76,7 @@ Let us analyze the terms of the ELBO.
 $$
 \log p_\theta(x|z) = - \frac{1}{2\sigma^2} ||x - f_\theta(z)||^2 - C
 $$
-    
+
 Let the distortion be the squared error $d(x, \hat{x}) = ||x - f_\theta(z)||^2$. Then the expected reconstruction term is exactly proportional to the negative expected distortion: $-\frac{1}{2\sigma^2} \mathbb{E}[d(X, \hat{X})]$.
 
 2. **KL Divergence Term:** The expected KL divergence across the data distribution $p(x)$ is:
@@ -84,19 +84,19 @@ Let the distortion be the squared error $d(x, \hat{x}) = ||x - f_\theta(z)||^2$.
 $$
 \mathbb{E}_{p(x)}[D_{KL}(q_\phi(z|x) || p(z))] = \int p(x) \int q_\phi(z|x) \log \frac{q_\phi(z|x)}{p(z)} dz dx
 $$
-    
+
 This is an upper bound on the mutual information $I(X; Z)$. To see this, note that:
     
 $$
 I(X; Z) = \int p(x) \int q_\phi(z|x) \log \frac{q_\phi(z|x)}{q(z)} dz dx
 $$
-    
+
 where $q(z) = \int p(x) q_\phi(z|x) dx$ is the true aggregate posterior. Since $D_{KL}(q(z) || p(z)) \ge 0$, we have:
     
 $$
 \mathbb{E}_{p(x)}[D_{KL}(q_\phi(z|x) || p(z))] = I(X; Z) + D_{KL}(q(z) || p(z)) \ge I(X; Z)
 $$
-    
+
 This term represents the *Rate* (bits spent compressing $X$ into $Z$).
 
 Putting it together, maximizing the average ELBO:

@@ -11,7 +11,7 @@ The geometry of high-dimensional spaces $\mathbb{R}^d$ (for large $d$) is highly
     $$
     \gamma_d(A_\epsilon) \ge \Phi(\Phi^{-1}(\gamma_d(A)) + \epsilon)
     $$
-    
+
     where $\Phi$ is the cumulative distribution function of a standard 1D Gaussian.
 **Proof:**
 The proof follows from the Ehrhard inequality, which states that for any convex sets $A, B \subseteq \mathbb{R}^d$ and $\lambda \in [0, 1]$:
@@ -28,7 +28,7 @@ By approximating arbitrary Borel sets with convex polyhedra and taking $B$ to be
     $$
     \text{Ent}_{\gamma_d}(f^2) \le 2 \int_{\mathbb{R}^d} \|\nabla f\|^2 d\gamma_d
     $$
-    
+
     where $\text{Ent}_{\gamma_d}(g) = \mathbb{E}[g \log g] - \mathbb{E}[g] \log \mathbb{E}[g]$.
 **Proof:**
 We prove this via the hypercontractivity of the Ornstein-Uhlenbeck semigroup $P_t$. Let $P_t f(x) = \mathbb{E}[f(e^{-t}x + \sqrt{1-e^{-2t}}Z)]$ where $Z \sim \mathcal{N}(0, I_d)$. Gross's theorem states that $\|P_t f\|_q \le \|f\|_p$ for $1 < p < q < \infty$ if $e^{2t} \ge (q-1)/(p-1)$. 
@@ -42,6 +42,7 @@ Differentiating the hypercontractive bound $\|P_t f\|_{q(t)} \le \|f\|_2$ with r
     $$
     (1-\epsilon)\|x_i - x_j\|^2 \le \|f(x_i) - f(x_j)\|^2 \le (1+\epsilon)\|x_i - x_j\|^2
     $$
+
 **Proof:**
 Let $A \in \mathbb{R}^{k \times d}$ be a random matrix whose entries are sampled i.i.d. from $\mathcal{N}(0, 1/k)$. For any fixed vector $u \in \mathbb{R}^d$ with $\|u\| = 1$, the random variable $Z = \|A u\|^2$ is a sum of $k$ independent $\chi^2_1$ variables, scaled by $1/k$.
 Thus, $\mathbb{E}[Z] = 1$. By the Chernoff bound for the $\chi^2$ distribution, for any $\epsilon \in (0, 1)$:

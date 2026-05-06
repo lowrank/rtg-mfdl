@@ -81,6 +81,7 @@ Analysis of RGD depends on the manifold's curvature and **geodesic convexity**.
 
 !!! info "Definition (Geodesic Convexity)"
     A function $f: \mathcal{M} \to \mathbb{R}$ is geodesically convex if for every geodesic $\gamma(t)$:
+
     $$
     f(\gamma(t)) \leq (1-t)f(\gamma(0)) + t f(\gamma(1))
     $$

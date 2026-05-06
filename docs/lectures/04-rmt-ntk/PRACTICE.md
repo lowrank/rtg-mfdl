@@ -9,11 +9,9 @@ This module provides theoretical and practical exercises to reinforce the concep
 ### 1.1 The Stieltjes Transform of the Semicircle Law
 The Stieltjes transform $G(z) = \mathbb{E}[\frac{1}{z - \lambda}]$ for Wigner's semicircle law $\rho(\lambda) = \frac{1}{2\pi} \sqrt{4 - \lambda^2}$ satisfies:
 
-
 $$
 G(z)^2 - z G(z) + 1 = 0
 $$
-
 
 1.  Solve this quadratic for $G(z)$. Which branch should you choose?
 2.  Use the inversion formula $\rho(\lambda) = \lim_{\epsilon \to 0^+} \frac{-1}{\pi} \text{Im } G(\lambda + i\epsilon)$ to recover the semicircle density.

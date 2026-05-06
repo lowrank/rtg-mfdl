@@ -4,35 +4,28 @@
 
 Consider the **Rosenbrock Function**, a classic non-convex test case for optimization:
 
-
 $$
 f(x, y) = (1 - x)^2 + 100(y - x^2)^2
 $$
-
 
 The global minimum is at $(1, 1)$ where $f(1, 1) = 0$.
 
 ### 1.1. Gradient and Hessian Calculation
 The gradient $\nabla f(x, y)$ is:
 
-
 $$
 \frac{\partial f}{\partial x} = -2(1 - x) - 400x(y - x^2)
 $$
-
 
 $$
 \frac{\partial f}{\partial y} = 200(y - x^2)
 $$
 
-
 The Hessian $\mathbf{H}(x, y)$ is:
-
 
 $$
 \mathbf{H} = \begin{pmatrix} 2 - 400y + 1200x^2 & -400x \\ -400x & 200 \end{pmatrix}
 $$
-
 
 ### 1.2. Newton Step from $(-1, 2)$
 
@@ -40,11 +33,9 @@ $$
 2. **Evaluate Hessian**: $\mathbf{H}(-1, 2) = \begin{pmatrix} 2 - 800 + 1200 & 400 \\ 400 & 200 \end{pmatrix} = \begin{pmatrix} 402 & 400 \\ 400 & 200 \end{pmatrix}$.
 3. **Invert Hessian**: $\det(\mathbf{H}) = 402(200) - 400^2 = 80400 - 160000 = -79600$.
 
-
 $$
 \mathbf{H}^{-1} = \frac{1}{-79600} \begin{pmatrix} 200 & -400 \\ -400 & 402 \end{pmatrix}
 $$
-
 
 4. **Compute Update**: $\Delta w = -\mathbf{H}^{-1} \nabla f \approx (0.001, -0.998)^\top$.
    Note that because the Hessian is not positive definite at this point ($\det < 0$), the Newton step might move towards a saddle point or maximum unless damped (Levenberg-Marquardt).
@@ -73,11 +64,9 @@ Briefly derive why SVRG can use a constant learning rate while SGD must use a de
 ### Exercise 6: Nesterov Accelerated Gradient (NAG)
 Consider the NAG updates:
 
-
 $$
 y_{t+1} = x_t - \eta \nabla f(x_t)
 $$
-
 
 1.
 
@@ -86,7 +75,6 @@ Show that for a quadratic $f(x) = \frac{1}{2} x^\top \mathbf{A} x$, this is equi
 ### Exercise 7: Gradient Flow and Neural Tangent Kernel (NTK)
 In the limit of $\eta \to 0$, GD becomes a differential equation: $\dot{w}(t) = -\nabla f(w(t))$.
 If $f(w) = \frac{1}{2}\|y - \Phi(w)\|^2$, show that the evolution of predictions $\hat{y}(t) = \Phi(w(t))$ follows:
-
 
 $$
 \dot{\hat{y}}(t) = -\mathbf{K}(t)(\hat{y}(t) - y)

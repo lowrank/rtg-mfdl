@@ -63,31 +63,54 @@ To truly understand what a kernel is doing, we turn to Mercer's Theorem. This th
 
 1. **Integral Operator Formulation:**
    We define a linear integral operator $T_k: L^2(\mathcal{X}) \to L^2(\mathcal{X})$ as follows:
-   $$ (T_k f)(x) = \int_{\mathcal{X}} k(x, y) f(y) \, d\mu(y) $$
+
+   $$
+   (T_k f)(x) = \int_{\mathcal{X}} k(x, y) f(y) \, d\mu(y)
+   $$
+
    where $\mu$ is a finite Borel measure on $\mathcal{X}$.
 
 2. **Properties of the Operator:**
    - **Compactness:** Because the kernel $k(x, y)$ is continuous on the compact domain $\mathcal{X} \times \mathcal{X}$, it is bounded. This guarantees that $T_k$ maps bounded sets in $L^2(\mathcal{X})$ to relatively compact sets, meaning $T_k$ is a **compact operator**.
    - **Self-Adjointness:** Since the kernel is symmetric ($k(x, y) = k(y, x)$), it follows that for any two functions $f, g \in L^2(\mathcal{X})$, the inner product satisfies $\langle T_k f, g \rangle = \langle f, T_k g \rangle$. Thus, $T_k$ is a self-adjoint operator.
    - **Positivity:** Because the kernel is PSD, the operator is positive:
-     $$ \langle f, T_k f \rangle = \int_{\mathcal{X}} \int_{\mathcal{X}} k(x, y) f(x) f(y) \, d\mu(x) d\mu(y) \geq 0 $$
+
+     $$
+     \langle f, T_k f \rangle = \int_{\mathcal{X}} \int_{\mathcal{X}} k(x, y) f(x) f(y) \, d\mu(x) d\mu(y) \geq 0
+     $$
 
 3. **Spectral Theorem for Compact Self-Adjoint Operators:**
    By the spectral theorem, any compact, self-adjoint operator on a Hilbert space possesses an orthonormal basis of eigenfunctions $\{\phi_i\}$ corresponding to real eigenvalues $\lambda_i$. Since the operator is positive, all $\lambda_i \geq 0$. Furthermore, because $T_k$ is compact, the sequence of eigenvalues must converge to zero: $\lim_{i \to \infty} \lambda_i = 0$.
 
 4. **Uniform Convergence (Mercer's Contribution):**
    The spectral theorem alone only gives us convergence in the $L^2$ norm. Mercer's specific contribution was proving that because $k$ is continuous and PSD, the spectral decomposition converges **absolutely and uniformly**. We define the partial sums:
-   $$ k_N(x, y) = \sum_{i=1}^N \lambda_i \phi_i(x) \phi_i(y) $$
+
+   $$
+   k_N(x, y) = \sum_{i=1}^N \lambda_i \phi_i(x) \phi_i(y)
+   $$
+
    By Dini's Theorem, a monotonic sequence of continuous functions converging point-wise to a continuous function on a compact space must converge uniformly. The sequence $R_N(x, x) = k(x, x) - k_N(x, x)$ is a decreasing sequence of continuous, non-negative functions converging to 0. Thus, the convergence is uniform. $\blacksquare$
 
 **The Infinite-Dimensional Linear Model:**
 Mercer's Theorem provides a stunning reinterpretation of Gaussian Processes. Let's define an infinite-dimensional feature vector for an input $x$:
-$$ \Phi(x) = [\sqrt{\lambda_1} \phi_1(x), \sqrt{\lambda_2} \phi_2(x), \dots]^T $$
+
+$$
+\Phi(x) = [\sqrt{\lambda_1} \phi_1(x), \sqrt{\lambda_2} \phi_2(x), \dots]^T
+$$
+
 Then the kernel is exactly the dot product in this space: $k(x, x') = \Phi(x)^T \Phi(x')$.
 Now, consider a linear model with infinite parameters $w_i \sim \mathcal{N}(0, 1)$:
-$$ f(x) = \mathbf{w}^T \Phi(x) = \sum_{i=1}^\infty w_i \sqrt{\lambda_i} \phi_i(x) $$
+
+$$
+f(x) = \mathbf{w}^T \Phi(x) = \sum_{i=1}^\infty w_i \sqrt{\lambda_i} \phi_i(x)
+$$
+
 Because linear combinations of Gaussians are Gaussian, $f(x)$ is a Gaussian Process. Its mean is zero, and its covariance is:
-$$ \mathbb{E}[f(x) f(x')] = \mathbb{E}[\Phi(x)^T \mathbf{w} \mathbf{w}^T \Phi(x')] = \Phi(x)^T \mathbb{E}[\mathbf{w} \mathbf{w}^T] \Phi(x') = \Phi(x)^T \mathbf{I} \Phi(x') = k(x, x') $$
+
+$$
+\mathbb{E}[f(x) f(x')] = \mathbb{E}[\Phi(x)^T \mathbf{w} \mathbf{w}^T \Phi(x')] = \Phi(x)^T \mathbb{E}[\mathbf{w} \mathbf{w}^T] \Phi(x') = \Phi(x)^T \mathbf{I} \Phi(x') = k(x, x')
+$$
+
 Thus, **every Gaussian Process is equivalent to a Bayesian linear regression model with an infinite number of basis functions**.
 
 ### 2.4 Exact Bayesian Inference with GPs
@@ -109,10 +132,16 @@ f_* \mid \mathcal{D}, \mathbf{x}_* \sim \mathcal{N}(\mu_*, \sigma_*^2)
 $$
 
 Where the predictive mean is:
-$$ \mu_* = \mathbf{k}(\mathbf{x}_*, \mathbf{X}) [\mathbf{K}(\mathbf{X}, \mathbf{X}) + \sigma_n^2 \mathbf{I}]^{-1} \mathbf{y} $$
+
+$$
+\mu_* = \mathbf{k}(\mathbf{x}_*, \mathbf{X}) [\mathbf{K}(\mathbf{X}, \mathbf{X}) + \sigma_n^2 \mathbf{I}]^{-1} \mathbf{y}
+$$
 
 And the predictive variance (representing epistemic uncertainty) is:
-$$ \sigma_*^2 = k(\mathbf{x}_*, \mathbf{x}_*) - \mathbf{k}(\mathbf{x}_*, \mathbf{X}) [\mathbf{K}(\mathbf{X}, \mathbf{X}) + \sigma_n^2 \mathbf{I}]^{-1} \mathbf{k}(\mathbf{X}, \mathbf{x}_*) $$
+
+$$
+\sigma_*^2 = k(\mathbf{x}_*, \mathbf{x}_*) - \mathbf{k}(\mathbf{x}_*, \mathbf{X}) [\mathbf{K}(\mathbf{X}, \mathbf{X}) + \sigma_n^2 \mathbf{I}]^{-1} \mathbf{k}(\mathbf{X}, \mathbf{x}_*)
+$$
 
 The inversion of the $N \times N$ matrix $[\mathbf{K} + \sigma_n^2 \mathbf{I}]$ requires $O(N^3)$ operations. This cubic scaling is the primary computational bottleneck of Gaussian Processes, preventing their direct application to datasets with millions of examples.
 
@@ -149,32 +178,66 @@ Consequently, the post-activations $h_j(x) = \phi(g_j(x))$ are also i.i.d. rando
 
 **Step 2: Defining the Summands**
 We can rewrite the network output as:
-$$ f(x) = b + \sum_{j=1}^H \zeta_j(x) $$
+
+$$
+f(x) = b + \sum_{j=1}^H \zeta_j(x)
+$$
+
 where we define $\zeta_j(x) = \frac{1}{\sqrt{H}} v_j h_j(x)$.
 Because the output weights $v_j$ are i.i.d. and independent of the hidden layer parameters, the terms $\zeta_1(x), \dots, \zeta_H(x)$ are mutually independent and identically distributed.
 
 **Step 3: Calculating the Mean**
 The expected value of each summand is:
-$$ \mathbb{E}[\zeta_j(x)] = \frac{1}{\sqrt{H}} \mathbb{E}[v_j] \mathbb{E}[h_j(x)] $$
+
+$$
+\mathbb{E}[\zeta_j(x)] = \frac{1}{\sqrt{H}} \mathbb{E}[v_j] \mathbb{E}[h_j(x)]
+$$
+
 Since the prior on $v_j$ has zero mean ($\mathbb{E}[v_j] = 0$), the expected value of $\zeta_j(x)$ is zero.
 Therefore, the expected value of the network output is:
-$$ \mathbb{E}[f(x)] = \mathbb{E}[b] + \sum_{j=1}^H \mathbb{E}[\zeta_j(x)] = 0 + 0 = 0 $$
+
+$$
+\mathbb{E}[f(x)] = \mathbb{E}[b] + \sum_{j=1}^H \mathbb{E}[\zeta_j(x)] = 0 + 0 = 0
+$$
 
 **Step 4: Calculating the Covariance (The NNGP Kernel)**
 We evaluate the covariance between the network outputs at two different inputs, $x$ and $x'$:
-$$ K(x, x') = \mathbb{E}[f(x) f(x')] = \mathbb{E}\left[ \left( b + \sum_{j=1}^H \zeta_j(x) \right) \left( b + \sum_{k=1}^H \zeta_k(x') \right) \right] $$
+
+$$
+K(x, x') = \mathbb{E}[f(x) f(x')] = \mathbb{E}\left[ \left( b + \sum_{j=1}^H \zeta_j(x) \right) \left( b + \sum_{k=1}^H \zeta_k(x') \right) \right]
+$$
+
 Expanding the product and using the linearity of expectation:
-$$ K(x, x') = \mathbb{E}[b^2] + \mathbb{E}\left[ \sum_{j=1}^H \sum_{k=1}^H \zeta_j(x) \zeta_k(x') \right] $$
+
+$$
+K(x, x') = \mathbb{E}[b^2] + \mathbb{E}\left[ \sum_{j=1}^H \sum_{k=1}^H \zeta_j(x) \zeta_k(x') \right]
+$$
+
 Because $b \sim \mathcal{N}(0, \sigma_{b,out}^2)$, $\mathbb{E}[b^2] = \sigma_{b,out}^2$.
 For the double sum, we use the fact that for $j \neq k$, $\zeta_j$ and $\zeta_k$ are independent with mean zero, so $\mathbb{E}[\zeta_j(x) \zeta_k(x')] = 0$. Only the diagonal terms $j=k$ survive:
-$$ K(x, x') = \sigma_{b,out}^2 + \sum_{j=1}^H \mathbb{E}[\zeta_j(x) \zeta_j(x')] $$
+
+$$
+K(x, x') = \sigma_{b,out}^2 + \sum_{j=1}^H \mathbb{E}[\zeta_j(x) \zeta_j(x')]
+$$
+
 Substitute the definition of $\zeta_j(x)$:
-$$ \mathbb{E}[\zeta_j(x) \zeta_j(x')] = \frac{1}{H} \mathbb{E}[v_j^2] \mathbb{E}[h_j(x) h_j(x')] $$
+
+$$
+\mathbb{E}[\zeta_j(x) \zeta_j(x')] = \frac{1}{H} \mathbb{E}[v_j^2] \mathbb{E}[h_j(x) h_j(x')]
+$$
+
 Since $v_j \sim \mathcal{N}(0, \sigma_v^2)$, $\mathbb{E}[v_j^2] = \sigma_v^2$. Furthermore, because all $h_j$ are identically distributed, the expectation $\mathbb{E}[h_j(x) h_j(x')]$ is the same for all $j$. Let's denote the generic weights and bias as $\mathbf{w}$ and $b_{hid}$.
 The sum simplifies:
-$$ \sum_{j=1}^H \frac{1}{H} \sigma_v^2 \mathbb{E}[h_j(x) h_j(x')] = \sigma_v^2 \mathbb{E}_{\mathbf{w}, b_{hid}} [\phi(\mathbf{w}^T x + b_{hid}) \phi(\mathbf{w}^T x' + b_{hid})] $$
+
+$$
+\sum_{j=1}^H \frac{1}{H} \sigma_v^2 \mathbb{E}[h_j(x) h_j(x')] = \sigma_v^2 \mathbb{E}_{\mathbf{w}, b_{hid}} [\phi(\mathbf{w}^T x + b_{hid}) \phi(\mathbf{w}^T x' + b_{hid})]
+$$
+
 Thus, the analytic expression for the covariance is:
-$$ K(x, x') = \sigma_{b,out}^2 + \sigma_v^2 \mathbb{E}_{\mathbf{w}, b_{hid}} [\phi(\mathbf{w}^T x + b_{hid}) \phi(\mathbf{w}^T x' + b_{hid})] $$
+
+$$
+K(x, x') = \sigma_{b,out}^2 + \sigma_v^2 \mathbb{E}_{\mathbf{w}, b_{hid}} [\phi(\mathbf{w}^T x + b_{hid}) \phi(\mathbf{w}^T x' + b_{hid})]
+$$
 
 **Step 5: Applying the Central Limit Theorem**
 We have established that for any finite set of inputs $X = \{x_1, \dots, x_N\}$, the output vector $\mathbf{f} = [f(x_1), \dots, f(x_N)]^T$ is composed of a constant bias vector $\mathbf{b}$ plus a sum of $H$ independent and identically distributed random vectors $\boldsymbol{\zeta}_j = [\zeta_j(x_1), \dots, \zeta_j(x_N)]^T$.
@@ -190,18 +253,31 @@ While Neal's theorem applied to shallow networks, Lee et al. (2018) and Matthews
 
 Consider a deep MLP. Let $g^{(l)}(x)$ denote the pre-activations at layer $l$, and $h^{(l)}(x) = \phi(g^{(l)}(x))$ denote the post-activations.
 We model the network recursively:
-$$ g_j^{(l+1)}(x) = b_j^{(l+1)} + \frac{1}{\sqrt{H_l}} \sum_{k=1}^{H_l} W_{jk}^{(l+1)} h_k^{(l)}(x) $$
+
+$$
+g_j^{(l+1)}(x) = b_j^{(l+1)} + \frac{1}{\sqrt{H_l}} \sum_{k=1}^{H_l} W_{jk}^{(l+1)} h_k^{(l)}(x)
+$$
 
 If the previous layer $g^{(l)}$ is a Gaussian Process, then the activations $h_k^{(l)}$ are independent as $H_l \to \infty$. The sum forming $g^{(l+1)}$ again invokes the Central Limit Theorem. Thus, $g^{(l+1)}$ is also a Gaussian Process. This inductive reasoning shows that every layer in an infinite-width network represents a GP.
 
 The covariance of the $l$-th layer, $K^{(l)}(x, x')$, is computed via a recursive integral.
 For the input layer ($l=0$):
-$$ K^{(0)}(x, x') = \frac{\sigma_w^2}{d} x^T x' + \sigma_b^2 $$
+
+$$
+K^{(0)}(x, x') = \frac{\sigma_w^2}{d} x^T x' + \sigma_b^2
+$$
 
 For subsequent layers ($l \geq 1$):
-$$ K^{(l)}(x, x') = \sigma_b^2 + \sigma_w^2 \mathbb{E}_{(u, v) \sim \mathcal{N}(\mathbf{0}, \mathbf{\Sigma}^{(l-1)})} [\phi(u) \phi(v)] $$
+
+$$
+K^{(l)}(x, x') = \sigma_b^2 + \sigma_w^2 \mathbb{E}_{(u, v) \sim \mathcal{N}(\mathbf{0}, \mathbf{\Sigma}^{(l-1)})} [\phi(u) \phi(v)]
+$$
+
 Where the 2D Gaussian distribution for $(u, v)$ has the covariance matrix:
-$$ \mathbf{\Sigma}^{(l-1)} = \begin{pmatrix} K^{(l-1)}(x, x) & K^{(l-1)}(x, x') \\ K^{(l-1)}(x', x) & K^{(l-1)}(x', x') \end{pmatrix} $$
+
+$$
+\mathbf{\Sigma}^{(l-1)} = \begin{pmatrix} K^{(l-1)}(x, x) & K^{(l-1)}(x, x') \\ K^{(l-1)}(x', x) & K^{(l-1)}(x', x') \end{pmatrix}
+$$
 
 This remarkable formula allows us to compute the exact, analytic prior covariance between two images as they pass through an infinitely deep network, without ever instantiating a single random weight!
 
@@ -211,13 +287,28 @@ Computing the 2D Gaussian expectation $\mathbb{E} [\phi(u) \phi(v)]$ generally r
 
 The most famous is the **ReLU activation** ($\phi(z) = \max(0, z)$), which leads to the **Arc-Cosine Kernel** (Cho & Saul, 2009).
 Let $\mathbf{\Sigma}^{(l-1)}$ be the covariance matrix. We define the variances and the correlation coefficient:
-$$ \Sigma_{11} = K^{(l-1)}(x, x) $$
-$$ \Sigma_{22} = K^{(l-1)}(x', x') $$
-$$ \Sigma_{12} = K^{(l-1)}(x, x') $$
-$$ \cos \theta = \frac{\Sigma_{12}}{\sqrt{\Sigma_{11} \Sigma_{22}}} \implies \theta = \arccos\left(\frac{\Sigma_{12}}{\sqrt{\Sigma_{11} \Sigma_{22}}}\right) $$
+
+$$
+\Sigma_{11} = K^{(l-1)}(x, x)
+$$
+
+$$
+\Sigma_{22} = K^{(l-1)}(x', x')
+$$
+
+$$
+\Sigma_{12} = K^{(l-1)}(x, x')
+$$
+
+$$
+\cos \theta = \frac{\Sigma_{12}}{\sqrt{\Sigma_{11} \Sigma_{22}}} \implies \theta = \arccos\left(\frac{\Sigma_{12}}{\sqrt{\Sigma_{11} \Sigma_{22}}}\right)
+$$
 
 The integral evaluates analytically to:
-$$ \mathbb{E}[\text{ReLU}(u) \text{ReLU}(v)] = \frac{\sqrt{\Sigma_{11} \Sigma_{22}}}{2\pi} (\sin \theta + (\pi - \theta) \cos \theta) $$
+
+$$
+\mathbb{E}[\text{ReLU}(u) \text{ReLU}(v)] = \frac{\sqrt{\Sigma_{11} \Sigma_{22}}}{2\pi} (\sin \theta + (\pi - \theta) \cos \theta)
+$$
 
 This formula is computationally trivial to evaluate, allowing us to compute exact deep NNGP kernels for MLPs of arbitrary depth on standard hardware.
 
@@ -232,7 +323,11 @@ In a Convolutional Neural Network (CNN), the hidden layers are spatial feature m
 Instead of a single scalar covariance $K(x, x')$ for a pair of images, the ConvNNGP tracks a spatial covariance tensor $K(x, x', p, p')$, which represents the covariance between the pixel at position $p$ in image $x$ and the pixel at position $p'$ in image $x'$.
 
 For a standard convolution with filter size $F \times F$, the pre-activation covariance at layer $l+1$ is computed by aggregating the post-activation covariances from the local receptive fields in layer $l$:
-$$ K^{(l+1)}(x, x', p, p') = \sigma_b^2 + \frac{\sigma_w^2}{F^2} \sum_{\Delta p \in F} \sum_{\Delta p' \in F} \mathbb{E} [\phi(u_{\Delta p}) \phi(v_{\Delta p'})] $$
+
+$$
+K^{(l+1)}(x, x', p, p') = \sigma_b^2 + \frac{\sigma_w^2}{F^2} \sum_{\Delta p \in F} \sum_{\Delta p' \in F} \mathbb{E} [\phi(u_{\Delta p}) \phi(v_{\Delta p'})]
+$$
+
 Applying pooling operations (like Global Average Pooling) at the end of the network simply averages these spatial covariances into a single $1 \times 1$ scalar covariance matrix, which can then be used for standard GP classification or regression.
 
 ### 5.2 Recurrent NNGP
@@ -249,27 +344,58 @@ Recurrent Neural Networks (RNNs) apply the same weight matrix iteratively over a
 $k(1, 1) = \exp(0) = 1.0$
 $k(3, 3) = \exp(0) = 1.0$
 $k(1, 3) = k(3, 1) = \exp(-\frac{1}{2}(1 - 3)^2) = \exp(-2) \approx 0.1353$
-$$ \mathbf{K} = \begin{bmatrix} 1.0 & 0.1353 \\ 0.1353 & 1.0 \end{bmatrix} $$
+
+$$
+\mathbf{K} = \begin{bmatrix} 1.0 & 0.1353 \\ 0.1353 & 1.0 \end{bmatrix}
+$$
 
 **Step 2: Add Noise and Invert**
-$$ \mathbf{K} + \sigma_n^2 \mathbf{I} = \begin{bmatrix} 1.01 & 0.1353 \\ 0.1353 & 1.01 \end{bmatrix} $$
+
+$$
+\mathbf{K} + \sigma_n^2 \mathbf{I} = \begin{bmatrix} 1.01 & 0.1353 \\ 0.1353 & 1.01 \end{bmatrix}
+$$
+
 Determinant $D = 1.01^2 - 0.1353^2 = 1.0201 - 0.0183 = 1.0018$
-$$ (\mathbf{K} + \sigma_n^2 \mathbf{I})^{-1} = \frac{1}{1.0018} \begin{bmatrix} 1.01 & -0.1353 \\ -0.1353 & 1.01 \end{bmatrix} \approx \begin{bmatrix} 1.008 & -0.135 \\ -0.135 & 1.008 \end{bmatrix} $$
+
+$$
+(\mathbf{K} + \sigma_n^2 \mathbf{I})^{-1} = \frac{1}{1.0018} \begin{bmatrix} 1.01 & -0.1353 \\ -0.1353 & 1.01 \end{bmatrix} \approx \begin{bmatrix} 1.008 & -0.135 \\ -0.135 & 1.008 \end{bmatrix}
+$$
 
 **Step 3: Compute Test-Train Covariance Vector $\mathbf{k}_*$**
 $k(2, 1) = \exp(-\frac{1}{2}(2-1)^2) = \exp(-0.5) \approx 0.6065$
 $k(2, 3) = \exp(-\frac{1}{2}(2-3)^2) = \exp(-0.5) \approx 0.6065$
-$$ \mathbf{k}_* = \begin{bmatrix} 0.6065 \\ 0.6065 \end{bmatrix} $$
+
+$$
+\mathbf{k}_* = \begin{bmatrix} 0.6065 \\ 0.6065 \end{bmatrix}
+$$
 
 **Step 4: Compute Predictive Mean $\mu_*$**
-$$ \mu_* = \mathbf{k}_*^T (\mathbf{K} + \sigma_n^2 \mathbf{I})^{-1} \mathbf{y}_{train} $$
-$$ \mu_* = \begin{bmatrix} 0.6065 & 0.6065 \end{bmatrix} \begin{bmatrix} 1.008 & -0.135 \\ -0.135 & 1.008 \end{bmatrix} \begin{bmatrix} 0.5 \\ 2.0 \end{bmatrix} $$
-$$ = \begin{bmatrix} 0.6065(1.008 - 0.135) & 0.6065(-0.135 + 1.008) \end{bmatrix} \begin{bmatrix} 0.5 \\ 2.0 \end{bmatrix} $$
-$$ = \begin{bmatrix} 0.529 & 0.529 \end{bmatrix} \begin{bmatrix} 0.5 \\ 2.0 \end{bmatrix} = 0.2645 + 1.058 = 1.3225 $$
+
+$$
+\mu_* = \mathbf{k}_*^T (\mathbf{K} + \sigma_n^2 \mathbf{I})^{-1} \mathbf{y}_{train}
+$$
+
+$$
+\mu_* = \begin{bmatrix} 0.6065 & 0.6065 \end{bmatrix} \begin{bmatrix} 1.008 & -0.135 \\ -0.135 & 1.008 \end{bmatrix} \begin{bmatrix} 0.5 \\ 2.0 \end{bmatrix}
+$$
+
+$$
+= \begin{bmatrix} 0.6065(1.008 - 0.135) & 0.6065(-0.135 + 1.008) \end{bmatrix} \begin{bmatrix} 0.5 \\ 2.0 \end{bmatrix}
+$$
+
+$$
+= \begin{bmatrix} 0.529 & 0.529 \end{bmatrix} \begin{bmatrix} 0.5 \\ 2.0 \end{bmatrix} = 0.2645 + 1.058 = 1.3225
+$$
 
 **Step 5: Compute Predictive Variance $\sigma_*^2$**
-$$ \sigma_*^2 = k(x_*, x_*) - \mathbf{k}_*^T (\mathbf{K} + \sigma_n^2 \mathbf{I})^{-1} \mathbf{k}_* $$
-$$ = 1.0 - \begin{bmatrix} 0.529 & 0.529 \end{bmatrix} \begin{bmatrix} 0.6065 \\ 0.6065 \end{bmatrix} = 1.0 - (0.3208 + 0.3208) = 1.0 - 0.6416 = 0.3584 $$
+
+$$
+\sigma_*^2 = k(x_*, x_*) - \mathbf{k}_*^T (\mathbf{K} + \sigma_n^2 \mathbf{I})^{-1} \mathbf{k}_*
+$$
+
+$$
+= 1.0 - \begin{bmatrix} 0.529 & 0.529 \end{bmatrix} \begin{bmatrix} 0.6065 \\ 0.6065 \end{bmatrix} = 1.0 - (0.3208 + 0.3208) = 1.0 - 0.6416 = 0.3584
+$$
 
 The predictive distribution at $x=2.0$ is $\mathcal{N}(1.3225, 0.3584)$.
 
@@ -279,19 +405,38 @@ The predictive distribution at $x=2.0$ is $\mathcal{N}(1.3225, 0.3584)$.
 
 **Solution:**
 For the first hidden layer ($l=1$), the base recursion gives:
-$$ K^{(1)}(x, x') = \sigma_w^2 \mathbb{E}_{\mathbf{w}} [(\mathbf{w}^T x)(\mathbf{w}^T x')] = \sigma_w^2 x^T \mathbb{E}[\mathbf{w} \mathbf{w}^T] x' = \sigma_w^2 x^T \mathbf{I} x' = \sigma_w^2 x^T x' $$
+
+$$
+K^{(1)}(x, x') = \sigma_w^2 \mathbb{E}_{\mathbf{w}} [(\mathbf{w}^T x)(\mathbf{w}^T x')] = \sigma_w^2 x^T \mathbb{E}[\mathbf{w} \mathbf{w}^T] x' = \sigma_w^2 x^T \mathbf{I} x' = \sigma_w^2 x^T x'
+$$
+
 This is exactly the standard linear kernel.
 
 For the second hidden layer ($l=2$), we use the recursive formula:
-$$ K^{(2)}(x, x') = \sigma_w^2 \mathbb{E}_{(u, v) \sim \mathcal{N}(\mathbf{0}, \mathbf{\Sigma}^{(1)})} [\phi(u)\phi(v)] $$
+
+$$
+K^{(2)}(x, x') = \sigma_w^2 \mathbb{E}_{(u, v) \sim \mathcal{N}(\mathbf{0}, \mathbf{\Sigma}^{(1)})} [\phi(u)\phi(v)]
+$$
+
 Since $\phi$ is the identity function, this is just $\mathbb{E}[u v]$. By definition, the expectation of the product of two zero-mean correlated Gaussian variables $u, v$ is their covariance, which is exactly the off-diagonal element of $\mathbf{\Sigma}^{(1)}$.
 Therefore:
-$$ \mathbb{E}[u v] = \Sigma^{(1)}_{12} = K^{(1)}(x, x') $$
+
+$$
+\mathbb{E}[u v] = \Sigma^{(1)}_{12} = K^{(1)}(x, x')
+$$
+
 Substituting this back:
-$$ K^{(2)}(x, x') = \sigma_w^2 K^{(1)}(x, x') = \sigma_w^2 (\sigma_w^2 x^T x') = (\sigma_w^2)^2 x^T x' $$
+
+$$
+K^{(2)}(x, x') = \sigma_w^2 K^{(1)}(x, x') = \sigma_w^2 (\sigma_w^2 x^T x') = (\sigma_w^2)^2 x^T x'
+$$
 
 By strict mathematical induction, for any depth $L$:
-$$ K^{(L)}(x, x') = (\sigma_w^2)^L x^T x' $$
+
+$$
+K^{(L)}(x, x') = (\sigma_w^2)^L x^T x'
+$$
+
 This proves that stacking linear layers, even infinitely wide ones, does not increase the expressive capacity of the model beyond linear regression. It merely scales the variance of the linear kernel by $(\sigma_w^2)^L$.
 
 ## 7. Exhaustive Coding Demonstrations

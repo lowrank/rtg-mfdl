@@ -56,16 +56,13 @@ Because $W_1 \leq W_2$ by Jensen's inequality (or monotonicity of $L_p$ norms), 
 
 The Bobkov-Götze theorem is a fundamental result demonstrating that satisfying the $T_1$ inequality is precisely equivalent to the measure exhibiting sub-Gaussian concentration for all 1-Lipschitz functions. 
 
-
 !!! success "Theorem (Bobkov-Götze)"
     A measure $\mu$ satisfies the $T_1$ inequality with constant $C > 0$ if and only if for every 1-Lipschitz function $f: X \to \mathbb{R}$ and every $\lambda \in \mathbb{R}$, the following moment generating function bound holds:
-    
     
     $$
     \int_X e^{\lambda (f(x) - \mathbb{E}_\mu[f])} \, d\mu(x) \leq e^{C \lambda^2 / 2}
     $$
-    
-    
+
 **Rigorous Proof:**
     
 We will prove the implication that $T_1$ implies sub-Gaussianity. Let $f \in \text{Lip}_1(X)$ be a 1-Lipschitz function. We assume, without loss of generality, that $\mathbb{E}_\mu[f] = \int f d\mu = 0$.
@@ -75,7 +72,7 @@ For any $\lambda > 0$, we define a new probability measure $\nu_\lambda$ via its
 $$
 \frac{d\nu_\lambda}{d\mu}(x) = \frac{e^{\lambda f(x)}}{Z(\lambda)}
 $$
-    
+
 where $Z(\lambda) = \int_X e^{\lambda f(x)} \, d\mu(x)$ is the normalizing constant (partition function).
     
 First, let us compute the KL divergence between $\nu_\lambda$ and $\mu$:
@@ -83,61 +80,61 @@ First, let us compute the KL divergence between $\nu_\lambda$ and $\mu$:
 $$
 D_{KL}(\nu_\lambda || \mu) = \int_X \log\left(\frac{e^{\lambda f(x)}}{Z(\lambda)}\right) \, d\nu_\lambda(x)
 $$
-    
+
 By linearity of the integral, this expands to:
     
 $$
 D_{KL}(\nu_\lambda || \mu) = \lambda \int_X f(x) \, d\nu_\lambda(x) - \log Z(\lambda)
 $$
-    
+
 Next, we utilize the Kantorovich-Rubinstein duality for the 1-Wasserstein distance. Since $f$ is 1-Lipschitz, we have:
     
 $$
 \int_X f \, d\nu_\lambda - \int_X f \, d\mu \leq W_1(\mu, \nu_\lambda)
 $$
-    
+
 Because we assumed $\int f d\mu = 0$, this simplifies to:
     
 $$
 \int_X f \, d\nu_\lambda \leq W_1(\mu, \nu_\lambda)
 $$
-    
+
 Now, we apply the premise that $\mu$ satisfies the $T_1$ inequality:
     
 $$
 W_1(\mu, \nu_\lambda) \leq \sqrt{2 C \cdot D_{KL}(\nu_\lambda || \mu)}
 $$
-    
+
 Substituting our derived expression for the KL divergence into this inequality yields:
     
 $$
 \int_X f \, d\nu_\lambda \leq \sqrt{2 C \left( \lambda \int_X f \, d\nu_\lambda - \log Z(\lambda) \right)}
 $$
-    
+
 To simplify this relation, we introduce a new function $H(\lambda) = \frac{1}{\lambda} \log Z(\lambda)$. We want to relate the integral $\int f d\nu_\lambda$ to the derivative of $\log Z(\lambda)$. Notice that:
     
 $$
 \frac{d}{d\lambda} \log Z(\lambda) = \frac{1}{Z(\lambda)} \int_X f(x) e^{\lambda f(x)} \, d\mu(x) = \int_X f \, d\nu_\lambda
 $$
-    
+
 Thus, our inequality can be rewritten entirely in terms of $Z(\lambda)$ and its derivative:
     
 $$
 \frac{d}{d\lambda} \log Z(\lambda) \leq \sqrt{2 C \left( \lambda \frac{d}{d\lambda} \log Z(\lambda) - \log Z(\lambda) \right)}
 $$
-    
+
 Squaring both sides (which is valid since the left side is positive for sufficiently large $\lambda$ given the non-triviality of $f$), we get:
     
 $$
 \left( \frac{d}{d\lambda} \log Z(\lambda) \right)^2 \leq 2 C \lambda \frac{d}{d\lambda} \log Z(\lambda) - 2 C \log Z(\lambda)
 $$
-    
+
 By rearranging terms, we construct a differential inequality for $\log Z(\lambda)$. However, an easier algebraic approach is to apply the arithmetic-mean geometric-mean (AM-GM) inequality, specifically the form $u v \leq \frac{u^2}{2 c} + \frac{c v^2}{2}$ for any $c > 0$. We write:
     
 $$
 \lambda \int_X f \, d\nu_\lambda = \lambda \left( \int_X f \, d\nu_\lambda \right)
 $$
-    
+
 Wait, let's use the exact inequality we had:
 Let $E = \int_X f \, d\nu_\lambda$. The inequality is $E \leq \sqrt{2 C (\lambda E - \log Z(\lambda))}$.
 Squaring gives $E^2 \leq 2 C \lambda E - 2 C \log Z(\lambda)$.
@@ -146,26 +143,26 @@ Rearranging for $\log Z(\lambda)$, we obtain:
 $$
 \log Z(\lambda) \leq \lambda E - \frac{E^2}{2C}
 $$
-    
+
 We can maximize the right-hand side over all real values of $E$. The maximum of $\lambda E - \frac{E^2}{2C}$ occurs when the derivative with respect to $E$ is zero: $\lambda - \frac{E}{C} = 0 \implies E = C \lambda$. 
 Substituting $E = C \lambda$ into the expression gives:
     
 $$
 \log Z(\lambda) \leq \lambda (C \lambda) - \frac{(C \lambda)^2}{2C} = C \lambda^2 - \frac{C \lambda^2}{2} = \frac{C \lambda^2}{2}
 $$
-    
+
 Recalling that $Z(\lambda) = \int_X e^{\lambda f} d\mu$, this implies:
     
 $$
 \log \int_X e^{\lambda f} d\mu \leq \frac{C \lambda^2}{2}
 $$
-    
+
 Taking the exponential of both sides yields the final sub-Gaussian bound:
     
 $$
 \int_X e^{\lambda f(x)} \, d\mu(x) \leq e^{C \lambda^2 / 2}
 $$
-    
+
 Since this holds for any $\lambda > 0$ and any 1-Lipschitz function $f$, we have proven that the $T_1$ inequality implies sub-Gaussian concentration. By Markov's inequality, this immediately yields $\mathbb{P}_\mu(f - \mathbb{E}[f] \geq t) \leq e^{-t^2 / (2C)}$. $\blacksquare$
     
 ---
@@ -183,26 +180,24 @@ Talagrand generalized this by introducing weight vectors. For any weight vector 
 $$
 d_\alpha(x, A) = \inf_{y \in A} \sum_{i=1}^n \alpha_i \mathbb{I}(x_i \neq y_i)
 $$
-    
+
 The Talagrand convex distance $d_T(x, A)$ is defined as the supremum of this weighted distance over all possible normalized weight vectors:
     
 $$
 d_T(x, A) = \sup_{\alpha \in [0, 1]^n, ||\alpha||_2=1} d_\alpha(x, A)
 $$
-    
+
 The convex distance is zero if and only if $x \in A$. If $A$ is a convex set in $\mathbb{R}^n$, the convex distance is closely related to the standard Euclidean distance. The power of this definition lies in its duality and its ability to capture the "convex hull" of the Hamming neighborhood.
     
 ### 2.2 Talagrand's Inequality Theorem
     
-    
 !!! success "Theorem (Talagrand, 1995)"
     Let $X = (X_1, \dots, X_n)$ be a vector of independent random variables taking values in a measurable space $\Omega$. For any measurable subset $A \subseteq \Omega^n$, we have:
-    
     
     $$
     \mathbb{P}(X \in A) \cdot \mathbb{P}(d_T(X, A) \geq t) \leq e^{-t^2 / 4}
     $$
-    
+
     This remarkable inequality implies that if a set $A$ has probability at least $1/2$, then the probability of being at a convex distance $t$ away from $A$ decays as $e^{-t^2/4}$, independent of the dimension $n$.
     
 ### 2.3 Rigorous Proof of Talagrand's Inequality
@@ -224,19 +219,19 @@ Let us define a functional version. For a point $x \in \Omega^n$ and a set $A$, 
 $$
 U_A(x) = \left\{ s \in \{0, 1\}^n : \exists y \in A \text{ such that } x_i \neq y_i \implies s_i = 1 \right\}
 $$
-    
+
 Here, $s$ acts as a selector vector indicating which coordinates must be changed. Talagrand proved a powerful geometric lemma: for any set $A$,
     
 $$
 \int_{\Omega^n} \exp\left( \frac{1}{4} d_T(x, A)^2 \right) \, d\mathbb{P}(x) \leq \frac{1}{\mathbb{P}(A)}
 $$
-    
+
 By Markov's inequality, this integral bound immediately implies the probability bound:
     
 $$
 \mathbb{P}(d_T(X, A) \geq t) = \mathbb{P}\left(\exp\left( \frac{1}{4} d_T(X, A)^2 \right) \geq \exp\left( \frac{t^2}{4} \right)\right) \leq \frac{\mathbb{E}[\exp(\frac{1}{4} d_T(X, A)^2)]}{\exp(t^2/4)} \leq \frac{1}{\mathbb{P}(A) e^{t^2/4}}
 $$
-    
+
 Thus, the core of the proof reduces to proving the integral bound via induction. Let $X = (Y, Z)$ where $Y \in \Omega^n$ and $Z \in \Omega$. Let $A \subseteq \Omega^{n+1}$. For any $z \in \Omega$, define the cross-section $A_z = \{y \in \Omega^n : (y, z) \in A\}$. Also, define the projection $B = \cup_{z \in \Omega} A_z$.
     
 For any $x = (y, z) \in \Omega^{n+1}$, consider two strategies to reach $A$. 
@@ -249,19 +244,19 @@ Because the convex distance involves an infimum over convex combinations, for an
 $$
 d_T(x, A)^2 \leq \lambda d_T(y, A_z)^2 + (1-\lambda) d_T(y, B)^2 + (1-\lambda)^2
 $$
-    
+
 Exponentiating and integrating over $y$ with respect to the distribution of $Y$, we use Hölder's inequality with conjugate exponents $p = 1/\lambda$ and $q = 1/(1-\lambda)$:
     
 $$
 \mathbb{E}_Y \left[ \exp\left( \frac{1}{4} d_T(x, A)^2 \right) \right] \leq e^{(1-\lambda)^2/4} \left( \mathbb{E}_Y \exp\left( \frac{1}{4} d_T(y, A_z)^2 \right) \right)^\lambda \left( \mathbb{E}_Y \exp\left( \frac{1}{4} d_T(y, B)^2 \right) \right)^{1-\lambda}
 $$
-    
+
 By the inductive hypothesis, $\mathbb{E}_Y \exp(d_T(y, A_z)^2 / 4) \leq 1/\mathbb{P}(A_z)$ and $\mathbb{E}_Y \exp(d_T(y, B)^2 / 4) \leq 1/\mathbb{P}(B)$. Thus:
     
 $$
 \mathbb{E}_Y \left[ \exp\left( \frac{1}{4} d_T(x, A)^2 \right) \right] \leq e^{(1-\lambda)^2/4} \left( \frac{1}{\mathbb{P}(A_z)} \right)^\lambda \left( \frac{1}{\mathbb{P}(B)} \right)^{1-\lambda}
 $$
-    
+
 We must now integrate this over $z$. By carefully choosing $\lambda$ for each $z$ (specifically, related to $\mathbb{P}(A_z)/\mathbb{P}(B)$) and utilizing the convexity properties of the exponential function, one can show that the expectation over $Z$ is bounded by $1/\mathbb{E}_Z[\mathbb{P}(A_z)] = 1/\mathbb{P}(A)$. This completes the induction and the proof. $\blacksquare$
     
 ---
@@ -274,15 +269,13 @@ When dealing with covariance estimation, random graphs, or the analysis of neura
     
 The lynchpin of matrix concentration is a deep result from matrix analysis regarding the trace of matrix exponentials.
     
-    
 !!! success "Theorem (Lieb's Concavity)"
     For any symmetric matrix $H$, the map on the space of positive definite matrices given by:
-    
     
     $$
     A \mapsto \text{tr}\left( \exp(H + \log A) \right)
     $$
-    
+
     is concave.
     
     This seemingly esoteric theorem is crucial because it allows us to apply Jensen's inequality to the trace of an exponential of a sum of matrices, effectively decoupling the expectation of the sum. 
@@ -291,26 +284,23 @@ The lynchpin of matrix concentration is a deep result from matrix analysis regar
     
 The Matrix Bernstein inequality bounds the spectral norm of a sum of independent, bounded, zero-mean random matrices.
     
-    
 !!! success "Theorem (Matrix Bernstein)"
     Let $X_1, \dots, X_n$ be independent, symmetric $d \times d$ random matrices. Assume that for each $i$:
     1. $\mathbb{E}[X_i] = 0$
     2. $\lambda_{\max}(X_i) \leq R$ almost surely (where $\lambda_{\max}$ is the largest eigenvalue).
-    
     
     Define the variance parameter $\sigma^2$ as the spectral norm of the sum of the expected squared matrices:
     
     $$
     \sigma^2 = \left\|\sum_{i=1}^n \mathbb{E}[X_i^2] \right\|_{\text{op}} = \lambda_{\max}\left( \sum_{i=1}^n \mathbb{E}[X_i^2] \right)
     $$
-    
+
     Then, for all $t \geq 0$:
     
     $$
     \mathbb{P}\left( \lambda_{\max}\left(\sum_{i=1}^n X_i\right) \geq t \right) \leq d \cdot \exp\left( \frac{-t^2 / 2}{\sigma^2 + Rt/3} \right)
     $$
-    
-    
+
 **Rigorous Proof:**
     
 Let $S = \sum_{i=1}^n X_i$. We employ the matrix Laplace transform method. For any $\theta > 0$, we have the event equivalence:
@@ -318,19 +308,19 @@ Let $S = \sum_{i=1}^n X_i$. We employ the matrix Laplace transform method. For a
 $$
 \lambda_{\max}(S) \geq t \iff e^{\theta \lambda_{\max}(S)} \geq e^{\theta t}
 $$
-    
+
 Since the exponential function maps eigenvalues to eigenvalues monotonically, $e^{\theta \lambda_{\max}(S)} = \lambda_{\max}(e^{\theta S})$. Because $e^{\theta S}$ is a positive definite matrix, its maximum eigenvalue is bounded by its trace. Thus:
     
 $$
 \mathbb{P}(\lambda_{\max}(S) \geq t) \leq \mathbb{P}(\text{tr}(e^{\theta S}) \geq e^{\theta t})
 $$
-    
+
 Applying Markov's inequality yields:
     
 $$
 \mathbb{P}(\lambda_{\max}(S) \geq t) \leq e^{-\theta t} \mathbb{E}[\text{tr}(e^{\theta S})]
 $$
-    
+
 This is the Matrix Trace Moment Generating Function. The challenge is bounding $\mathbb{E}[\text{tr}(e^{\theta \sum X_i})]$. Because the $X_i$ matrices do not commute in general, $e^{\sum X_i} \neq \prod e^{X_i}$. We use a technique developed by Ahlswede and Winter, leveraging Lieb's concavity.
     
 Let $\mathbb{E}_{n-1}$ denote the expectation with respect to $X_n$. We write the sum as $S = S_{n-1} + X_n$.
@@ -338,61 +328,61 @@ Let $\mathbb{E}_{n-1}$ denote the expectation with respect to $X_n$. We write th
 $$
 \mathbb{E}_{n-1}[\text{tr}(e^{\theta S_{n-1} + \theta X_n})] = \mathbb{E}_{n-1}\left[\text{tr}\left(\exp\left(\theta S_{n-1} + \log(e^{\theta X_n})\right)\right)\right]
 $$
-    
+
 By Lieb's concavity, the function $A \mapsto \text{tr}(\exp(\theta S_{n-1} + \log A))$ is concave. Applying Jensen's inequality:
     
 $$
 \mathbb{E}_{n-1}\left[\text{tr}\left(\exp\left(\theta S_{n-1} + \log(e^{\theta X_n})\right)\right)\right] \leq \text{tr}\left(\exp\left(\theta S_{n-1} + \log(\mathbb{E}[e^{\theta X_n}])\right)\right)
 $$
-    
+
 By iterating this process, peeling off one $X_i$ at a time from $n$ down to $1$, we completely decouple the expectations:
     
 $$
 \mathbb{E}[\text{tr}(e^{\theta S})] \leq \text{tr}\left(\exp\left(\sum_{i=1}^n \log \mathbb{E}[e^{\theta X_i}]\right)\right)
 $$
-    
+
 Now we must bound the matrix MGF $\mathbb{E}[e^{\theta X_i}]$. For a scalar $x \le R$, Taylor expansion gives $e^{\theta x} \le 1 + \theta x + \frac{e^{\theta R} - \theta R - 1}{R^2} x^2$. By the spectral mapping theorem, this holds for the matrix $X_i$:
     
 $$
 e^{\theta X_i} \preceq I + \theta X_i + \frac{e^{\theta R} - \theta R - 1}{R^2} X_i^2
 $$
-    
+
 Taking the expectation, using $\mathbb{E}[X_i] = 0$:
     
 $$
 \mathbb{E}[e^{\theta X_i}] \preceq I + \frac{e^{\theta R} - \theta R - 1}{R^2} \mathbb{E}[X_i^2]
 $$
-    
+
 Since $I + A \preceq e^A$ for any positive semidefinite matrix $A$, we obtain:
     
 $$
 \mathbb{E}[e^{\theta X_i}] \preceq \exp\left( \frac{e^{\theta R} - \theta R - 1}{R^2} \mathbb{E}[X_i^2] \right)
 $$
-    
+
 Because the matrix logarithm is operator monotone, we can substitute this bound back into our trace inequality:
     
 $$
 \sum_{i=1}^n \log \mathbb{E}[e^{\theta X_i}] \preceq \frac{e^{\theta R} - \theta R - 1}{R^2} \sum_{i=1}^n \mathbb{E}[X_i^2]
 $$
-    
+
 The sum $\sum \mathbb{E}[X_i^2]$ is a positive semidefinite matrix. By definition, its maximum eigenvalue is $\sigma^2$. Therefore:
     
 $$
 \sum_{i=1}^n \log \mathbb{E}[e^{\theta X_i}] \preceq \frac{e^{\theta R} - \theta R - 1}{R^2} \sigma^2 \cdot I
 $$
-    
+
 Since the trace of a $d \times d$ matrix bounded by $cI$ is at most $d \cdot e^c$, we have:
     
 $$
 \mathbb{E}[\text{tr}(e^{\theta S})] \leq d \cdot \exp\left( \frac{e^{\theta R} - \theta R - 1}{R^2} \sigma^2 \right)
 $$
-    
+
 Returning to our initial Markov inequality:
     
 $$
 \mathbb{P}(\lambda_{\max}(S) \geq t) \leq d \cdot \exp\left( -\theta t + \frac{e^{\theta R} - \theta R - 1}{R^2} \sigma^2 \right)
 $$
-    
+
 We now minimize this bound over $\theta > 0$. The optimal choice (derived via calculus) is $\theta = \frac{1}{R} \log(1 + \frac{Rt}{\sigma^2})$. Substituting this $\theta$ and applying the standard algebraic simplification for the Bernstein bound $(h(u) = (1+u)\log(1+u) - u \ge \frac{u^2}{2+2u/3})$ leads directly to the Matrix Bernstein formula. $\blacksquare$
     
 ---
@@ -410,19 +400,19 @@ For any two symmetric matrices $A, B$:
 $$
 \lambda_{\max}(A) - \lambda_{\max}(B) = \max_{||v||_2=1} (v^T A v) - \max_{||u||_2=1} (u^T B u)
 $$
-    
+
 Let $v^*$ be the principal eigenvector of $A$. Then:
     
 $$
 \lambda_{\max}(A) - \lambda_{\max}(B) \leq (v^*)^T A v^* - (v^*)^T B v^* = (v^*)^T (A - B) v^* \leq ||A - B||_{op} \leq ||A - B||_F
 $$
-    
+
 By symmetry, $|\lambda_{\max}(A) - \lambda_{\max}(B)| \leq ||A - B||_F$. Thus, $f$ is 1-Lipschitz. Since the entries of $A$ are standard Gaussian, the joint distribution of the entries is the standard Gaussian measure on $\mathbb{R}^{n(n+1)/2}$. This measure satisfies the $T_1$ transportation inequality. By the Bobkov-Götze theorem, Gaussian concentration applies:
     
 $$
 \mathbb{P}(|\lambda_{\max}(A) - \mathbb{E}\lambda_{\max}(A)| \geq t) \leq 2 \exp\left(-\frac{t^2}{2}\right)
 $$
-    
+
 This remarkable result shows that the largest eigenvalue concentrates around its mean with a variance that is completely independent of the matrix dimension $n$.
     
 ### Example 2: Talagrand's Bound for the Longest Increasing Subsequence
@@ -434,7 +424,7 @@ Using bounded differences (McDiarmid's), changing one $X_i$ can change $L(X)$ by
 $$
 \mathbb{P}(|L(X) - \mathbb{E}[L(X)]| \geq t) \leq 2 \exp\left( -\frac{2t^2}{n} \right)
 $$
-    
+
 Since we know $\mathbb{E}[L(X)] \approx 2\sqrt{n}$, this bound is essentially useless for deviations $t = \mathcal{O}(n^{1/4})$, as $t^2 / n \to 0$.
     
 Let's apply Talagrand's convex distance. Define the set $A = \{y : L(y) \leq m\}$, where $m$ is the median of $L(X)$. Suppose $L(x) = s$. This means there is an increasing subsequence of length $s$. To reach $A$, we only need to disrupt this specific subsequence. We need to change at most $s - m$ elements. 
@@ -453,13 +443,13 @@ We need to bound the spectral norm of $X_i$:
 $$
 ||X_i||_{op} \leq \frac{1}{n} \left( ||y_i y_i^T||_{op} + ||\Sigma||_{op} \right) \leq \frac{1}{n} (B + B) = \frac{2B}{n} = R
 $$
-    
+
 Next, we calculate the variance proxy $\sigma^2$:
     
 $$
 \mathbb{E}[X_i^2] = \frac{1}{n^2} \mathbb{E}[(y_i y_i^T - \Sigma)^2] \preceq \frac{1}{n^2} \mathbb{E}[(y_i y_i^T)^2] = \frac{1}{n^2} \mathbb{E}[||y_i||_2^2 y_i y_i^T] \preceq \frac{B}{n^2} \Sigma
 $$
-    
+
 Summing over $n$ terms, we get $\sum \mathbb{E}[X_i^2] \preceq \frac{B}{n} \Sigma$. Therefore, $\sigma^2 \leq \frac{B ||\Sigma||_{op}}{n}$.
     
 By Matrix Bernstein:
@@ -467,7 +457,7 @@ By Matrix Bernstein:
 $$
 \mathbb{P}\left( ||\hat{\Sigma} - \Sigma||_{op} \geq t \right) \leq d \cdot \exp\left( \frac{-t^2 / 2}{\frac{B ||\Sigma||_{op}}{n} + \frac{2Bt}{3n}} \right)
 $$
-    
+
 This guarantees that to achieve a small operator norm error $t$, we need sample size $n = \mathcal{O}\left( \frac{B}{t^2} \log d \right)$, highlighting the mild logarithmic dependence on dimension $d$.
     
 ---

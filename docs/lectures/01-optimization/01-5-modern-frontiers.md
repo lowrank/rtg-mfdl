@@ -20,7 +20,7 @@ In this regime, the sharpest eigenvalue of the Hessian $\lambda_{\max}(H)$ hover
     $$
     \lambda_{\max}(H(w_t)) \approx \frac{2}{\eta}
     $$
-    
+
     **Heuristic Derivation of Theorem 2.1**:
     
     Consider the one-dimensional dynamics along the sharpest direction $v$. Locally, the loss looks like $f(x) \approx \frac{1}{2} \lambda x^2$.
@@ -39,11 +39,9 @@ In overparameterized models, there are infinitely many sets of weights $w$ that 
     
 Consider a linear network with two layers: $f(x) = w_2 w_1 x$. This is just a linear model $y = \beta x$ where $\beta = w_2 w_1$. However, the optimization dynamics on $(w_1, w_2)$ are different from the dynamics on $\beta$.
     
-    
 !!! success "Theorem 3.2 (Implicit Bias towards Low Rank)"
     
     For a matrix factorization problem $X = W_2 W_1$, Gradient Descent starting from small initialization $W_1, W_2 \approx 0$ is implicitly biased towards finding a low-rank solution.
-    
     
 **Proof for the Scalar Case**:
 Let $\mathcal{L}(w_1, w_2) = \frac{1}{2} (w_1 w_2 - y)^2$.
@@ -61,41 +59,47 @@ The $2\beta$ factor in the multi-layer case slows down the learning for small $\
 Empirical evidence suggests that "flat" minima (regions where the loss changes slowly) generalize better than "sharp" minima. SAM explicitly optimizes for flatness by minimizing the maximum loss in a small neighborhood around the current weights.
     
 **The SAM Objective**:
+
 $$
 \min_w \max_{\|\epsilon\| \le \rho} \mathcal{L}(w + \epsilon)
 $$
-    
-    
+
 !!! success "Theorem 4.1 (Derivation of the SAM Update)"
     
     To first order, the optimal perturbation $\hat{\epsilon}$ and the resulting gradient update are:
+
     $$
     \hat{\epsilon} = \rho \frac{\nabla \mathcal{L}(w)}{\|\nabla \mathcal{L}(w)\|}
     $$
+
     $$
     w_{k+1} = w_k - \eta \nabla \mathcal{L}(w + \hat{\epsilon})
     $$
-    
-    
+
 **Proof of Theorem 4.1**:
     
 *Step 1: Find the inner maximization.*
 We use a Taylor expansion for the inner problem:
+
 $$
 \max_{\|\epsilon\| \le \rho} \mathcal{L}(w + \epsilon) \approx \max_{\|\epsilon\| \le \rho} \mathcal{L}(w) + \epsilon^T \nabla \mathcal{L}(w)
 $$
+
 By the Cauchy-Schwarz inequality, $\epsilon^T \nabla \mathcal{L}(w) \le \|\epsilon\| \|\nabla \mathcal{L}(w)\|$.
 The maximum is achieved when $\epsilon$ is in the direction of the gradient:
+
 $$
 \hat{\epsilon} = \rho \frac{\nabla \mathcal{L}(w)}{\|\nabla \mathcal{L}(w)\|}
 $$
-    
+
 *Step 2: Compute the outer gradient.*
 We want the gradient of the maximized objective $f(w) = \mathcal{L}(w + \hat{\epsilon}(w))$.
 By the envelope theorem (or simple chain rule neglecting higher-order terms of $\hat{\epsilon}$ dependence on $w$):
+
 $$
 \nabla f(w) \approx \nabla \mathcal{L}(w + \hat{\epsilon})
 $$
+
 The SAM update is thus a gradient step evaluated at a "perturbed" point in the sharpest ascent direction. This effectively pushes the optimization towards regions where the gradient is small even after a small adversarial step, which characterizes a flat minimum. $\blacksquare$
     
 ## 5. Grokking and Double Descent
@@ -123,9 +127,11 @@ If we use a fixed step size $\eta$:
     
 SAM can be rigorously justified using PAC-Bayesian generalization bounds. 
 A typical PAC-Bayes bound states that with high probability:
+
 $$
 \text{TestError}(w) \le \text{TrainError}(w + \text{noise}) + \sqrt{\frac{D_{KL}(Q \| P) + \log(1/\delta)}{N}}
 $$
+
 where $Q$ is a distribution centered at $w$ and $P$ is a prior.
 If we choose $Q$ to be a small ball of radius $\rho$ around $w$, the term $\text{TrainError}(w + \text{noise})$ is closely related to the SAM objective $\max_{\|\epsilon\| \le \rho} \mathcal{L}(w + \epsilon)$.
 Thus, SAM is explicitly minimizing an upper bound on the generalization error.
@@ -216,7 +222,6 @@ def f(x):
 sharp = 5.0 * np.exp(-5.0 * np.sum((x - np.array([-2, -2]))**2))
     flat = 2.0 * np.exp(-0.5 * np.sum((x - np.array([2, 2]))**2))
     return - (sharp + flat)
-    
     
 def grad(x):
 # Finite difference gradient for simplicity

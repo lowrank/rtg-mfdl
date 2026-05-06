@@ -23,7 +23,7 @@ Let's break this down:
     $$
     k(x, y) = \langle \phi(x), \phi(y) \rangle_\mathcal{H}
     $$
-    
+
     A kernel is symmetric ($k(x, y) = k(y, x)$) and **positive semi-definite (PSD)**. A function $k$ is PSD if for any $n \in \mathbb{N}$, any $x_1, \dots, x_n \in \mathcal{X}$, and any $c_1, \dots, c_n \in \mathbb{R}$:
     
     $$
@@ -167,7 +167,7 @@ Because it evaluates directly to linear combinations of the functions $f$ and $g
   $$
   |f(x)| = |\langle f, k(\cdot, x) \rangle_{\mathcal{H}_0}| \leq \sqrt{\langle f, f \rangle_{\mathcal{H}_0}} \sqrt{k(x, x)}
   $$
-  
+
   If $\langle f, f \rangle_{\mathcal{H}_0} = 0$, then $|f(x)| = 0$ for all $x$, so $f$ is identically the zero function. Thus, $\langle \cdot, \cdot \rangle_{\mathcal{H}_0}$ is a strict inner product.
 
 **Step 4: Completion to a Hilbert Space.**

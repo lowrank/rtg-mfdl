@@ -183,7 +183,7 @@ A recent breakthrough by Altschuler & Parrilo (2023) proves that variable step s
     $$
     y_{2n} z_{2n} = z_n^2 \quad\text{and}\quad z_{2n} - y_{2n} = 2(z_n - z_n^2)
     $$
-    
+
     The explicit solution is $z_{2n} = z_n(\xi + \sqrt{1+\xi^2})$ where $\xi = 1 - z_n$. As $z_n \to 0$, the growth factor approaches $1 + \sqrt{2} = \rho$, the silver ratio. The actual stepsizes are obtained via a linear fractional transformation of $y_n, z_n$.
 
 ### 2.4 The Long Steps Approach (Grimmer et al.)
@@ -364,6 +364,3 @@ plt.tight_layout()
 
 !!! question "Open Problem 4.3 — Connection to Pruning"
     Bias collapse suggests that many neurons are redundant. Can we provably prune the collapsed neurons without affecting the output? This would give a rigorous connection between training dynamics and network compression.
-
-
-

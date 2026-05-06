@@ -16,16 +16,14 @@ While SGD is computationally efficient, it introduces "gradient noise," which pr
 
 The Robbins-Monro algorithm is the ancestor of all stochastic optimization methods. It was originally designed to find the root of a function $M(x) = \alpha$ when we only have access to noisy observations of $M(x)$.
 
-
 !!! success "Theorem 2.1 (Robbins-Monro Convergence)"
     
     Let $M(x)$ be a non-decreasing function such that $M(x^*) = \alpha$. Suppose we observe $Y_n = M(x_n) + \xi_n$, where $\mathbb{E}[\xi_n | x_n] = 0$ and $\mathbb{E}[\xi_n^2 | x_n] \le \sigma^2$. The iterates are defined as:
     
-    
     $$
     x_{n+1} = x_n - a_n (Y_n - \alpha)
     $$
-    
+
     If the sequence of step sizes $a_n$ satisfies the **Robbins-Monro conditions**:
     
     1. $\sum_{n=1}^\infty a_n = \infty$ (Step sizes are large enough to reach the root)
@@ -36,22 +34,30 @@ The Robbins-Monro algorithm is the ancestor of all stochastic optimization metho
 **Proof of Theorem 2.1 (Martingale Convergence)**:
     
 Let us assume for simplicity $\alpha=0$ and $x^*=0$. We analyze the squared distance $h_n = x_n^2$.
+
 $$
 x_{n+1}^2 = (x_n - a_n (M(x_n) + \xi_n))^2 = x_n^2 - 2a_n x_n M(x_n) - 2a_n x_n \xi_n + a_n^2 (M(x_n) + \xi_n)^2
 $$
+
 Take the conditional expectation $\mathbb{E}[\cdot | \mathcal{F}_n]$ where $\mathcal{F}_n$ is the filtration up to time $n$:
+
 $$
 \mathbb{E}[x_{n+1}^2 | \mathcal{F}_n] = x_n^2 - 2a_n x_n M(x_n) + a_n^2 \mathbb{E}[(M(x_n) + \xi_n)^2 | \mathcal{F}_n]
 $$
+
 Note that $\mathbb{E}[-2a_n x_n \xi_n | \mathcal{F}_n] = -2a_n x_n \mathbb{E}[\xi_n | \mathcal{F}_n] = 0$.
 Assume $|M(x)| \le C|x| + D$. Then $\mathbb{E}[(M(x_n) + \xi_n)^2 | \mathcal{F}_n] \le K(1+x_n^2)$ for some constant $K$.
+
 $$
 \mathbb{E}[x_{n+1}^2 | \mathcal{F}_n] \le x_n^2 (1 + K a_n^2) - 2a_n x_n M(x_n) + K a_n^2
 $$
+
 Since $M(x)$ is non-decreasing and $M(0)=0$, we have $x M(x) \ge 0$. Thus:
+
 $$
 \mathbb{E}[x_{n+1}^2 | \mathcal{F}_n] \le x_n^2 (1 + K a_n^2) + K a_n^2
 $$
+
 This is the form of a **Quasi-Supermartingale**. By the Robbins-Monro conditions, $\sum a_n^2 < \infty$. According to the Robbins-Siegmund Theorem, $x_n^2$ converges to a random variable $X_\infty$ almost surely, and $\sum a_n x_n M(x_n) < \infty$ almost surely.
 Since $\sum a_n = \infty$, the only way for the sum $\sum a_n x_n M(x_n)$ to converge is if $x_n M(x_n) \to 0$ in some sense. Given the monotonicity of $M$, this implies $x_n \to 0$ almost surely. $\blacksquare$
     
@@ -59,50 +65,62 @@ Since $\sum a_n = \infty$, the only way for the sum $\sum a_n x_n M(x_n)$ to con
     
 In optimization, we set $M(w) = \nabla \mathcal{L}(w)$. The noisy observation is the minibatch gradient $g(w, \xi) = \nabla L(w, \xi)$.
     
-    
 !!! success "Theorem 3.1 (SGD Convergence for Strongly Convex Functions)"
     
     Suppose $\mathcal{L}(w)$ is $L$-smooth and $\mu$-strongly convex. Let $\mathbb{E}[\|g(w, \xi)\|^2] \le G^2$. If we use step size $\eta_k = \frac{1}{\mu k}$, then:
     
-    
     $$
     \mathbb{E}[\|w_k - w^*\|^2] \le \frac{\max\{\|w_0 - w^*\|^2, G^2/\mu^2\}}{k}
     $$
-    
+
 **Proof of Theorem 3.1**:
     
 Let $\delta_k = \mathbb{E}[\|w_k - w^*\|^2]$.
+
 $$
 \|w_{k+1} - w^*\|^2 = \|w_k - \eta_k g(w_k, \xi) - w^*\|^2 = \|w_k - w^*\|^2 - 2\eta_k \langle g(w_k, \xi), w_k - w^* \rangle + \eta_k^2 \|g(w_k, \xi)\|^2
 $$
+
 Take expectations over $\xi$:
+
 $$
 \mathbb{E}[\|w_{k+1} - w^*\|^2 | \mathcal{F}_k] = \|w_k - w^*\|^2 - 2\eta_k \langle \nabla \mathcal{L}(w_k), w_k - w^* \rangle + \eta_k^2 \mathbb{E}[\|g(w_k, \xi)\|^2]
 $$
+
 By $\mu$-strong convexity: $\langle \nabla \mathcal{L}(w_k), w_k - w^* \rangle \ge \mu \|w_k - w^*\|^2$.
+
 $$
 \delta_{k+1} \le (1 - 2\eta_k \mu) \delta_k + \eta_k^2 G^2
 $$
+
 Substitute $\eta_k = \frac{1}{\mu k}$:
+
 $$
 \delta_{k+1} \le (1 - \frac{2}{k}) \delta_k + \frac{G^2}{\mu^2 k^2}
 $$
+
 We use induction to show $\delta_k \le \frac{Q}{k}$.
 For $k+1$:
+
 $$
 \delta_{k+1} \le (1 - \frac{2}{k}) \frac{Q}{k} + \frac{G^2}{\mu^2 k^2} = \frac{Q(k-2)}{k^2} + \frac{G^2}{\mu^2 k^2} = \frac{Qk - 2Q + G^2/\mu^2}{k^2}
 $$
+
 We want $\frac{Qk - 2Q + G^2/\mu^2}{k^2} \le \frac{Q}{k+1}$.
 Multiplying by $k^2(k+1)$:
+
 $$
 (Qk - 2Q + G^2/\mu^2)(k+1) \le Qk^2
 $$
+
 $$
 Qk^2 + Qk - 2Qk - 2Q + (k+1)G^2/\mu^2 \le Qk^2
 $$
+
 $$
 -Qk - 2Q + (k+1)G^2/\mu^2 \le 0
 $$
+
 This holds for all $k \ge 1$ if $Q \ge G^2/\mu^2$. $\blacksquare$
     
 ## 4. Variance Reduction: SVRG and SAG
@@ -124,40 +142,48 @@ Input: Step size $\eta$, Epoch length $m$.
     - $\tilde{w}_{s+1} = \frac{1}{m} \sum_{t=1}^m w_t$ (or a random iterate).
     
 The modified gradient $v_t = \nabla L(w_t, x_i) - \nabla L(\tilde{w}_s, x_i) + \mu$ is unbiased:
+
 $$
 \mathbb{E}[v_t | w_t] = \nabla \mathcal{L}(w_t) - \nabla \mathcal{L}(\tilde{w}_s) + \mu = \nabla \mathcal{L}(w_t)
 $$
+
 Crucially, as both $w_t$ and $\tilde{w}_s$ converge to $w^*$, the difference $\nabla L(w_t, x_i) - \nabla L(\tilde{w}_s, x_i)$ goes to zero, causing the variance of $v_t$ to vanish.
-    
     
 !!! success "Theorem 4.1 (Linear Convergence of SVRG)"
     
     If $\mathcal{L}$ is $L$-smooth and $\mu$-strongly convex, then for sufficiently small $\eta$ and large $m$, SVRG converges linearly:
+
     $$
     \mathbb{E}[\mathcal{L}(\tilde{w}_{s+1}) - \mathcal{L}(w^*)] \le \gamma (\mathbb{E}[\mathcal{L}(\tilde{w}_s) - \mathcal{L}(w^*)])
     $$
+
     where $\gamma < 1$.
-    
     
 **Proof Outline of Theorem 4.1**:
 The key is bounding the variance of the SVRG gradient estimator:
+
 $$
 \mathbb{E}[\|v_t\|^2] \le 4L (\mathcal{L}(w_t) - \mathcal{L}(w^*) + \mathcal{L}(\tilde{w}_s) - \mathcal{L}(w^*))
 $$
+
 Plugging this into the standard progress inequality for SGD and summing over the epoch length $m$ allows us to relate the suboptimality at epoch $s+1$ to the suboptimality at epoch $s$. With $\eta < 1/4L$, we can ensure $\gamma < 1$.
     
 ## 5. Stochastic Gradient Langevin Dynamics (SGLD)
     
 From a Bayesian perspective, we don't just want a point estimate $w^*$; we want the posterior distribution $p(w | \mathcal{D}) \propto \exp(-\mathcal{L}(w))$. One way to sample from this is via the Langevin SDE:
+
 $$
 dw_t = -\nabla \mathcal{L}(w_t) dt + \sqrt{2} dB_t
 $$
+
 The stationary distribution of this SDE is exactly the Gibbs distribution $e^{-\mathcal{L}(w)}$. SGLD discretizes this and replaces the full gradient with a stochastic one.
     
 **The Algorithm (SGLD)**:
+
 $$
 w_{k+1} = w_k - \eta_k \nabla L(w_k, \xi_k) + \sqrt{2\eta_k} \epsilon_k
 $$
+
 where $\epsilon_k \sim \mathcal{N}(0, I)$.
     
 ### 5.1 Discretization Error
@@ -167,15 +193,15 @@ There are two sources of error in SGLD:
 1. **Sampling Error (Stochastic Gradient)**: The noise from the minibatch.
 2. **Discretization Error (Euler-Maruyama)**: The error from finite step size $\eta$.
     
-    
 !!! success "Theorem 5.1 (Non-asymptotic error of SGLD)"
     
     Under suitable smoothness and dissipativity conditions, the 2-Wasserstein distance between the SGLD distribution $\mu_k$ and the target posterior $\pi$ is:
+
     $$
     W_2(\mu_k, \pi) \le A e^{-B k \eta} + C \sqrt{\eta}
     $$
+
     The first term $e^{-B k \eta}$ is the convergence to the stationary distribution (exponential decay). The second term $C \sqrt{\eta}$ is the **discretization bias**.
-    
     
     Unlike SGD, where the noise is purely a nuisance to be removed, in SGLD, the added Gaussian noise $\sqrt{2\eta_k} \epsilon_k$ is essential to ensure that the algorithm explores the posterior distribution rather than just collapsing to a local minimum. However, the step size $\eta$ must be decayed to zero to eliminate the discretization bias, or a Metropolis-Hastings correction (MALA) must be used.
     
@@ -187,16 +213,20 @@ Suppose we want to estimate the mean $\mu$ of a distribution by observing noisy 
 Iterate: $x_{n+1} = x_n - a_n (x_n - X_n)$.
     
 - If $a_n = 1/n$:
+
 $$
 x_{n+1} = x_n - \frac{1}{n} x_n + \frac{1}{n} X_n = \frac{n-1}{n} x_n + \frac{1}{n} X_n
 $$
+
 By induction, $x_{n+1} = \frac{1}{n} \sum_{i=1}^n X_i$. This is the sample mean! 
 The Robbins-Monro conditions hold: $\sum 1/n = \infty$ and $\sum 1/n^2 < \infty$. The Law of Large Numbers guarantees $x_n \to \mu$ almost surely.
     
 - If $a_n = 1$:
+
 $$
 x_{n+1} = x_n - (x_n - X_n) = X_n
 $$
+
 The iterates just jump to the latest observation. $\sum 1^2 = \infty$, so conditions are violated. The iterates do not converge.
     
 **Example 2: SVRG vs SGD Complexity**

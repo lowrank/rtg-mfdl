@@ -40,11 +40,9 @@ Provide a "guarantee" that the test error will not exceed a certain threshold.
 2.  **Define Prior $P$**: $\mathcal{N}(0, \lambda I)$, where $\lambda$ is related to your weight initialization.
 3.  **Compute McAllester's Bound**:
 
-
 $$
 \epsilon = \sqrt{\frac{KL(Q || P) + \ln(2\sqrt{n}/\delta)}{2(n-1)}}
 $$
-
 
 4.  Calculate $R(Q) = \mathbb{E}_{h \sim Q} [\hat{R}_n(h)]$ by sampling model weights and averaging the training loss.
 5.  **Target**: Can you get a bound $\epsilon < 0.5$ (non-vacuous)?

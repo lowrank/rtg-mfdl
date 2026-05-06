@@ -20,35 +20,27 @@ Before delving into the proofs, we must rigorously define the functional spaces,
 
 ### 2.1 Function Spaces and Topologies
 
-
 !!! info "Definition 2.1"
     1 (The Space of Continuous Functions)
 
     Let $K \subset \mathbb{R}^n$ be a compact set (closed and bounded in Euclidean space). We denote the space of all continuous, real-valued functions on $K$ as $C(K)$.
 
-
     We endow $C(K)$ with the **supremum norm** (or uniform norm), defined as:
-
 
     $$
     \|f\|_\infty = \sup_{x \in K} |f(x)|
     $$
 
-
     Under this norm, $C(K)$ forms a **Banach space**—a complete normed vector space where every Cauchy sequence converges to a limit within the space. When we say a neural network "approximates" a function $f \in C(K)$ to precision $\epsilon$, we mean we find a network function $N(x)$ such that $\|f - N\|_\infty < \epsilon$. This guarantees that the worst-case error across the entire domain $K$ is bounded by $\epsilon$.
-
 
 !!! info "Definition 2.1"
     2 (The $L^p$ Spaces)
 
     Let $(X, \mathcal{M}, \mu)$ be a measure space. For $1 \le p < \infty$, the space $L^p(X, \mu)$ consists of all measurable functions $f: X \to \mathbb{R}$ such that the $L^p$ norm is finite:
 
-
-
     $$
     \|f\|_p = \left( \int_X |f(x)|^p \, d\mu(x) \right)^{1/p} < \infty
     $$
-
 
     Two functions are considered identical in $L^p$ if they are equal $\mu$-almost everywhere. $L^p$ spaces are Banach spaces.
 
@@ -56,25 +48,19 @@ Before delving into the proofs, we must rigorously define the functional spaces,
 
 To analyze $C(K)$, we must understand its dual space—the space of all continuous linear mappings from $C(K)$ to $\mathbb{R}$. 
 
-
 !!! info "Definition 2.1"
     3 (Finite Signed Borel Measure)
 
     Let $\mathcal{B}(K)$ be the Borel $\sigma$-algebra on $K$. A finite signed Borel measure $\mu$ is a countably additive set function $\mu: \mathcal{B}(K) \to \mathbb{R}$ that can take negative values, but whose total variation $|\mu|(K)$ is finite.
-
-
 
 !!! success "Theorem 2.1"
     4 (The Riesz Representation Theorem)
 
     Let $K$ be a compact Hausdorff space. For every bounded linear functional $L$ on $C(K)$, there exists a unique regular finite signed Borel measure $\mu$ on $K$ such that for all $f \in C(K)$:
 
-
-
     $$
     L(f) = \int_K f(x) \, d\mu(x)
     $$
-
 
     Furthermore, the operator norm of the functional is equal to the total variation of the measure: $\|L\| = |\mu|(K)$.
 
@@ -82,12 +68,10 @@ To analyze $C(K)$, we must understand its dual space—the space of all continuo
 
 The Hahn-Banach Theorem is the cornerstone of functional analysis, guaranteeing the existence of "enough" continuous linear functionals to distinguish between distinct elements or subspaces. We will rely on its geometric consequence, often called the Separating Hyperplane Theorem for Banach spaces.
 
-
 !!! success "Theorem 2.1"
     5 (Hahn-Banach Separation Theorem - Subspace Corollary)
 
     Let $X$ be a real Banach space and $S \subset X$ be a linear subspace. Let $\overline{S}$ denote the topological closure of $S$. If $S$ is not dense in $X$ (i.e., $\overline{S} \neq X$), then there exists a non-zero bounded linear functional $L \in X^*$ such that $L(x) = 0$ for all $x \in S$.
-
 
     This theorem provides our proof strategy: to prove that neural networks are dense in $C(K)$, we will assume they are not. Hahn-Banach then guarantees the existence of an annihilating functional $L$. Through Riesz Representation, $L$ becomes a measure $\mu$. We will then prove that if $\mu$ annihilates all neural networks, $\mu$ must be the zero measure, establishing a contradiction.
 
@@ -99,57 +83,43 @@ George Cybenko's 1989 paper utilized the functional analysis machinery outlined 
 
 ### 3.1 Rigorous Definitions
 
-
 !!! info "Definition 3.1"
     1 (Feedforward Neural Network Function)
 
     Let $\sigma: \mathbb{R} \to \mathbb{R}$ be an activation function. A single-hidden-layer feedforward neural network with $N$ hidden units computes functions of the form:
 
-
-
     $$
     G(x) = \sum_{i=1}^N \alpha_i \sigma(w_i^T x + b_i)
     $$
 
-
     where $x \in \mathbb{R}^n$ is the input, $w_i \in \mathbb{R}^n$ are the input weights, $b_i \in \mathbb{R}$ are the biases, and $\alpha_i \in \mathbb{R}$ are the output weights. We denote the set of all such functions for all possible choices of $N, \alpha_i, w_i, b_i$ as $S_\sigma \subset C(K)$. Note that $S_\sigma$ is a linear subspace.
-
 
 !!! info "Definition 3.1"
     2 (Sigmoidal Function)
 
     A function $\sigma: \mathbb{R} \to \mathbb{R}$ is sigmoidal if it is measurable and satisfies:
 
-
-
     $$
     \lim_{t \to \infty} \sigma(t) = 1 \quad \text{and} \quad \lim_{t \to -\infty} \sigma(t) = 0
     $$
-
-
 
 !!! info "Definition 3.1"
     3 (Discriminatory Function)
 
     A function $\sigma: \mathbb{R} \to \mathbb{R}$ is said to be discriminatory if for any finite signed Borel measure $\mu$ on $K \subset \mathbb{R}^n$, the condition:
 
-
-
     $$
     \int_K \sigma(w^T x + b) \, d\mu(x) = 0 \quad \text{for all } w \in \mathbb{R}^n, b \in \mathbb{R}
     $$
-
 
     implies that $\mu = 0$ (the zero measure).
 
 ### 3.2 The Core Theorem and Proof
 
-
 !!! success "Theorem 3.2"
     1 (Cybenko's Universal Approximation Theorem)
 
     Let $\sigma$ be any continuous discriminatory function. Then for any compact set $K \subset \mathbb{R}^n$, the space of neural network functions $S_\sigma$ is dense in $C(K)$. That is, for any $f \in C(K)$ and any $\epsilon > 0$, there exists a $G \in S_\sigma$ such that $\|f - G\|_\infty < \epsilon$.
-
 
 **Proof of Theorem 3.2.1:**
 
@@ -158,21 +128,17 @@ George Cybenko's 1989 paper utilized the functional analysis machinery outlined 
 3. By the Hahn-Banach Separation Theorem (Theorem 2.1.5), there exists a bounded continuous linear functional $L: C(K) \to \mathbb{R}$, with $L \neq 0$, such that $L(G) = 0$ for all $G \in S_\sigma$.
 4. By the Riesz Representation Theorem (Theorem 2.1.4), there exists a unique regular finite signed Borel measure $\mu$ on $K$ such that for all $f \in C(K)$:
 
-
 $$
 L(f) = \int_K f(x) \, d\mu(x)
 $$
-
 
 Furthermore, because $L \neq 0$, it must be that $\mu \neq 0$.
 
 5. Since $L$ annihilates all functions in $S_\sigma$, and the function $x \mapsto \sigma(w^T x + b)$ is in $S_\sigma$ for any choice of $w, b$, it follows that:
 
-
 $$
 \int_K \sigma(w^T x + b) \, d\mu(x) = 0 \quad \text{for all } w \in \mathbb{R}^n, b \in \mathbb{R}
 $$
-
 
 6. By hypothesis, $\sigma$ is a discriminatory function. Therefore, the vanishing of these integrals implies that $\mu = 0$.
 7. This directly contradicts the earlier deduction that $\mu \neq 0$. 
@@ -182,23 +148,19 @@ $$
 
 The elegance of Cybenko's theorem rests on shifting the burden of proof to showing that specific activation functions are discriminatory. We now prove this for sigmoidal functions.
 
-
 !!! success "Lemma 3.3"
     1
 
     Any bounded, measurable sigmoidal function $\sigma$ is discriminatory.
-
 
 **Proof of Lemma 3.3.1:**
 
 1. Assume $\int_{\mathbb{R}^n} \sigma(w^T x + b) \, d\mu(x) = 0$ for all $w \in \mathbb{R}^n, b \in \mathbb{R}$.
 2. Fix an arbitrary vector $w \neq 0$ and scalar $\theta \in \mathbb{R}$. Define the function family parameterized by $\lambda > 0$:
 
-
 $$
 h_\lambda(x) = \sigma(\lambda(w^T x + \theta) + \phi)
 $$
-
 
 where $\phi \in \mathbb{R}$ is an arbitrary scalar shift.
 
@@ -209,48 +171,37 @@ where $\phi \in \mathbb{R}$ is an arbitrary scalar shift.
 4. Let $H^+ = \{x \in \mathbb{R}^n : w^T x + \theta > 0\}$ (the open half-space), and let $\Pi = \{x \in \mathbb{R}^n : w^T x + \theta = 0\}$ (the hyperplane boundary). 
 5. Because $\sigma$ is bounded, the functions $h_\lambda(x)$ are uniformly bounded by some constant $M$. Since $\mu$ is a finite measure, the constant function $M$ is integrable. By the Lebesgue Dominated Convergence Theorem, we can pass the limit inside the integral:
 
-
 $$
 \lim_{\lambda \to \infty} \int_{\mathbb{R}^n} h_\lambda(x) \, d\mu(x) = \int_{\mathbb{R}^n} \lim_{\lambda \to \infty} h_\lambda(x) \, d\mu(x)
 $$
 
-
 6. Evaluating the limit integral using the indicator functions of our sets:
-
 
 $$
 \int_{\mathbb{R}^n} \left[ 1 \cdot \mathbb{I}_{H^+}(x) + 0 \cdot \mathbb{I}_{H^-}(x) + \sigma(\phi) \cdot \mathbb{I}_\Pi(x) \right] d\mu(x) = \mu(H^+) + \sigma(\phi)\mu(\Pi)
 $$
 
-
 7. Since $\int h_\lambda d\mu = 0$ for all $\lambda$, the limit must be zero. Thus:
-
 
 $$
 \mu(H^+) + \sigma(\phi)\mu(\Pi) = 0
 $$
 
-
 8. This equation must hold for *any* choice of $\phi$. Because $\sigma$ is sigmoidal (going from 0 to 1), it cannot be a constant function. Thus, we can select two values $\phi_1, \phi_2$ such that $\sigma(\phi_1) \neq \sigma(\phi_2)$.
-
 
 $$
 \mu(H^+) + \sigma(\phi_1)\mu(\Pi) = 0
 $$
 
-
 $$
 \mu(H^+) + \sigma(\phi_2)\mu(\Pi) = 0
 $$
 
-
 9. Subtracting the two equations yields:
-
 
 $$
 (\sigma(\phi_1) - \sigma(\phi_2))\mu(\Pi) = 0 \implies \mu(\Pi) = 0
 $$
-
 
 10. Substituting $\mu(\Pi) = 0$ back into our equation gives $\mu(H^+) = 0$. 
 11. We have shown that the measure $\mu$ evaluates to zero on all open half-spaces in $\mathbb{R}^n$. 
@@ -263,12 +214,10 @@ $$
 
 While Cybenko proved that sigmoids are universal, a natural question emerged: what is the minimal structural requirement for an activation function to be a universal approximator? In 1993, Leshno, Lin, Pinkus, and Schocken provided a stunningly clean answer: an activation function is universal if and only if it is not a polynomial.
 
-
 !!! success "Theorem 4"
     1 (Leshno's Theorem)
 
     Let $\sigma \in C(\mathbb{R})$. The subspace $S_\sigma = \text{span}\{\sigma(w^T x + b)\}$ is dense in $C(K)$ for all compact $K \subset \mathbb{R}^n$ if and only if $\sigma$ is not a polynomial.
-
 
 **Proof of Necessity:**
 
@@ -289,11 +238,9 @@ To prove sufficiency, we will show that if $\sigma$ is not a polynomial, we can 
 4. Let $w \in \mathbb{R}^n$ and $b \in \mathbb{R}$. The function $\sigma(\lambda w^T x + b)$ is in $S$ for any $\lambda$.
 5. Differentiating with respect to $\lambda$ at $\lambda=0$ (or taking limits of finite differences):
 
-
 $$
 \frac{\partial^k}{\partial \lambda^k} \sigma(\lambda w^T x + b) \bigg|_{\lambda=0} = \sigma^{(k)}(b) (w^T x)^k
 $$
-
 
 6. Since $\sigma$ is not a polynomial, there must exist some $b_k$ such that $\sigma^{(k)}(b_k) \neq 0$ for all $k$.
 7. Thus, $(w^T x)^k \in S$ for all $w, k$.
@@ -306,12 +253,10 @@ $$
 
 While uniform approximation ($C(K)$) is powerful, machine learning inherently optimizes the expected loss over probability distributions. This necessitates understanding approximation in $L^p$ spaces.
 
-
 !!! success "Theorem 5"
     1 (Hornik's $L^p$ Approximation)
 
     Let $\mu$ be a finite Borel measure on $\mathbb{R}^n$. If $\sigma: \mathbb{R} \to \mathbb{R}$ is bounded, continuous, and non-constant, then the neural network span $S_\sigma$ is dense in $L^p(\mathbb{R}^n, \mu)$ for $1 \le p < \infty$.
-
 
 **Proof of Theorem 5.1:**
 
@@ -320,11 +265,9 @@ While uniform approximation ($C(K)$) is powerful, machine learning inherently op
 3. By Cybenko's theorem, there exists a neural network $N \in S_\sigma$ such that $\|g - N\|_\infty < \epsilon / (2 \mu(K)^{1/p})$.
 4. Then the $L^p$ norm of the difference is:
 
-
 $$
 \|g - N\|_p^p = \int_K |g - N|^p d\mu \le \|g - N\|_\infty^p \mu(K) < \left(\frac{\epsilon}{2 \mu(K)^{1/p}}\right)^p \mu(K) = \frac{\epsilon^p}{2^p}
 $$
-
 
 5. Thus $\|g - N\|_p < \epsilon/2$. 
 6. By the triangle inequality: $\|f - N\|_p \le \|f - g\|_p + \|g - N\|_p < \epsilon/2 + \epsilon/2 = \epsilon$. $\blacksquare$
@@ -339,11 +282,9 @@ Nodes: $x_0=0, x_1=0.5, x_2=1$. Target values: $y_0=0, y_1=0.25, y_2=1$.
 
 We represent the piecewise linear function as:
 
-
 $$
 PL(x) = y_0 + m_0(x - x_0) + (m_1 - m_0)\sigma(x - x_1)
 $$
-
 
 Calculating slopes:
 $m_0 = \frac{0.25 - 0}{0.5 - 0} = 0.5$
@@ -378,11 +319,9 @@ With a final threshold or absolute value, this yields the XOR logic. This demons
 Let $\sigma(x) = x^2$. We show that a network with this activation cannot approximate $f(x) = x^3$ on $[-1, 1]$.
 A network with $N$ neurons computes:
 
-
 $$
 G(x) = \sum_{i=1}^N \alpha_i (w_i x + b_i)^2 = \sum \alpha_i (w_i^2 x^2 + 2w_i b_i x + b_i^2)
 $$
-
 
 This simplifies to $G(x) = Ax^2 + Bx + C$ for some constants $A, B, C$.
 The space of all such network functions is the set of polynomials of degree at most 2.

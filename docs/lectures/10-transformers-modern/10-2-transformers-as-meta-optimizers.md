@@ -30,13 +30,13 @@ We consider a simplified "Linear Transformer" where the softmax is removed, and 
     $$
     \nabla \mathcal{L}(0) = X^T(X(0) - Y) = -X^T Y = -\sum_{i=1}^k x_i y_i
     $$
-    
+
     One step of GD from $w_0 = 0$ with learning rate $\eta$ gives:
     
     $$
     w_1 = \eta \sum_{i=1}^k x_i y_i
     $$
-    
+
     The prediction for $x_{test}$ is:
     
     $$
@@ -55,11 +55,11 @@ We consider a simplified "Linear Transformer" where the softmax is removed, and 
     $$
     \text{Attn}(q_{test}, K, V) = \sum_{i=1}^k (q_{test}^T k_i) v_i = \sum_{i=1}^k ([x_{test}; 0]^T [x_i; 0]) [0; y_i]
     $$
-    
+
     $$
     = \sum_{i=1}^k (x_{test}^T x_i) [0; y_i] = [0; \sum_{i=1}^k (x_{test}^T x_i) y_i]
     $$
-    
+
     The second component of the result is exactly the GD prediction $\hat{y}_{test}$ (with $\eta=1$).
     By scaling $W_Q$ or $W_K$ by $\sqrt{\eta}$, we can implement any learning rate. $\blacksquare$
 
@@ -77,7 +77,7 @@ If Transformers can implement optimization algorithms, are they "optimal" in som
     $$
     \Sigma_k = \left( \frac{1}{\sigma_w^2} I + \frac{1}{\sigma_\epsilon^2} X^T X \right)^{-1}
     $$
-    
+
     $$
     \mu_k = \frac{1}{\sigma_\epsilon^2} \Sigma_k X^T Y
     $$
@@ -98,7 +98,7 @@ If Transformers can implement optimization algorithms, are they "optimal" in som
     $$
     \hat{y}_{Bayes} = x_{test}^T X^T (\lambda I + X X^T)^{-1} Y
     $$
-    
+
     This expression involves $x_{test}^T x_i$ terms and the inversion of the $k \times k$ Gram matrix $G = X X^T$.
     A Transformer can compute $G$ using one attention layer. A subsequent MLP can approximate the inversion $( \lambda I + G )^{-1}$ (e.g., via a power series expansion), and a second attention layer can perform the final weighted sum. Thus, the Bayes-optimal solution for Gaussian linear regression is within the hypothesis space of a 2-layer Transformer. $\blacksquare$
 

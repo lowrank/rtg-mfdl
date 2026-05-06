@@ -19,7 +19,7 @@ whenever $\tau(a_j) = 0$ for all $j$, and $a_j \in \mathcal{A}_{i_j}$ with adjac
     $$
     \tau(a_1 \dots a_n) = \sum_{\pi \in NC(n)} \prod_{V \in \pi} \kappa_{|V|}(a_{V_1}, \dots, a_{V_{|V|}})
     $$
-    
+
     where $NC(n)$ is the lattice of non-crossing partitions of $\{1, \dots, n\}$.
 **Proof:**
 The proof proceeds by induction on the poset lattice of non-crossing partitions using Möbius inversion. The Möbius function on the incidence algebra of $NC(n)$ acts as the inverse operation to summation over sub-partitions. Because $NC(n)$ is a finite lattice, the definition is non-degenerate. Freeness of variables $X, Y$ is strictly equivalent to the vanishing of all mixed free cumulants (i.e., cumulants containing both $X$ and $Y$). $\blacksquare$
@@ -34,6 +34,7 @@ The characteristic functions of classical probability are replaced by the R-tran
     $$
     R_{X+Y}(z) = R_X(z) + R_Y(z)
     $$
+
 **Proof:**
 Let $G_X(z) = \tau((z - X)^{-1})$ be the Cauchy transform. The R-transform is defined as $R_X(z) = G_X^{-1}(z) - 1/z$. Expanding $G_X(z)$ in powers of $1/z$, the coefficients are the moments. The inverse series $G_X^{-1}(z)$ generates the free cumulants. Since mixed free cumulants of free variables vanish, the cumulants of $X+Y$ are exactly the sum of the individual cumulants. Therefore, the generating function of the cumulants, which is $R(z)$, is strictly additive. $\blacksquare$
 
@@ -43,6 +44,7 @@ Let $G_X(z) = \tau((z - X)^{-1})$ be the Cauchy transform. The R-transform is de
     $$
     S_{XY}(z) = S_X(z) S_Y(z)
     $$
+
 **Proof:**
 The S-transform is defined via the moment generating function $\psi(z) = \tau((1-zX)^{-1}) - 1 = \sum_{n=1}^\infty \tau(X^n) z^n$. Let $\chi(z)$ be the inverse under composition of $\psi(z)$. The S-transform is $S(z) = \chi(z) \frac{1+z}{z}$. Using the combinatorial definition of freeness, the moments of $XY$ factorize over non-crossing partitions. Taking the inverse series of the composite moments yields the multiplicative property $S_{XY}(z) = S_X(z) S_Y(z)$. $\blacksquare$
 

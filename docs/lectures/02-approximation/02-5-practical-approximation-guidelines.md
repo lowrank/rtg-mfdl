@@ -16,13 +16,10 @@ This chapter translates abstract approximation theory into **Practical Guideline
 
 Before a network can generalize, it must have the capacity to interpolate (memorize) the training data.
 
-
 !!! success "Theorem 2"
     1 (The $W \ge N$ Rule)
 
     A neural network with $W$ parameters can memorize $N$ arbitrary data points if $W \ge N$.
-
-
 
 **Rigorous Proof for 2-Layer ReLU Networks:**
 1. Consider $N$ points $\{x_i\}$ and labels $\{y_i\}$.
@@ -39,12 +36,10 @@ Before a network can generalize, it must have the capacity to interpolate (memor
 
 Deep networks are notoriously overparameterized. The **Lottery Ticket Hypothesis** (Frankle & Carbin, 2018) suggests that most of these parameters are unnecessary.
 
-
 !!! success "Theorem 3"
     1 (Strong Lottery Ticket Theorem)
 
     For any sufficiently overparameterized network $N$, there exists a sparse sub-network $n \subset N$ that approximates any target function $f$ as well as $N$ can, without any weight training (only by pruning).
-
 
 **Proof Insight:**
 1. If we have $10^9$ random weights, the probability that some subset of them, when combined, approximates the optimal weights for a smaller network is very high.
@@ -58,7 +53,6 @@ Deep networks are notoriously overparameterized. The **Lottery Ticket Hypothesis
 
 Empirical evidence from OpenAI, DeepMind, and others shows that the test loss $L$ follows a predictable power law.
 
-
 !!! info "Definition 4"
     1 (The Scaling Law)
 
@@ -66,10 +60,7 @@ Empirical evidence from OpenAI, DeepMind, and others shows that the test loss $L
     L(N, D) \approx \left( \frac{N_c}{N} \right)^{\alpha_N} + \left( \frac{D_c}{D} \right)^{\alpha_D}
     $$
 
-
-
     where $N$ is parameter count, $D$ is dataset size, and $\alpha$ are scaling exponents.
-
 
 !!! success "Theorem 4"
     2 (Fundamental Scaling Bound)
