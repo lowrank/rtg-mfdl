@@ -294,9 +294,6 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
 !!! success "Theorem 4.1 (Bias Collapse in 1D ReLU Networks)"
     Consider a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(x - b_j)$ (with fixed $w_j = 1$) trained to minimize $\mathcal{L} = \frac{1}{2} \int_{\Omega} (f(x) - f^*(x))^2 dx$ under gradient flow. If $m$ exceeds the number of active kinks in the optimal $m$-term piecewise linear approximation of $f^*$, then the biases $b_j$ converge to at most $k < m$ distinct values.
 
-!!! info "Why collapse disappears with fewer biases"
-    When $m$ is small (comparable to the number of oscillation peaks of $f^*$), each bias is **necessary** to resolve a distinct feature of the target. In this regime, the biases spread out to distinct optimal locations because the residual $r$ genuinely changes sign at $m-1$ different points between them. No redundancy exists, so no collapse occurs. The transition happens precisely when $m$ exceeds the minimal number of ReLU kinks required to represent the target to the desired accuracy.
-
 ### 4.3 Empirical Demonstration
 
 ```python
