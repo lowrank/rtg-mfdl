@@ -327,20 +327,7 @@ The core idea has been extended beyond unconstrained smooth optimization:
 * **Riemannian optimization** (arXiv:2506.06160, 2025): Silver schedules apply on manifolds with applications to Wasserstein space, suggesting the principle is geometric
 * **Schedule concatenation** (arXiv:2410.12395, Fudan, 2024): A unified technique for constructing stepsizes with analytic bounds by concatenating shorter optimal schedules
 
-### 2.6 Fundamental Limits of Variable-Step GD
-
-A classic result from approximation theory gives the fundamental limit of what variable step size GD can achieve: the optimal step size sequence corresponds to a Chebyshev polynomial that minimizes the worst-case error, and this rate is optimal among all deterministic first-order methods:
-
-!!! success "Theorem 2.3 (Fundamental Limit of Variable-Step GD)"
-    For any deterministic step size sequence $\{\eta_k\}$, the worst-case convergence of gradient descent on the class of $L$-smooth $\mu$-strongly convex functions is lower bounded by:
-
-    $$
-    \min_{\eta_0, \dots, \eta_{K-1}} \max_{f} \|w_K - w^*\| \ge \frac{\|w_0 - w^*\|}{T_K(\kappa)}
-    $$
-
-    where $T_K$ is the $K$-th Chebyshev polynomial. This lower bound matches the Chebyshev upper bound up to a constant factor. The convergence is **never second-order** (i.e., never $e^{-cK^2}$), but achieves the optimal first-order rate $((\sqrt{\kappa}-1)/(\sqrt{\kappa}+1))^K$.
-
-### 2.7 Verification Code
+### 2.6 Verification Code
 
 ```python
 import numpy as np
@@ -393,7 +380,7 @@ plt.legend()
 plt.grid(True)
 ```
 
-### 2.8 Open Questions
+### 2.7 Open Questions
 
 !!! question "Open Problem 2.1 — Silver Schedule for Non-Separable Non-Quadratic"
     The Arcsine random stepsize schedule achieves full acceleration only for **separable** convex functions. Does there exist a stepsize schedule (deterministic or randomized) that achieves $O(\kappa^{1/2})$ without momentum for *all* convex functions? The Silver schedule gives partial acceleration $\kappa^{\log_\rho 2} \approx \kappa^{0.7864}$ — can this exponent be improved to $0.5$?
