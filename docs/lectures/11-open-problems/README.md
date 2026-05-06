@@ -4,7 +4,7 @@
 
 ---
 
-## 1. Deep Linear Networks: Gradient Flow, Implicit Bias, and the $2 \times 2$ Mystery
+## 1. Deep Linear Networks
 
 ### 1.1 Setup and Gradient Flow
 
@@ -24,9 +24,9 @@ where $X \in \mathbb{R}^{d_0 \times n}$, $Y \in \mathbb{R}^{d_L \times n}$, and 
     $$
     \dot{W}(t) = -\sum_{\ell=1}^L \left( W_L \cdots W_{\ell+1} \right)^\top \left( \nabla_{W_\ell} \mathcal{L} \right) \left( W_{\ell-1} \cdots W_1 \right)^\top
     $$
-
+    
     For the special case of a **balanced** initialization ($W_{\ell+1}^\top W_{\ell+1} = W_\ell W_\ell^\top$ for all $\ell$), this simplifies dramatically to:
-
+    
     $$
     \dot{W}(t) = -L \cdot (W(t) W(t)^\top)^{\frac{L-1}{L}} \nabla \mathcal{L}(W(t))
     $$
@@ -37,10 +37,10 @@ where $X \in \mathbb{R}^{d_0 \times n}$, $Y \in \mathbb{R}^{d_L \times n}$, and 
     $$
     \nabla_{W_\ell} \mathcal{L} = (W_L \cdots W_{\ell+1})^\top E X^\top (W_{\ell-1} \cdots W_1)^\top
     $$
-
+    
     Under balancedness, all layers evolve along the same singular directions and the dynamics collapse to the above compact form. This was first derived in [Saxe et al., 2014].
 
-### 1.2 Implicit Bias — The Arora Result
+### 1.2 Implicit Bias
 
 !!! success "Theorem 1.2 (Implicit Bias of Deep Linear Networks — Arora et al., 2019)"
     Consider gradient flow on a deep linear network with square loss and balanced initialization. As $t \to \infty$, the end-to-end matrix $W(t)$ converges to the minimum $L_2$-norm solution of the linear regression problem:
@@ -48,16 +48,16 @@ where $X \in \mathbb{R}^{d_0 \times n}$, $Y \in \mathbb{R}^{d_L \times n}$, and 
     $$
     W(\infty) = \arg\min_{W} \|W\|_F^2 \quad \text{s.t.} \quad W X = Y
     $$
-
+    
     Moreover, for depth $L > 1$, the singular values $\sigma_i(t)$ of $W(t)$ evolve as:
-
+    
     $$
     \dot{\sigma}_i(t) = -L \cdot \sigma_i(t)^{2 - 2/L} \cdot (\sigma_i(t) - \sigma_i^*)
     $$
-
+    
     where $\sigma_i^*$ are the singular values of the minimum-norm solution. This leads to a **spectral bias**: larger singular values converge faster.
 
-### 1.4 Open Questions: The $2 \times 2$ Matrix Zoo at Depth $L \ge 3$
+### 1.4 Open Questions
 
 The 2-layer case ($L = 2$) is well-understood — the dynamics can be diagonalized via SVD and the convergence rates are known explicitly [Saxe 2014]. The true frontier lies at **depth $L \ge 3$**. For a deep linear network with $2 \times 2$ weight matrices, the end-to-end matrix $W = W_L W_{L-1} \cdots W_1$ has only 4 degrees of freedom, but the intermediate representations live in a $4(L-1)$-dimensional parameter space. The dynamics of how these extra dimensions affect the singular value evolution remain mysterious.
 
@@ -67,13 +67,13 @@ The 2-layer case ($L = 2$) is well-understood — the dynamics can be diagonaliz
     $$
     \dot{\sigma}_i = -2 \sigma_i (\sigma_i^2 - \sigma_i^{*2})
     $$
-
+    
     This scalar ODE is exactly solvable. For $L = 3$, the coupled system becomes:
-
+    
     $$
     \dot{\sigma}_i = -3 \sigma_i^{4/3} (\sigma_i^{2/3} - \sigma_i^{*2/3})
     $$
-
+    
     While still decoupled in singular values, the **interaction between layers** introduces nonlinear coupling in the left/right singular vectors that is absent for $L = 2$. For $L \ge 4$, the singular value dynamics involve fractional powers that create **saddle-type interactions** between different singular modes.
 
 !!! question "Open Problem 1.1 — $2 \times 2$ with Depth $L = 3$: Singular Vector Rotation"
@@ -95,7 +95,7 @@ The 2-layer case ($L = 2$) is well-understood — the dynamics can be diagonaliz
 
 ---
 
-## 2. Variable Step Size Acceleration: GD with Deterministic Schedules
+## 2. Variable Step Size Accelerations
 
 ### 2.1 The Basic Observation
 
@@ -131,13 +131,13 @@ The worst-case error is controlled by minimizing the maximum of the polynomial $
     $$
     \eta_k = \frac{2}{L + \mu - (L - \mu) \cos\left(\frac{2k+1}{2K}\pi\right)}, \qquad k = 0, \dots, K-1
     $$
-
+    
     These are the roots of the transformed Chebyshev polynomial. The resulting convergence rate is:
-
+    
     $$
     \|w_K - w^*\| \leq 2\left(\frac{\sqrt{\kappa} - 1}{\sqrt{\kappa} + 1}\right)^K \|w_0 - w^*\|
     $$
-
+    
     This improves on fixed-step GD from $((\kappa-1)/(\kappa+1))^K$ to $((\sqrt{\kappa}-1)/(\sqrt{\kappa}+1))^K$ — a quadratic improvement in the condition number dependence — **without momentum**.
 
 !!! info "Why this matters"
@@ -153,15 +153,15 @@ A recent breakthrough by Altschuler & Parrilo (2023) proves that variable step s
     $$
     \kappa^{\log_\rho 2} \approx \kappa^{0.7864}
     $$
-
+    
     iterations to reach a fixed accuracy, where $\rho = 1 + \sqrt{2}$ is the silver ratio and $\kappa = L/\mu$ is the condition number. This is strictly between the textbook unaccelerated rate (linear in $\kappa$) and Nesterov's accelerated rate ($\sqrt{\kappa}$). The schedule is defined recursively and is **non-monotonic and fractal-like**. The result holds for all smooth strongly convex functions, not just quadratics.
-
+    
     For non-strongly convex $L$-smooth functions, the same technique yields the rate:
-
+    
     $$
     \varepsilon^{-\log_\rho 2} \approx \varepsilon^{-0.7864}
     $$
-
+    
     improving on the standard $O(1/\varepsilon)$ rate but not reaching Nesterov's $O(1/\sqrt{\varepsilon})$.
 
 !!! info "The Hedging Intuition"
@@ -183,7 +183,7 @@ A recent breakthrough by Altschuler & Parrilo (2023) proves that variable step s
     $$
     y_{2n} z_{2n} = z_n^2 \quad\text{and}\quad z_{2n} - y_{2n} = 2(z_n - z_n^2)
     $$
-
+    
     The explicit solution is $z_{2n} = z_n(\xi + \sqrt{1+\xi^2})$ where $\xi = 1 - z_n$. As $z_n \to 0$, the growth factor approaches $1 + \sqrt{2} = \rho$, the silver ratio. The actual stepsizes are obtained via a linear fractional transformation of $y_n, z_n$.
 
 ### 2.4 The Long Steps Approach (Grimmer et al.)
@@ -196,7 +196,7 @@ Parallel to the Silver schedule, Grimmer et al. developed a fundamentally differ
     $$
     f(x_N) - f(x^*) \le \frac{C \cdot L D^2}{N^{\log_2(1+\sqrt{2})}}
     $$
-
+    
     where the constant $C$ depends on the pattern length and is strictly smaller than the corresponding constant for the Silver schedule of the same length.
 
 !!! info "Methodology: Computer-Assisted Proofs"

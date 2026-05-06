@@ -29,7 +29,7 @@ The **index** of a non-degenerate critical point $p$, denoted $\text{index}(p)$,
 
     where $k = \text{index}(p)$.
     
-**Proof of Theorem 1.1 (Rigorous)**:
+**Proof of Theorem 1.1**:
     
 We proceed by induction on the dimension $n$. First, without loss of generality, we can translate our coordinate system such that $p$ is at the origin, meaning $x(p) = 0$, and we can shift the function values such that $L(0) = 0$. 
     
@@ -136,7 +136,7 @@ To formally count the critical points and compute their indices across different
 
     where $p_{\nabla L(x)}$ is the probability density function of the random vector $\nabla L(x)$.
     
-**Proof of Theorem 1.2 (Rigorous)**:
+**Proof of Theorem 1.2**:
     
 Consider a fixed realization of the random field $L(x)$. We are interested in the roots of the vector field $g(x) = \nabla L(x)$. Assume that for this realization, there are finitely many roots in $\mathcal{B}$ and all are non-degenerate (which holds almost surely for smooth Gaussian fields).
     
@@ -201,7 +201,7 @@ In analyzing the Hessian of the loss landscape, particularly near local minima, 
 
     If $\theta \le \sqrt{c}$, then $\lambda_{\max}$ sticks to the right edge of the bulk support at $(1+\sqrt{c})^2$.
     
-**Proof of Theorem 1.3 (Rigorous)**:
+**Proof of Theorem 1.3**:
     
 The empirical spectral distribution of the null matrix $W_0 = \frac{1}{M} Z^T Z$, where $Z_{ij} \sim \mathcal{N}(0, 1)$, converges to the Marchenko-Pastur (MP) distribution as $M,N \to \infty$. 
 The Stieltjes transform of the Marchenko-Pastur distribution, $s(z)$, for $z \in \mathbb{C} \setminus \mathbb{R}$, satisfies the fundamental quadratic equation:
