@@ -334,13 +334,18 @@ plt.grid(True)
 **References:**
 
 - d'Aspremont, A., Karimi, A., & Gower, R. M. (2021). Optimal fast gradient methods. *Foundations and Trends in Optimization*, 5(1).
-- Parrilo, P. A. (2003). Semidefinite programming relaxations for semialgebraic problems. *Mathematical Programming*, 96(2), 293–320.
+- Drori, Y., & Teboulle, M. (2014). Performance of first-order methods for smooth convex minimization: A novel approach. *Mathematical Programming*, 145(1), 451–482.
+- Taylor, A., Hendrickx, J. M., & Glineur, F. (2017). Performance estimation toolbox (PESTO): Automated worst-case analysis of first-order optimization methods. *IEEE CDC 2017*.
+- Lessard, L., Recht, B., & Packard, A. (2016). Analysis and design of optimization algorithms via integral quadratic constraints. *SIAM Journal on Optimization*, 26(1), 57–95.
+- Hu, B., & Lessard, L. (2017). Dissipativity theory for accelerating gradient methods. *IEEE CDC 2017*.
 - Lee, Y.-T., Srinivas, V., & the JHU Optimization Group. (2021). Optimization with first-order methods: Beyond gradient descent. *JHU Technical Report*.
+- Parrilo, P. A. (2003). Semidefinite programming relaxations for semialgebraic problems. *Mathematical Programming*, 96(2), 293–320.
 - Polyak, B. T. (1964). Some methods of speeding up the convergence of iteration methods. *USSR Computational Mathematics and Mathematical Physics*, 4(5), 1–17.
 - Polyak, B. T. (1987). *Introduction to Optimization*. Optimization Software, Inc.
 - Nesterov, Y. (1983). A method for solving the convex programming problem with convergence rate $O(1/k^2)$. *Doklady AN SSSR*, 269, 543–547.
 - Nemirovski, A., & Yudin, D. (1983). *Problem Complexity and Method Efficiency in Optimization*. Wiley.
 - Nesterov, Y. (2004). *Introductory Lectures on Convex Optimization*. Springer.
+- Golub, G. H., & Van Loan, C. F. (2013). *Matrix Computations* (4th ed.). Johns Hopkins University Press. [See Chapter 10 on Chebyshev acceleration for linear systems.]
 
 ---
 
