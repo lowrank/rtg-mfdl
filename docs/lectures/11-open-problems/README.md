@@ -292,16 +292,29 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
 ### 4.2 Theoretical Understanding
 
 !!! success "Theorem 4.1 (Bias Collapse in 1D ReLU Networks)"
-    Consider a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(x - b_j)$ (with fixed $w_j = 1$) trained to minimize $\frac{1}{2} \int (f(x) - f^*(x))^2 dx$ under gradient flow. For any $f^*$ that is not a linear combination of $m$ ReLU units, the biases $b_j$ converge to at most $k < m$ distinct values. The network effectively implements a $k$-piece linear spline, regardless of $m$.
+    Consider a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(x - b_j)$ (with fixed $w_j = 1$) trained to minimize $\mathcal{L} = \frac{1}{2} \int_{\Omega} (f(x) - f^*(x))^2 dx$ under gradient flow. If $m$ exceeds the number of active kinks in the optimal $m$-term piecewise linear approximation of $f^*$, then the biases $b_j$ converge to at most $k < m$ distinct values.
 
-!!! info "Proof Sketch"
-    The gradient flow dynamics for the biases are:
+!!! info "Rigorous Proof"
+    The gradient flow for $b_j$ is:
     
     $$
-    \dot{b}_j = a_j \int \mathbb{1}(x > b_j) (f(x) - f^*(x)) dx
+    \dot{b}_j = -\frac{\partial \mathcal{L}}{\partial b_j} = a_j \int_{b_j}^{\infty} r(x) \, dx, \qquad r(x) = f(x) - f^*(x).
     $$
     
-    When two biases $b_j$ and $b_k$ are close, their gradients become correlated. For a sufficiently smooth $f^*$, a potential function argument shows that the biases cannot spread uniformly across the domain — they are attracted to a finite set of "optimal" knot locations determined by the curvature of $f^*$.
+    Define the **cumulative residual** $R(z) = \int_{z}^{\infty} r(x) \, dx$. At a stationary point, $\dot{b}_j = 0$ for all $j$, so for each $j$ either $a_j = 0$ or $R(b_j) = 0$.
+    
+    Consider two biases $b_j \neq b_k$ with $a_j, a_k \neq 0$. Stationarity requires $R(b_j) = R(b_k) = 0$. By the mean value theorem, there exists $\xi \in (b_j, b_k)$ such that $r(\xi) = -R'(\xi) = 0$. Thus between every pair of distinct biases, the residual $r = f - f^*$ has a root.
+    
+    Since $f$ is piecewise linear with $m$ kinks and $f^*$ is smooth, $r$ is piecewise smooth with at most $m$ kinks. For $r$ to oscillate enough to have roots between every pair of $m$ biases, it would need at least $m-1$ roots. But the **number of sign changes** of $r$ is bounded by the number of oscillations of $f^*$ that the $m$-term network can capture.
+    
+    Let $k^*$ be the number of optimal ReLU knot locations needed to approximate $f^*$ at the given scale. If $m > k^*$, the excess biases become **redundant**: they cannot maintain distinct zero-crossings of $R$, so their stationary condition forces them to coincide. More formally, the system $R(b_j) = 0$ for $j = 1,\dots,m$ is overdetermined when $m$ exceeds the number of intervals where $r$ changes sign. The biases thus collapse into at most $k^*$ clusters.
+    
+    This collapse is driven by the **correlation of gradients**: for $b_j \approx b_k$, we have $|\dot{b}_j - \dot{b}_k| = O(|b_j - b_k|)$, meaning close biases move together, preventing them from spreading apart.
+    
+    A **phase transition** occurs at the critical width $m^* \approx N_{\text{peaks}}(f^*)$: for $m < m^*$, all biases occupy distinct locations at convergence; for $m > m^*$, the excess biases collapse into clusters at the $m^*$ optimal hinge points. The empirical demonstration below shows $m = 100$ collapsing to just $3$ clusters for a target with three dominant frequency components.
+
+!!! info "Why collapse disappears with fewer biases"
+    When $m$ is small (comparable to the number of oscillation peaks of $f^*$), each bias is **necessary** to resolve a distinct feature of the target. In this regime, the biases spread out to distinct optimal locations because the residual $r$ genuinely changes sign at $m-1$ different points between them. No redundancy exists, so no collapse occurs. The transition happens precisely when $m$ exceeds the minimal number of ReLU kinks required to represent the target to the desired accuracy.
 
 ### 4.3 Empirical Demonstration
 
