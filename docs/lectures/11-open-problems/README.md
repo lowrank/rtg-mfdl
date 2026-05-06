@@ -301,17 +301,20 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
     \dot{b}_j = -\frac{\partial \mathcal{L}}{\partial b_j} = a_j \int_{b_j}^{\infty} r(x) \, dx, \qquad r(x) = f(x) - f^*(x).
     $$
     
-    Define the **cumulative residual** $R(z) = \int_{z}^{\infty} r(x) \, dx$. At a stationary point, $\dot{b}_j = 0$ for all $j$, so for each $j$ either $a_j = 0$ or $R(b_j) = 0$.
+    Consider two biases $b_j < b_k$. The difference in their dynamics is:
     
-    Consider two biases $b_j \neq b_k$ with $a_j, a_k \neq 0$. Stationarity requires $R(b_j) = R(b_k) = 0$. By the mean value theorem, there exists $\xi \in (b_j, b_k)$ such that $r(\xi) = -R'(\xi) = 0$. Thus between every pair of distinct biases, the residual $r = f - f^*$ has a root.
+    $$
+    \dot{b}_j - \dot{b}_k = a_j \int_{b_j}^{b_k} r(x) \, dx + (a_j - a_k) \int_{b_k}^{\infty} r(x) \, dx.
+    $$
     
-    Since $f$ is piecewise linear with $m$ kinks and $f^*$ is smooth, $r$ is piecewise smooth with at most $m$ kinks. For $r$ to oscillate enough to have roots between every pair of $m$ biases, it would need at least $m-1$ roots. But the **number of sign changes** of $r$ is bounded by the number of oscillations of $f^*$ that the $m$-term network can capture.
+    When $b_j$ and $b_k$ are close, we can approximate $r$ as constant on $[b_j, b_k]$, giving $|\dot{b}_j - \dot{b}_k| = O(|b_j - b_k|)$. This means close biases experience **attraction**: their velocity difference scales with their distance, creating a contraction in bias space.
     
-    Let $k^*$ be the number of optimal ReLU knot locations needed to approximate $f^*$ at the given scale. If $m > k^*$, the excess biases become **redundant**: they cannot maintain distinct zero-crossings of $R$, so their stationary condition forces them to coincide. More formally, the system $R(b_j) = 0$ for $j = 1,\dots,m$ is overdetermined when $m$ exceeds the number of intervals where $r$ changes sign. The biases thus collapse into at most $k^*$ clusters.
+    The strength of this contraction is determined by the **local correlation** of the Jacobian: $\partial \dot{b}_j / \partial b_k \approx a_j a_k \int \mathbb{1}(x > \max(b_j, b_k)) \, dx + \text{higher order terms}$. For large $m$, many pairs of biases have nearby values (just from random initialization), and the contraction dominates over any repulsive force from the target.
     
-    This collapse is driven by the **correlation of gradients**: for $b_j \approx b_k$, we have $|\dot{b}_j - \dot{b}_k| = O(|b_j - b_k|)$, meaning close biases move together, preventing them from spreading apart.
-    
-    A **phase transition** occurs at the critical width $m^* \approx N_{\text{peaks}}(f^*)$: for $m < m^*$, all biases occupy distinct locations at convergence; for $m > m^*$, the excess biases collapse into clusters at the $m^*$ optimal hinge points. The empirical demonstration below shows $m = 100$ collapsing to just $3$ clusters for a target with three dominant frequency components.
+    The resulting collapse is a **dynamical symmetry breaking** phenomenon: the loss landscape has a high-dimensional manifold of near-optimal parameters (many distinct bias configurations yield essentially the same function). Gradient descent, preferring the shortest path in parameter space, drives biases toward each other rather than spreading them out, much like how overparameterized networks converge to minimum norm solutions.
+
+!!! info "Why collapse is weaker with fewer biases"
+    When $m$ is small, the biases must occupy distinct locations to resolve the target's oscillations — there is no redundancy to collapse into. The dynamical attraction still exists, but the **representation constraint** (the need to fit $f^*$) overrides it, forcing biases apart to cover the domain. The collapse thus emerges only when the network has excess capacity beyond what the target requires.
 
 !!! info "Why collapse disappears with fewer biases"
     When $m$ is small (comparable to the number of oscillation peaks of $f^*$), each bias is **necessary** to resolve a distinct feature of the target. In this regime, the biases spread out to distinct optimal locations because the residual $r$ genuinely changes sign at $m-1$ different points between them. No redundancy exists, so no collapse occurs. The transition happens precisely when $m$ exceeds the minimal number of ReLU kinks required to represent the target to the desired accuracy.
