@@ -294,28 +294,6 @@ Train a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(w_j x + b_j)$ on
 !!! success "Theorem 4.1 (Bias Collapse in 1D ReLU Networks)"
     Consider a 1D shallow ReLU network $f(x) = \sum_{j=1}^m a_j \sigma(x - b_j)$ (with fixed $w_j = 1$) trained to minimize $\mathcal{L} = \frac{1}{2} \int_{\Omega} (f(x) - f^*(x))^2 dx$ under gradient flow. If $m$ exceeds the number of active kinks in the optimal $m$-term piecewise linear approximation of $f^*$, then the biases $b_j$ converge to at most $k < m$ distinct values.
 
-!!! info "Rigorous Proof"
-    The gradient flow for $b_j$ is:
-    
-    $$
-    \dot{b}_j = -\frac{\partial \mathcal{L}}{\partial b_j} = a_j \int_{b_j}^{\infty} r(x) \, dx, \qquad r(x) = f(x) - f^*(x).
-    $$
-    
-    Consider two biases $b_j < b_k$. The difference in their dynamics is:
-    
-    $$
-    \dot{b}_j - \dot{b}_k = a_j \int_{b_j}^{b_k} r(x) \, dx + (a_j - a_k) \int_{b_k}^{\infty} r(x) \, dx.
-    $$
-    
-    When $b_j$ and $b_k$ are close, we can approximate $r$ as constant on $[b_j, b_k]$, giving $|\dot{b}_j - \dot{b}_k| = O(|b_j - b_k|)$. This means close biases experience **attraction**: their velocity difference scales with their distance, creating a contraction in bias space.
-    
-    The strength of this contraction is determined by the **local correlation** of the Jacobian: $\partial \dot{b}_j / \partial b_k \approx a_j a_k \int \mathbb{1}(x > \max(b_j, b_k)) \, dx + \text{higher order terms}$. For large $m$, many pairs of biases have nearby values (just from random initialization), and the contraction dominates over any repulsive force from the target.
-    
-    The resulting collapse is a **dynamical symmetry breaking** phenomenon: the loss landscape has a high-dimensional manifold of near-optimal parameters (many distinct bias configurations yield essentially the same function). Gradient descent, preferring the shortest path in parameter space, drives biases toward each other rather than spreading them out, much like how overparameterized networks converge to minimum norm solutions.
-
-!!! info "Why collapse is weaker with fewer biases"
-    When $m$ is small, the biases must occupy distinct locations to resolve the target's oscillations — there is no redundancy to collapse into. The dynamical attraction still exists, but the **representation constraint** (the need to fit $f^*$) overrides it, forcing biases apart to cover the domain. The collapse thus emerges only when the network has excess capacity beyond what the target requires.
-
 !!! info "Why collapse disappears with fewer biases"
     When $m$ is small (comparable to the number of oscillation peaks of $f^*$), each bias is **necessary** to resolve a distinct feature of the target. In this regime, the biases spread out to distinct optimal locations because the residual $r$ genuinely changes sign at $m-1$ different points between them. No redundancy exists, so no collapse occurs. The transition happens precisely when $m$ exceeds the minimal number of ReLU kinks required to represent the target to the desired accuracy.
 
