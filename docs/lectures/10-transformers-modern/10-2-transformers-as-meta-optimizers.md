@@ -28,9 +28,9 @@ We consider a simplified "Linear Transformer" where the softmax is removed, and 
 2.  **Mapping to GD:**
     The gradient of the least-squares loss $\mathcal{L}(w) = \frac{1}{2} \|Xw - Y\|^2$ at $w=0$ is:
     
-$$
+    $$
     \nabla \mathcal{L}(0) = X^T(X(0) - Y) = -X^T Y = -\sum_{i=1}^k x_i y_i
-$$
+    $$
 
     One step of GD from $w_0 = 0$ with learning rate $\eta$ gives:
     
@@ -53,9 +53,9 @@ $$
 4.  **The Attention Operation:**
     The linear attention output for the test token is:
     
-$$
+    $$
     \text{Attn}(q_{test}, K, V) = \sum_{i=1}^k (q_{test}^T k_i) v_i = \sum_{i=1}^k ([x_{test}; 0]^T [x_i; 0]) [0; y_i]
-$$
+    $$
 
     $$
     = \sum_{i=1}^k (x_{test}^T x_i) [0; y_i] = [0; \sum_{i=1}^k (x_{test}^T x_i) y_i]
@@ -75,9 +75,9 @@ If Transformers can implement optimization algorithms, are they "optimal" in som
 1.  **The Posterior Distribution:**
     The posterior $P(w | \mathcal{D})$ for a Gaussian prior and Gaussian likelihood is also Gaussian: $\mathcal{N}(\mu_k, \Sigma_k)$.
     
-$$
+    $$
     \Sigma_k = \left( \frac{1}{\sigma_w^2} I + \frac{1}{\sigma_\epsilon^2} X^T X \right)^{-1}
-$$
+    $$
 
     $$
     \mu_k = \frac{1}{\sigma_\epsilon^2} \Sigma_k X^T Y
@@ -87,18 +87,18 @@ $$
     The predictive distribution $P(y_{test} | x_{test}, \mathcal{D})$ is $\mathcal{N}(x_{test}^T \mu_k, \sigma_{pred}^2)$.
     The Bayes-optimal point estimate (minimizing MSE) is the mean:
     
-$$
+    $$
     \hat{y}_{Bayes} = x_{test}^T \mu_k = x_{test}^T \left( \frac{\sigma_\epsilon^2}{\sigma_w^2} I + X^T X \right)^{-1} X^T Y
-$$
+    $$
 
 3.  **Transformer Implementation:**
     Recall the Sherman-Morrison-Woodbury identity or the simpler property that $(A + B)^{-1} = A^{-1} - A^{-1} (I + B A^{-1})^{-1} B A^{-1}$.
     For small $k$ and large $d$, we can use the identity $( \lambda I + X^T X)^{-1} X^T = X^T (\lambda I + X X^T)^{-1}$.
     Thus:
     
-$$
+    $$
     \hat{y}_{Bayes} = x_{test}^T X^T (\lambda I + X X^T)^{-1} Y
-$$
+    $$
 
     This expression involves $x_{test}^T x_i$ terms and the inversion of the $k \times k$ Gram matrix $G = X X^T$.
     A Transformer can compute $G$ using one attention layer. A subsequent MLP can approximate the inversion $( \lambda I + G )^{-1}$ (e.g., via a power series expansion), and a second attention layer can perform the final weighted sum. Thus, the Bayes-optimal solution for Gaussian linear regression is within the hypothesis space of a 2-layer Transformer. $\blacksquare$

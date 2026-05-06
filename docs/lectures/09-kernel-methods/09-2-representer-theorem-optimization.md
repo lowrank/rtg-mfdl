@@ -29,57 +29,56 @@ The **Representer Theorem** bridges this gap. It guarantees that the optimal sol
 
 **Proof:**
 
-1. **Orthogonal Decomposition:** 
-   Let $\mathcal{H}_S = \text{span}\{k(\cdot, x_1), \dots, k(\cdot, x_n)\} \subset \mathcal{H}$ be the subspace spanned by the kernel evaluations at the training data.
-   By the projection theorem in Hilbert spaces, any $f \in \mathcal{H}$ can be uniquely decomposed as:
-   
-   $$
-   f = f_S + f_\perp
-   $$
+**Step 1: Orthogonal Decomposition.**
+Let $\mathcal{H}_S = \text{span}\{k(\cdot, x_1), \dots, k(\cdot, x_n)\} \subset \mathcal{H}$ be the subspace spanned by the kernel evaluations at the training data.
+By the projection theorem in Hilbert spaces, any $f \in \mathcal{H}$ can be uniquely decomposed as:
 
-   where $f_S \in \mathcal{H}_S$ and $f_\perp \in \mathcal{H}_S^\perp$ (the orthogonal complement). Thus, $\langle f_\perp, k(\cdot, x_i) \rangle_\mathcal{H} = 0$ for all $i=1, \dots, n$.
+$$
+f = f_S + f_\perp
+$$
 
-2. **Evaluating the Data Points:**
-   Applying the reproducing property, the evaluation of $f$ at any training point $x_i$ is:
-   
-   $$
-   f(x_i) = \langle f, k(\cdot, x_i) \rangle_\mathcal{H} = \langle f_S + f_\perp, k(\cdot, x_i) \rangle_\mathcal{H}
-   $$
+where $f_S \in \mathcal{H}_S$ and $f_\perp \in \mathcal{H}_S^\perp$ (the orthogonal complement). Thus, $\langle f_\perp, k(\cdot, x_i) \rangle_\mathcal{H} = 0$ for all $i=1, \dots, n$.
 
-   By linearity of the inner product:
-   
-   $$
-   f(x_i) = \langle f_S, k(\cdot, x_i) \rangle_\mathcal{H} + \langle f_\perp, k(\cdot, x_i) \rangle_\mathcal{H} = f_S(x_i) + 0 = f_S(x_i)
-   $$
+**Step 2: Evaluating the Data Points.**
+Applying the reproducing property, the evaluation of $f$ at any training point $x_i$ is:
 
-   Crucially, the empirical loss depends *only* on the predictions $f(x_1), \dots, f(x_n)$. Since $f(x_i) = f_S(x_i)$, the loss term $L$ is entirely independent of the orthogonal component $f_\perp$.
-   
-   $$
-   L(f(x_1), \dots, f(x_n), Y) = L(f_S(x_1), \dots, f_S(x_n), Y)
-   $$
+$$
+f(x_i) = \langle f, k(\cdot, x_i) \rangle_\mathcal{H} = \langle f_S + f_\perp, k(\cdot, x_i) \rangle_\mathcal{H}
+$$
 
-3. **Analyzing the Regularizer:**
-   Now consider the RKHS norm of $f$. Because $f_S$ and $f_\perp$ are orthogonal, the Pythagorean theorem in Hilbert spaces dictates:
-   
-   $$
-   \|f\|_\mathcal{H}^2 = \|f_S + f_\perp\|_\mathcal{H}^2 = \|f_S\|_\mathcal{H}^2 + \|f_\perp\|_\mathcal{H}^2 \geq \|f_S\|_\mathcal{H}^2
-   $$
+By linearity of the inner product:
 
-   Since $R(\cdot)$ is strictly monotonically increasing, and $\|f\|_\mathcal{H} \geq \|f_S\|_\mathcal{H}$, it follows that:
-   
-   $$
-   R(\|f\|_\mathcal{H}) \geq R(\|f_S\|_\mathcal{H})
-   $$
+$$
+f(x_i) = \langle f_S, k(\cdot, x_i) \rangle_\mathcal{H} + \langle f_\perp, k(\cdot, x_i) \rangle_\mathcal{H} = f_S(x_i) + 0 = f_S(x_i)
+$$
 
-   Equality holds if and only if $\|f_\perp\|_\mathcal{H}^2 = 0$, which implies $f_\perp = 0$.
+Crucially, the empirical loss depends *only* on the predictions $f(x_1), \dots, f(x_n)$. Since $f(x_i) = f_S(x_i)$, the loss term $L$ is entirely independent of the orthogonal component $f_\perp$:
 
-4. **Conclusion:**
-   For any function $f = f_S + f_\perp \in \mathcal{H}$, the projected function $f_S$ achieves the exact same empirical loss but a strictly smaller (or equal) regularization penalty. Therefore, to minimize the overall objective $J(f)$, we must have $f_\perp = 0$.
-   Thus, the optimal solution $f^*$ must lie entirely in $\mathcal{H}_S$:
-   
-   $$
-   f^* = f_S \implies f^*(x) = \sum_{i=1}^n \alpha_i k(x, x_i)
-   $$
+$$
+L(f(x_1), \dots, f(x_n), Y) = L(f_S(x_1), \dots, f_S(x_n), Y)
+$$
+
+**Step 3: Analyzing the Regularizer.**
+Now consider the RKHS norm of $f$. Because $f_S$ and $f_\perp$ are orthogonal, the Pythagorean theorem in Hilbert spaces dictates:
+
+$$
+\|f\|_\mathcal{H}^2 = \|f_S + f_\perp\|_\mathcal{H}^2 = \|f_S\|_\mathcal{H}^2 + \|f_\perp\|_\mathcal{H}^2 \geq \|f_S\|_\mathcal{H}^2
+$$
+
+Since $R(\cdot)$ is strictly monotonically increasing and $\|f\|_\mathcal{H} \geq \|f_S\|_\mathcal{H}$, it follows that:
+
+$$
+R(\|f\|_\mathcal{H}) \geq R(\|f_S\|_\mathcal{H})
+$$
+
+Equality holds if and only if $\|f_\perp\|_\mathcal{H}^2 = 0$, which implies $f_\perp = 0$.
+
+**Step 4: Conclusion.**
+For any $f = f_S + f_\perp \in \mathcal{H}$, the projected function $f_S$ achieves the exact same empirical loss but a strictly smaller (or equal) regularization penalty. Therefore, to minimize $J(f)$ we must have $f_\perp = 0$, and the optimal solution $f^*$ lies entirely in $\mathcal{H}_S$:
+
+$$
+f^* = f_S \implies f^*(x) = \sum_{i=1}^n \alpha_i k(x, x_i)
+$$
 
 $\blacksquare$
 
@@ -132,28 +131,28 @@ $$
 
 To find the dual, we minimize $\mathcal{L}$ with respect to the primal variables $f, b, \xi$:
 
-1. **Derivative w.r.t $f$**: 
-   Taking the Fréchet derivative with respect to $f$ in the Hilbert space and setting it to zero:
-   
-   $$
-   \nabla_f \mathcal{L} = f - \sum_{i=1}^n \lambda_i y_i k(\cdot, x_i) = 0 \implies f = \sum_{i=1}^n \lambda_i y_i k(\cdot, x_i)
-   $$
+**Derivative w.r.t. $f$:**
+Taking the Fréchet derivative with respect to $f$ in the Hilbert space and setting it to zero:
 
-   Notice this perfectly mirrors the Representer Theorem with $\alpha_i = \lambda_i y_i$.
+$$
+\nabla_f \mathcal{L} = f - \sum_{i=1}^n \lambda_i y_i k(\cdot, x_i) = 0 \implies f = \sum_{i=1}^n \lambda_i y_i k(\cdot, x_i)
+$$
 
-2. **Derivative w.r.t $b$**:
-   
-   $$
-   \frac{\partial \mathcal{L}}{\partial b} = - \sum_{i=1}^n \lambda_i y_i = 0
-   $$
+Notice this perfectly mirrors the Representer Theorem with $\alpha_i = \lambda_i y_i$.
 
-3. **Derivative w.r.t $\xi_i$**:
-   
-   $$
-   \frac{\partial \mathcal{L}}{\partial \xi_i} = C - \lambda_i - \mu_i = 0
-   $$
+**Derivative w.r.t. $b$:**
 
-   Since $\mu_i \geq 0$, this implies $0 \leq \lambda_i \leq C$.
+$$
+\frac{\partial \mathcal{L}}{\partial b} = - \sum_{i=1}^n \lambda_i y_i = 0
+$$
+
+**Derivative w.r.t. $\xi_i$:**
+
+$$
+\frac{\partial \mathcal{L}}{\partial \xi_i} = C - \lambda_i - \mu_i = 0
+$$
+
+Since $\mu_i \geq 0$, this implies $0 \leq \lambda_i \leq C$.
 
 Substituting these optimal conditions back into the Lagrangian:
 

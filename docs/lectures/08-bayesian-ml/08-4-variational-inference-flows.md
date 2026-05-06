@@ -61,21 +61,21 @@ $$
 
 There are two primary ways to write the ELBO, each offering a different intuition:
 
-1. **The Energy-Entropy View:**
+- **The Energy-Entropy View:**
 
-   $$
-   \text{ELBO}(q) = \mathbb{E}_{q(\theta)}[\log p(\mathcal{D}, \theta)] + H(q)
-   $$
+    $$
+    \text{ELBO}(q) = \mathbb{E}_{q(\theta)}[\log p(\mathcal{D}, \theta)] + H(q)
+    $$
 
-   Here, $H(q) = -\mathbb{E}_q[\log q]$ is the entropy. To maximize the ELBO, we want to find a $q$ that assigns high probability to high-joint-probability regions of the model (energy) while remaining as spread out as possible (entropy). This prevents $q$ from collapsing to a single point.
+    Here, $H(q) = -\mathbb{E}_q[\log q]$ is the entropy. To maximize the ELBO, we want to find a $q$ that assigns high probability to high-joint-probability regions of the model (energy) while remaining as spread out as possible (entropy). This prevents $q$ from collapsing to a single point.
 
-2. **The Likelihood-Prior View:**
+- **The Likelihood-Prior View:**
 
-   $$
-   \text{ELBO}(q) = \mathbb{E}_{q(\theta)}[\log p(\mathcal{D} \mid \theta)] - D_{KL}(q(\theta) \parallel p(\theta))
-   $$
+    $$
+    \text{ELBO}(q) = \mathbb{E}_{q(\theta)}[\log p(\mathcal{D} \mid \theta)] - D_{KL}(q(\theta) \parallel p(\theta))
+    $$
 
-   This is the form most common in Variational Autoencoders (VAEs). It highlights a trade-off: maximize the expected log-likelihood of the data (make the model accurate) while keeping the posterior close to our prior beliefs.
+    This is the form most common in Variational Autoencoders (VAEs). It highlights a trade-off: maximize the expected log-likelihood of the data (make the model accurate) while keeping the posterior close to our prior beliefs.
 
 ## 3. Mean-Field Variational Inference
 

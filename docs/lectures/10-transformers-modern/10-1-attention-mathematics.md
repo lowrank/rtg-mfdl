@@ -50,9 +50,9 @@ We will prove that without skip connections and Multi-Layer Perceptrons (MLPs), 
 2.  **Perron-Frobenius Theorem and Ergodicity:**
     Consider the product of the attention matrices across depth:
     
-$$
+    $$
     M^{(L)} = P^{(L)} P^{(L-1)} \cdots P^{(1)}
-$$
+    $$
 
     This product represents a time-inhomogeneous Markov chain. Because each $P^{(l)}$ has strictly positive entries (greater than some $\epsilon > 0$ due to the boundedness of inputs in finite domains), the transition matrices are uniformly ergodic.
     By Birkhoff's theorem on the contraction of the Hilbert projective metric for positive matrices, the multiplication by a positive stochastic matrix acts as a contraction mapping on the space of rays. Thus, as $L \to \infty$, the product matrix $M^{(L)}$ converges to a rank-1 matrix where all rows are identical:
@@ -66,9 +66,9 @@ $$
 3.  **Applying to the Representations:**
     Unrolling the pure attention recurrence gives:
     
-$$
+    $$
     X^{(L)} = \left( \prod_{l=1}^L P^{(l)} \right) X^{(0)} \left( \prod_{l=1}^L W_V^{(l)} \right)
-$$
+    $$
 
     Let $W_{V, 1:L} = \prod_{l=1}^L W_V^{(l)}$. Substituting the limit of the Markov product:
     

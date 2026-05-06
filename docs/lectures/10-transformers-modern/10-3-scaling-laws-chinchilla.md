@@ -39,16 +39,16 @@ Given a fixed compute budget $C$, what are the optimal values of $N$ and $D$ tha
     We want to minimize $L(N, D)$ subject to $G(N, D) = 6ND - C = 0$.
     Using the method of Lagrange Multipliers, we define the Lagrangian:
     
-$$
+    $$
     \mathcal{L}(N, D, \lambda) = E + A N^{-\alpha} + B D^{-\beta} + \lambda (6ND - C)
-$$
+    $$
 
 2.  **Computing First-Order Conditions:**
     Taking partial derivatives and setting to zero:
     
-$$
+    $$
     \frac{\partial \mathcal{L}}{\partial N} = -\alpha A N^{-\alpha-1} + 6\lambda D = 0 \implies 6\lambda N D = \alpha A N^{-\alpha}
-$$
+    $$
 
     $$
     \frac{\partial \mathcal{L}}{\partial D} = -\beta B D^{-\beta-1} + 6\lambda N = 0 \implies 6\lambda N D = \beta B D^{-\beta}
@@ -57,18 +57,18 @@ $$
 3.  **Equating the Reducible Losses:**
     From the above, we see that at the optimum:
     
-$$
+    $$
     \alpha A N^{-\alpha} = \beta B D^{-\beta}
-$$
+    $$
 
     This implies that the "model-side" reducible loss should be proportional to the "data-side" reducible loss, weighted by their respective power-law exponents.
 
 4.  **Solving for N and D in terms of C:**
     Substitute $D = \frac{C}{6N}$ into the equality:
     
-$$
+    $$
     \alpha A N^{-\alpha} = \beta B \left( \frac{C}{6N} \right)^{-\beta} = \beta B 6^\beta C^{-\beta} N^\beta
-$$
+    $$
 
     Isolating $N$:
     
@@ -90,9 +90,9 @@ $$
     Empirical measurements in the Chinchilla paper found $\alpha \approx \beta \approx 0.34$.
     When $\alpha = \beta$, we have:
     
-$$
+    $$
     N^* \propto C^{0.5}, \quad D^* \propto C^{0.5}
-$$
+    $$
 
     Thus, for every doubling of the compute budget, both the model size and the number of training tokens should be increased by $\sqrt{2} \approx 41\%$. $\blacksquare$
 
@@ -113,25 +113,25 @@ Why do these power laws exist? A theoretical explanation comes from the geometry
     Consider $N$ parameters as defining $N$ regions in the manifold $\mathcal{M}$ (similar to a Voronoi tessellation). The volume of each region is roughly $\text{Vol}(\mathcal{M}) / N$.
     Since the manifold is $d$-dimensional, the characteristic linear scale (diameter) of each region $r$ is:
     
-$$
+    $$
     r \propto \text{Vol}^{1/d} \propto N^{-1/d}
-$$
+    $$
 
 2.  **Approximation Error:**
     A smooth function $f$ (or the log-probability density) can be approximated within each region by a constant (zeroth-order) or a linear function (first-order).
     The Taylor expansion error for a first-order approximation at distance $r$ is $O(r^2)$.
     Therefore, the squared error (MSE) or KL divergence (which behaves like MSE locally) scales as:
     
-$$
+    $$
     \text{Error} \propto r^2 \propto (N^{-1/d})^2 = N^{-2/d}
-$$
+    $$
 
 3.  **Matching the Power Law:**
     Comparing this to our empirical formula $L \propto N^{-\alpha}$, we find:
     
-$$
+    $$
     \alpha = \frac{2}{d}
-$$
+    $$
 
     This suggests that the scaling exponent $\alpha$ is inversely proportional to the intrinsic dimension of the data manifold. For $\alpha \approx 0.34$, this implies $d \approx 2/0.34 \approx 6$. This surprisingly low dimension suggests that while natural language has a massive vocabulary, its underlying semantic and syntactic structure is highly compressed. $\blacksquare$
 
