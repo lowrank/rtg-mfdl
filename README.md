@@ -1,14 +1,12 @@
-# Undergraduate Summer Projects: Mathematical Foundations of AI / ML / DL
+# RTG Summer School: Mathematical Foundations of Deep learning 
 
-A curated catalog of summer research projects (8–12 weeks) for undergraduates
-interested in the mathematical foundations of machine learning and deep
+A summer research curriculum for undergraduates interested in the mathematical foundations of machine learning and deep
 learning. 
 
-The catalog is organized into 10 core topics. Each topic is structured as a 
-**10-HOUR INTENSIVE CURRICULUM** consisting of:
+The curriculum is organized into 10 core topics. Each topic consisting of:
 
-- **📖 LECTURE Hub**: A master portal linking five high-density sub-modules (50+ total).
-- **📚 Deep Dive Submodules**: Exhaustive mathematical treatments with **rigorous proofs for every theorem**, non-trivial examples, and state-of-the-art research.
+- **📖 LECTURE Hub**: A master portal linking five sub-modules (50+ total).
+- **📚 Deep Dive Submodules**: Exhaustive mathematical treatments with **proofs for every theorem**, non-trivial examples, and state-of-the-art research.
 - **🛠 PRACTICE**: Specialized theoretical exercises and coding implementations with hints.
 - **🚀 PROJECT**: Hands-on research projects utilizing real-world data from **Kaggle**.
 
