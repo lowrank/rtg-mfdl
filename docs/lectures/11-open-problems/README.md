@@ -268,7 +268,7 @@ The same authors extended the Silver schedule to smooth non-strongly convex opti
 
 A striking further development is **random stepsizes**: using inverse stepsizes drawn i.i.d. from the **Arcsine distribution** achieves **full acceleration** $O(\kappa^{1/2})$ for separable convex optimization — matching Nesterov's rate — without momentum [Altschuler & Parrilo, 2024, arXiv:2412.05790]. Unlike the Silver schedule's deterministic fractal, this randomized approach exploits a conceptual connection to potential theory: the optimal distribution of stepsizes mirrors the equilibrium distribution of charged particles minimizing logarithmic potential energy, and the Arcsine distribution's "equalization property" makes GD converge at exactly the same rate for all functions in the class.
 
-Grimmer, Shu, and Wang (2024, arXiv:2403.14045) further improved on the Silver schedule by constructing stepsize sequences that achieve $O(N^{-1.2716})$ convergence for both the objective gap and squared gradient norm — improving the exponent over prior best guarantees.
+Grimmer, Shu, and Wang (2024, arXiv:2403.14045) further improved on the Silver schedule by constructing stepsize sequences that achieve $O(N^{-1.2716})$ convergence for both the objective gap and squared gradient norm — improving the exponent over prior best guarantees. They followed this with a general **composition theory** for stepsize schedules (arXiv:2410.16249), proposing three notions of composable schedules that unify all recent advances, recover the Silver schedule as a special case, and produce schedules that match or beat numerically computed minimax optimal rates.
 
 ### 2.3 Fundamental Limits of Variable-Step GD
 
@@ -362,6 +362,7 @@ plt.grid(True)
 - Altschuler, J. M., & Parrilo, P. A. (2024). Acceleration by stepsize hedging II: Silver stepsize schedule for smooth convex optimization. *Mathematical Programming*, 2024. arXiv:2309.16530.
 - Altschuler, J. M., & Parrilo, P. A. (2024). Acceleration by random stepsizes: Hedging, equalization, and the arcsine stepsize schedule. arXiv:2412.05790.
 - Grimmer, B., Shu, K., & Wang, A. L. (2024). Accelerated objective gap and gradient norm convergence for gradient descent via long steps. arXiv:2403.14045.
+- Grimmer, B., Shu, K., & Wang, A. L. (2024). Composing optimized stepsize schedules for gradient descent. arXiv:2410.16249.
 
 ---
 
