@@ -238,7 +238,7 @@ The worst-case error is controlled by minimizing the maximum of the polynomial $
 !!! info "Why this matters"
     This is pure gradient descent with no momentum term and no gradient history. The acceleration comes entirely from the deterministic step size schedule. The method is also known as the **Richardson-Chebyshev iteration** and achieves the same asymptotic rate as conjugate gradient and Nesterov's accelerated method — but with a simpler, predictable schedule.
 
-### 2.3 The Parrilo Result: The Silver Stepsize Schedule
+### 2.3 The Silver Stepsize Schedule
 
 A recent breakthrough by Altschuler & Parrilo (2023) proves that variable step size GD can achieve rates **between** unaccelerated and accelerated, using a fractal-like schedule:
 
